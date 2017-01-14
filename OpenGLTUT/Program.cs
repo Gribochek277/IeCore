@@ -10,18 +10,14 @@ namespace OpenGLTUT
 {
     class Program
     {
-        
-
-         public static ShaderProgram program;
-       
-        // private static VBO<Vector3> /*pyramidColors,*/ cuberColors;
+        public static ShaderProgram program;
        
         private static System.Diagnostics.Stopwatch watch;
         private static float xangle, yangle;
         public static bool autorotate = false;
         private static Texture texture;
         private static  bool enableLight = true;
-        private static BeginMode drawingMode;
+       
         private static List<Star> stars = new List<Star>();
         private static Random generator = new Random(Environment.TickCount);
         private static List<SceneObject> objectsOnScene = new List<SceneObject>();
@@ -40,7 +36,7 @@ namespace OpenGLTUT
             sceneObject.SetMAterial("Arc170_blinn1.png",true, new Vector3(0, 0, 1),lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
             program = sceneObject.program;
             texture = sceneObject.texture;
-            drawingMode = BeginMode.Triangles;
+     
 
             objectsOnScene.Add(sceneObject);
            
@@ -98,7 +94,7 @@ namespace OpenGLTUT
                 Gl.BindBufferToShaderAttribute(objectsOnScene[0].modelUV, program, "vertexUV");
                 Gl.BindBuffer(objectsOnScene[0].modelElements);
 
-                Gl.DrawElements(drawingMode, objectsOnScene[0].modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                Gl.DrawElements(BeginMode.Triangles, objectsOnScene[0].modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
            
 
 
