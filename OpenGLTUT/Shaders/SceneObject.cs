@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using OpenGL;
 
-namespace OpenGLTUT
+namespace IrrationalSpace
 {
 	public class SceneObject
 	{
@@ -14,6 +14,13 @@ namespace OpenGLTUT
         public VBO<Vector3> modelNormals;
         public VBO<Vector3> modelVertex;
         public VBO<int> modelElements;
+
+        public Vector3 position;
+
+        public Vector3 scale;
+
+        public Vector3 rotation;
+
         #region DefaultShaders
 		public static string VertextShader = @"
                 #version 130
@@ -62,7 +69,7 @@ namespace OpenGLTUT
             
             program =  new ShaderProgram(VertextShader, FragmentShader);
             texture = new Texture(diffuseTextureName);
-            Gl.BindTexture(texture);
+           
             program.Use();
             Console.WriteLine(program.ProgramLog);
             //TODO : вынести в отдельеую функцию перемещения обхекта
@@ -74,10 +81,16 @@ namespace OpenGLTUT
             program["light_strenght"].SetValue(lightStr);
             program["alpha_str"].SetValue(alphaStr);
             program["color"].SetValue(shadingColor);
+
+
+
         }
 
-        public SceneObject(string meshName)
-        { 
+        public SceneObject(string meshName,Vector3 _position,Vector3 _scale,Vector3 _rotation)
+        {
+            position = _position;
+            scale = _scale;
+            rotation = _rotation;
             mesh = ModelLoader.LoadModel(meshName);
             modelVertex = new VBO<Vector3>(mesh.vertices);//right
             List<int> elements = new List<int>();
@@ -88,6 +101,15 @@ namespace OpenGLTUT
             modelElements = new VBO<int>(elements.ToArray(), BufferTarget.ElementArrayBuffer);
             modelUV = new VBO<Vector2>(mesh.uvCoords);
             modelNormals = new VBO<Vector3>(mesh.normals);
+
+        }
+
+        public void ChangeTransform()
+        {
+            
+            program["model_matrix"].SetValue(Matrix4.CreateRotationX(rotation.x) * Matrix4.CreateRotationY(rotation.y)* Matrix4.CreateRotationZ(rotation.z)
+                                             * Matrix4.CreateScaling(scale)
+                                             * Matrix4.CreateTranslation(position));
         }
 	}
 }

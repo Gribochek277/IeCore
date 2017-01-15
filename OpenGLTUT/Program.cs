@@ -6,21 +6,23 @@ using System.Threading.Tasks;
 using Tao.FreeGlut;
 using OpenGL;
 
-namespace OpenGLTUT
+namespace IrrationalSpace
 {
     class Program
     {
-        public static ShaderProgram program;
+       
        
         private static System.Diagnostics.Stopwatch watch;
         private static float xangle, yangle;
         public static bool autorotate = false;
-        private static Texture texture;
+
         private static  bool enableLight = true;
        
         private static List<Star> stars = new List<Star>();
         private static Random generator = new Random(Environment.TickCount);
         private static List<SceneObject> objectsOnScene = new List<SceneObject>();
+
+        private static int currentObject = 0;
        
         public static float lightStr = 1f;
         public static bool fullscreen = false;
@@ -32,15 +34,18 @@ namespace OpenGLTUT
         {
             WindowPreferences.InitWindow(OnRenderFrame, OnDisplay, OnKeyboardDown, OnKeyboardUp, OnClose, OnReshape,1280,720);
 
-            SceneObject sceneObject = new SceneObject("star-wars-arc.obj");
-            sceneObject.SetMAterial("Arc170_blinn1.png",true, new Vector3(0, 0, 1),lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
-            program = sceneObject.program;
-            texture = sceneObject.texture;
-     
+            SceneObject sceneObject = new SceneObject("livingroom.obj",new Vector3(1,-1,1),new Vector3(1,1,1)*0.01f,new Vector3(1,1,1));
+            sceneObject.SetMAterial("wall_texture.jpg",true, new Vector3(0, 0, 1),lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
+
+
 
             objectsOnScene.Add(sceneObject);
            
 
+            // SceneObject sceneObject2 = new SceneObject("model.txt",new Vector3(1, -1, 1), new Vector3(1, 1, 1), new Vector3(1, 1, 1));
+            //sceneObject2.SetMAterial("african_head_diffuse.jpg", true, new Vector3(0, 0, 1), lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
+
+            //objectsOnScene.Add(sceneObject2);
             watch = System.Diagnostics.Stopwatch.StartNew();
 
             Glut.glutMainLoop();
@@ -54,16 +59,21 @@ namespace OpenGLTUT
         {
             WindowPreferences.widght = width;
             WindowPreferences.height = height;
-            Gl.Viewport(0, 0, WindowPreferences.widght, WindowPreferences.height);
-            program.Use();
-            program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)WindowPreferences.widght / WindowPreferences.height, 0.1f, 1000f));
+            for (int i = 0; i < objectsOnScene.Count; i++)
+            {
+                Gl.Viewport(0, 0, WindowPreferences.widght, WindowPreferences.height);
+                objectsOnScene[i].program.Use();
+                objectsOnScene[i].program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)WindowPreferences.widght / WindowPreferences.height, 0.1f, 1000f));
+            }
         }
-      
        
         private static void OnClose()
         {
-            program.DisposeChildren = true;
-            program.Dispose();
+            for (int i = 0; i < objectsOnScene.Count; i++)
+            {
+                objectsOnScene[i].program.DisposeChildren = true;
+                objectsOnScene[i].program.Dispose();
+            }
         }
       
         private static void OnRenderFrame()
@@ -77,25 +87,27 @@ namespace OpenGLTUT
                     xangle += deltaTime;
                     yangle += deltaTime;
                 }
+            Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            for (int i = 0; i < objectsOnScene.Count; i++)
+            {
+                objectsOnScene[i].program["enable_lighting"].SetValue(enableLight);
+                objectsOnScene[i].program["light_strenght"].SetValue(lightStr);
+                objectsOnScene[i].program["alpha_str"].SetValue(alphaStr);
 
-                program["enable_lighting"].SetValue(enableLight);
-                program["light_strenght"].SetValue(lightStr);
-                program["alpha_str"].SetValue(alphaStr);
-                
 
-               
-                Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-                
-                program.Use();
 
-            program["model_matrix"].SetValue(Matrix4.CreateRotationX(xangle) * Matrix4.CreateRotationY(yangle / 2) * Matrix4.CreateScaling(new Vector3(1, 1, 1)*0.1f) /** Matrix4.CreateTranslation(new Vector3(1.5f, 0, 0))*/);
-                Gl.BindBufferToShaderAttribute(objectsOnScene[0].modelVertex, program, "vertexPosition");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[0].modelNormals, program, "vertexNormal");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[0].modelUV, program, "vertexUV");
-                Gl.BindBuffer(objectsOnScene[0].modelElements);
+              
 
-                Gl.DrawElements(BeginMode.Triangles, objectsOnScene[0].modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
-           
+                objectsOnScene[i].program.Use();
+                objectsOnScene[i].ChangeTransform();
+                Gl.BindTexture(objectsOnScene[i].texture);
+                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelVertex, objectsOnScene[i].program, "vertexPosition");
+                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelNormals, objectsOnScene[i].program, "vertexNormal");
+                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelUV, objectsOnScene[i].program, "vertexUV");
+                Gl.BindBuffer(objectsOnScene[i].modelElements);
+
+                Gl.DrawElements(BeginMode.Quads, objectsOnScene[i].modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+            }
 
 
 
@@ -116,33 +128,90 @@ namespace OpenGLTUT
           private static void OnKeyboardDown(byte key, int x, int y)
         {
 
+            if (key == 9)
+            {
+                currentObject++;
+                if (currentObject == objectsOnScene.Count)
+                {
+                    currentObject = 0;
+                }
 
+            }
 
 
             if (key == 27) Glut.glutLeaveMainLoop();
+
+            if (key == 't')
+            {
+
+                float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
+                objectsOnScene[currentObject].position.x += 10 * deltaTime;
+            }
+            if (key == 'g')
+            {
+
+                float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
+                objectsOnScene[currentObject].position.x -= 10 * deltaTime;
+            }
+            if (key == 'f')
+            {
+
+                float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
+                objectsOnScene[currentObject].position.y += 10 * deltaTime;
+            }
+            if (key == 'h')
+            {
+
+                float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
+                objectsOnScene[currentObject].position.y -= 10 * deltaTime;
+            }
+            if (key == 'r')
+            {
+
+                float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
+                objectsOnScene[currentObject].position.z += 10 * deltaTime;
+            }
+            if (key == 'y')
+            {
+
+                float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
+                objectsOnScene[currentObject].position.z -= 10 * deltaTime;
+            }
+            if (key == 'q')
+            {
+
+                float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
+                objectsOnScene[currentObject].rotation.z += 10 * deltaTime;
+            }
+            if (key == 'e')
+            {
+
+                float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
+                objectsOnScene[currentObject].rotation.z -= 10 * deltaTime;
+            }
             if (key == 'w')
             {
 
                 float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
-                xangle += 10 * deltaTime;
+                objectsOnScene[currentObject].rotation.x += 10 * deltaTime;
             }
             if (key == 's')
             {
 
                 float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
-                xangle -= 10 * deltaTime;
+                objectsOnScene[currentObject].rotation.x -= 10 * deltaTime;
             }
             if (key == 'd')
             {
 
                 float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
-                yangle += 10f * deltaTime;
+                objectsOnScene[currentObject].rotation.y += 10f * deltaTime;
             }
             if (key == 'a')
             {
 
                 float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
-                yangle -= 10f * deltaTime;
+                objectsOnScene[currentObject].rotation.y -= 10f * deltaTime;
             }
 
             if (key == '=')
@@ -193,7 +262,7 @@ namespace OpenGLTUT
 
 
 
-            if (key == 'f')
+            if (key == 'x')
             {
                 fullscreen = !fullscreen;
                 if (fullscreen) Glut.glutFullScreen();

@@ -8,7 +8,7 @@ using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace OpenGLTUT
+namespace IrrationalSpace
 {
     static class ModelLoader
     {

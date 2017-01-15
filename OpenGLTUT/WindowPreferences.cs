@@ -1,7 +1,7 @@
 ﻿using System;
 using Tao.FreeGlut;
 using OpenGL;
-namespace OpenGLTUT
+namespace IrrationalSpace
 {
     public static class WindowPreferences
     {
@@ -15,17 +15,19 @@ namespace OpenGLTUT
             Glut.glutInit();
             Glut.glutInitDisplayMode(Glut.GLUT_DOUBLE | Glut.GLUT_DEPTH);
             Glut.glutInitWindowSize(widght, height);
-            Glut.glutCreateWindow("Tut");
+            Glut.glutCreateWindow("Irrational");
 
             Glut.glutIdleFunc(idleCallback);//OnRenderFrame
             Glut.glutDisplayFunc(displayCallback);//OnDisplay
             Glut.glutKeyboardFunc(keybordCallback);
             Glut.glutKeyboardUpFunc(keyboardUpcallback);
+           
             Glut.glutCloseFunc(closeCallback);
             Glut.glutReshapeFunc(reshapeCallback);//OnReshape
             Gl.Enable(EnableCap.DepthTest);
             Gl.Disable(EnableCap.Blend);
-            Gl.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+
+            Gl.BlendFunc(BlendingFactorSrc.OneMinusConstantAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
     }
 }
