@@ -32,10 +32,10 @@ namespace IrrationalSpace
 
         static void Main(string[] args)
         {
-            WindowPreferences.InitWindow(OnRenderFrame, OnDisplay, OnKeyboardDown, OnKeyboardUp, OnClose, OnReshape,1280,720);
+            WindowPreferences.InitWindow(OnRenderFrame, OnDisplay, OnKeyboardDown, OnKeyboardUp, OnClose, OnReshape,800,600);
 
-            SceneObject sceneObject = new SceneObject("livingroom.obj",new Vector3(1,-1,1),new Vector3(1,1,1)*0.01f,new Vector3(1,1,1));
-            sceneObject.SetMAterial("wall_texture.jpg",true, new Vector3(0, 0, 1),lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
+            SceneObject sceneObject = new SceneObject("resources/h.obj",new Vector3(-0.3f,-1.2f,1),new Vector3(1,1,1)*0.01f,new Vector3(1,1,1));
+            sceneObject.SetMAterial("resources/h.jpg","resources/hbump.jpg",true, new Vector3(0, 0, 1),lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
 
 
 
@@ -100,13 +100,21 @@ namespace IrrationalSpace
 
                 objectsOnScene[i].program.Use();
                 objectsOnScene[i].ChangeTransform();
-                Gl.BindTexture(objectsOnScene[i].texture);
+               
+                Gl.ActiveTexture(TextureUnit.Texture1);
+                Gl.BindTexture(objectsOnScene[i].normal);
+                Gl.ActiveTexture(TextureUnit.Texture0);
+                Gl.BindTexture(objectsOnScene[i].diffuse);
+
+
+
                 Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelVertex, objectsOnScene[i].program, "vertexPosition");
                 Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelNormals, objectsOnScene[i].program, "vertexNormal");
+                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelTangents, objectsOnScene[i].program, "vertexTangent");
                 Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelUV, objectsOnScene[i].program, "vertexUV");
                 Gl.BindBuffer(objectsOnScene[i].modelElements);
 
-                Gl.DrawElements(BeginMode.Quads, objectsOnScene[i].modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+                Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
             }
 
 
@@ -235,7 +243,7 @@ namespace IrrationalSpace
 
         private static void OnKeyboardUp(byte key, int x, int y)
         {
-            Console.WriteLine(key);
+           // Console.WriteLine(key);
             if (key == 108)
             {
                 enableLight = !enableLight;

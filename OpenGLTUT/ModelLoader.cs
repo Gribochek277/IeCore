@@ -96,7 +96,6 @@ namespace IrrationalSpace
                 string[] splitedLine = line.Split(' ');
                 if (splitedLine[0] == "f")
                 {
-                  //  Match row = Regex.Match(line, "(\\d*)\\/(\\d*)\\/(\\d*) (\\d*)\\/(\\d*)\\/(\\d*) (\\d*)\\/(\\d*)\\/(\\d*)");
                     MatchCollection rows = Regex.Matches(line, "(\\d*)\\/(\\d*)\\/(\\d*)");
                     for (int i=0;i<rows.Count;i++)
                     {
@@ -122,6 +121,50 @@ namespace IrrationalSpace
             _model.uvCoords = objUV.ToArray();
 
             return _model;
+        }
+
+
+        /// <summary>
+        /// Calculate the Tangent array based on the Vertex, Face, Normal and UV data.
+        /// </summary>
+        public static Vector3[] CalculateTangents(Vector3[] vertices, Vector3[] normals, int[] triangles, Vector2[] uvs)
+        {
+            Vector3[] tangents = new Vector3[vertices.Length];
+            Vector3[] tangentData = new Vector3[vertices.Length];
+
+            for (int i = 0; i < triangles.Length / 3; i++)
+            {
+                Vector3 v1 = vertices[triangles[i * 3]];
+                Vector3 v2 = vertices[triangles[i * 3 + 1]];
+                Vector3 v3 = vertices[triangles[i * 3 + 2]];
+
+                Vector2 w1 = uvs[triangles[i * 3]];
+                Vector2 w2 = uvs[triangles[i * 3 + 1]];
+                Vector2 w3 = uvs[triangles[i * 3 + 2]];
+
+                float x1 = v2.x - v1.x;
+                float x2 = v3.x - v1.x;
+                float y1 = v2.y - v1.y;
+                float y2 = v3.y - v1.y;
+                float z1 = v2.z - v1.z;
+                float z2 = v3.z - v1.z;
+
+                float s1 = w2.x - w1.x;
+                float s2 = w3.x - w1.x;
+                float t1 = w2.y - w1.y;
+                float t2 = w3.y - w1.y;
+                float r = 1.0f / (s1 * t2 - s2 * t1);
+                Vector3 sdir = new Vector3((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
+
+                tangents[triangles[i * 3]] += sdir;
+                tangents[triangles[i * 3 + 1]] += sdir;
+                tangents[triangles[i * 3 + 2]] += sdir;
+            }
+
+            for (int i = 0; i < vertices.Length; i++)
+                tangentData[i] = (tangents[i] - normals[i] * Vector3.Dot(normals[i], tangents[i])).Normalize();
+
+            return tangentData;
         }
     }
 }
