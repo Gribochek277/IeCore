@@ -8,7 +8,10 @@ namespace IrrationalSpace
         public static int widght = 800, height = 600;
        
 
-        public static void InitWindow(Glut.IdleCallback idleCallback,Glut.DisplayCallback displayCallback,Glut.KeyboardCallback keybordCallback,Glut.KeyboardUpCallback keyboardUpcallback,Glut.CloseCallback closeCallback,Glut.ReshapeCallback reshapeCallback,int _widght=800, int _height=600)
+        public static void InitWindow(Glut.IdleCallback idleCallback,Glut.DisplayCallback displayCallback,
+		                              Glut.KeyboardCallback keybordCallback,Glut.KeyboardUpCallback keyboardUpcallback,
+		                              Glut.CloseCallback closeCallback,Glut.ReshapeCallback reshapeCallback,Glut.MouseCallback OnMouse,Glut.MotionCallback OnMove
+		                             /* Glut.MouseWheelCallback OnMouseWheel*/,int _widght=800, int _height=600)
         {
             widght = _widght;
             height = _height;
@@ -26,6 +29,10 @@ namespace IrrationalSpace
             Glut.glutReshapeFunc(reshapeCallback);//OnReshape
             Gl.Enable(EnableCap.DepthTest);
             Gl.Disable(EnableCap.Blend);
+
+			Glut.glutMouseFunc(OnMouse);
+			Glut.glutMotionFunc(OnMove);
+			//Glut.glutMouseWheelFunc(OnMouseWheel);
 
             Gl.BlendFunc(BlendingFactorSrc.OneMinusConstantAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }

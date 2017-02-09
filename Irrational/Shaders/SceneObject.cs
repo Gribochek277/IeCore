@@ -110,7 +110,8 @@ vec4 sample = lighting * texture2D(colorTexture, uv);
 
         public void SetMAterial(string diffuseTextureName,string normalTextureName,bool enableLight, Vector3 lightDirection,float lightStr, float alphaStr,string VertextShader, string FragmentsShader)
         {
-            
+            	
+
             program =  new ShaderProgram(VertextShader, FragmentShader2);
             diffuse = new Texture(diffuseTextureName);
             normal = new Texture(normalTextureName);
@@ -129,7 +130,7 @@ vec4 sample = lighting * texture2D(colorTexture, uv);
             program["color"].SetValue(shadingColor);
 
             program["normalTexture"].SetValue(1);
-            program["enable_mapping"].SetValue(false);
+            program["enable_mapping"].SetValue(true);
 
         }
 

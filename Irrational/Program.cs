@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tao.FreeGlut;
 using OpenGL;
+using Gtk;
 
 namespace IrrationalSpace
 {
@@ -32,10 +33,27 @@ namespace IrrationalSpace
 
         static void Main(string[] args)
         {
-            WindowPreferences.InitWindow(OnRenderFrame, OnDisplay, OnKeyboardDown, OnKeyboardUp, OnClose, OnReshape,800,600);
+			Application.Init();
 
-            SceneObject sceneObject = new SceneObject("resources/h.obj",new Vector3(-0.3f,-1.2f,1),new Vector3(1,1,1)*0.01f,new Vector3(1,1,1));
-            sceneObject.SetMAterial("resources/h.jpg","resources/hbump.jpg",true, new Vector3(0, 0, 1),lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
+			Window win = new Window("Properties");
+
+			win.Resize(200, 400);
+
+			Label label = new Label();
+
+			label.Text = "hihihi";
+
+			win.Add(label);
+
+			win.ShowAll();
+
+
+
+
+			WindowPreferences.InitWindow(OnRenderFrame, OnDisplay, OnKeyboardDown, OnKeyboardUp, OnClose, OnReshape,OnMouse,OnMove,800,600);
+
+            SceneObject sceneObject = new SceneObject("resources/h.obj", new Vector3(-0.3f,-1.2f,1),new Vector3(1,1,1)*0.01f,new Vector3(1,1,1));
+            sceneObject.SetMAterial("resources/h.jpg", "resources/hbump.jpg", true, new Vector3(0, 0, 1),lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
 
 
 
@@ -49,6 +67,7 @@ namespace IrrationalSpace
             watch = System.Diagnostics.Stopwatch.StartNew();
 
             Glut.glutMainLoop();
+			Application.Run();
         }
 
         private static void OnDisplay()
@@ -82,11 +101,7 @@ namespace IrrationalSpace
             float deltaTime = (float)watch.ElapsedTicks / System.Diagnostics.Stopwatch.Frequency;
             watch.Restart();
 
-                if (autorotate)
-                {
-                    xangle += deltaTime;
-                    yangle += deltaTime;
-                }
+           
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             for (int i = 0; i < objectsOnScene.Count; i++)
             {
@@ -282,5 +297,48 @@ namespace IrrationalSpace
                 }
             }
         }
-    }
+
+		private static bool mouseDown = false, wheelDown = false;
+		private static int downX, downY;
+
+		private static void OnMouse(int button, int state, int x, int y)
+		{
+			// this method gets called whenever a new mouse button event happens
+			if (button == Glut.GLUT_RIGHT_BUTTON) mouseDown = (state == Glut.GLUT_DOWN);
+
+			// if the mouse has just been clicked then we hide the cursor and store the position
+			if (mouseDown)
+			{
+				Glut.glutSetCursor(Glut.GLUT_CURSOR_NONE);
+				downX = x;
+				downY = y;
+			}
+			else // unhide the cursor if the mouse has just been released
+				Glut.glutSetCursor(Glut.GLUT_CURSOR_LEFT_ARROW);
+		}
+
+
+		private static void OnMove(int x, int y)
+		{
+			// if the mouse move event is caused by glutWarpPointer then do nothing
+			if (x == downX && y == downY) return;
+
+			// update the rotation of our cube if the mouse is down
+			if (mouseDown)
+			{
+				 
+
+
+				objectsOnScene[currentObject].rotation.x += (x - downX) * 0.005f;
+
+				objectsOnScene[currentObject].rotation.y -=  (y - downY) * 0.005f;
+
+
+				Glut.glutWarpPointer(downX, downY);
+			}
+		}
+
+	
+
+	}
 }
