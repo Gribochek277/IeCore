@@ -10,9 +10,11 @@ namespace IrrationalSpace
     public class WindowPreferences : GameWindow
     {
         public static int widght = 800, height = 600;
+        public enum ControlMode { FreeMouse,RotateModel, RotateCam };
+        public static ControlMode controlMode = ControlMode.FreeMouse;
+        public OpenTK.Vector2 lastMousePos = new OpenTK.Vector2();
+        public OpenTK.Vector2 lastMousePos1 = new OpenTK.Vector2();
 
-
-        private static float xangle, yangle;
         public static bool autorotate = false;
 
         private static bool enableLight = true;
@@ -21,14 +23,14 @@ namespace IrrationalSpace
         private static Random generator = new Random(Environment.TickCount);
         private static List<SceneObject> objectsOnScene = new List<SceneObject>();
 
-        private static int currentObject = 0;
+        Camera cam = new Camera();
 
         public static float lightStr = 1f;
         public static bool fullscreen = false;
-        public static bool alphaBlending = false;
+        public static bool alphaBlending  = false;
         public static float alphaStr = 2f;
 
-        public WindowPreferences() : base(1280, 720, GraphicsMode.Default, "Irrational engine",
+        public WindowPreferences() : base(widght, height, GraphicsMode.Default, "Irrational engine",
             GameWindowFlags.Default, DisplayDevice.Default,
             // ask for an OpenGL 3.0 forward compatible context
             3, 0, GraphicsContextFlags.ForwardCompatible)
@@ -36,8 +38,7 @@ namespace IrrationalSpace
 
         protected override void OnLoad(EventArgs e)
         {
-            widght = 800;
-            height = 600;
+           
 
             Gl.Enable(EnableCap.DepthTest);
             Gl.Disable(EnableCap.Blend);
@@ -49,7 +50,7 @@ namespace IrrationalSpace
 
 
             objectsOnScene.Add(sceneObject);
-
+            objectsOnScene[0].program["projection_matrix"].SetValue(cam.GetViewMatrix() * OpenGL.Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f));
             Gl.BlendFunc(BlendingFactorSrc.OneMinusConstantAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
         
@@ -76,6 +77,66 @@ namespace IrrationalSpace
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             // this is called every frame, put game logic here
+           
+            if (controlMode == ControlMode.RotateModel)
+            {
+                OpenTK.Vector2 delta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
+                objectsOnScene[0].rotation.x -= delta.X * 0.005f;
+                objectsOnScene[0].rotation.y -= delta.Y * 0.005f;
+            }
+            if (controlMode == ControlMode.RotateCam)
+            {
+                
+                OpenTK.Vector2 mousedelta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
+                 cam.AddRotation(mousedelta.X, mousedelta.Y);
+            }
+            if(controlMode != ControlMode.FreeMouse)
+            ResetCursor();
+
+           
+            objectsOnScene[0].program["projection_matrix"].SetValue(cam.GetViewMatrix() * OpenGL.Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f));
+        }
+        protected override void OnKeyPress(OpenTK.KeyPressEventArgs e)
+        {
+            base.OnKeyPress(e);
+            Console.WriteLine((int)e.KeyChar);
+            if (e.KeyChar == 92)
+                Exit();
+
+            if (e.KeyChar == 32)
+            {
+                controlMode = ((int)controlMode < 3) ? controlMode + 1 : ControlMode.FreeMouse;
+                Console.WriteLine(controlMode.ToString());
+            }
+
+            switch ((int)e.KeyChar)
+            {
+                case 119:
+                    {
+                        cam.Move(0f, 1f, 0f);
+                        Console.WriteLine("w");
+                        break;
+                    }
+                   case 100:
+                    {
+                        cam.Move(1f, 0f, 0f);
+                        Console.WriteLine("d");
+                        break;
+                    }
+                    case 115:
+                    {
+                        cam.Move(0f, -1f, 0f);
+                        Console.WriteLine("s");
+                        break;
+                    }
+                    case 97:
+                    {
+                        cam.Move(-1f, 0f, 0f);
+                        Console.WriteLine("a");
+                        break;
+                    }
+            }
+                
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -114,6 +175,12 @@ namespace IrrationalSpace
             }
             this.SwapBuffers();
 
+        }
+
+        void ResetCursor()
+        {
+            OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Right / 2, Bounds.Top + Bounds.Height / 2);
+            lastMousePos = new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
         }
     }
 }
