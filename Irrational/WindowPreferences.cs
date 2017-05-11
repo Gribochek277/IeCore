@@ -42,8 +42,8 @@ namespace IrrationalSpace
 
             Gl.Enable(EnableCap.DepthTest);
             Gl.Disable(EnableCap.Blend);
-            SceneObject sceneObject = new SceneObject("resources/h.obj", new OpenGL.Vector3(-0.3f, -1.2f, 1), new OpenGL.Vector3(1, 1, 1) * 1f, new OpenGL.Vector3(1, 1, 1));
-            sceneObject.SetMAterial("images.jpg", "images.jpg", true, new OpenGL.Vector3(0, 0, 1), lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
+            SceneObject sceneObject = new SceneObject("resources/h.obj", new OpenGL.Vector3(-0.3f, -1.2f, 1), new OpenGL.Vector3(1, 1, 1) * .01f, new OpenGL.Vector3(1, 1, 1));
+            sceneObject.SetMAterial("resources/h.jpg", "resources/hbump.jpg", true, new OpenGL.Vector3(0, 0, 1), lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
 
 
 
@@ -85,12 +85,11 @@ namespace IrrationalSpace
                 objectsOnScene[0].rotation.y -= delta.Y * 0.005f;
             }
             if (controlMode == ControlMode.RotateCam)
-            {
-                
+            {    
                 OpenTK.Vector2 mousedelta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
                  cam.AddRotation(mousedelta.X, mousedelta.Y);
-            }
-            if(controlMode != ControlMode.FreeMouse)
+			}
+			if(controlMode != ControlMode.FreeMouse)
             ResetCursor();
 
            
@@ -107,7 +106,7 @@ namespace IrrationalSpace
             {
                 controlMode = ((int)controlMode < 3) ? controlMode + 1 : ControlMode.FreeMouse;
                 Console.WriteLine(controlMode.ToString());
-            }
+			}
 
             switch ((int)e.KeyChar)
             {
@@ -179,8 +178,8 @@ namespace IrrationalSpace
 
         void ResetCursor()
         {
-            OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Right / 2, Bounds.Top + Bounds.Height / 2);
-            lastMousePos = new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
+				OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Right / 2, Bounds.Top + Bounds.Height / 2);
+				lastMousePos = new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
         }
     }
 }

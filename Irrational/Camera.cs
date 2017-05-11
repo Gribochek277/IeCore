@@ -8,7 +8,7 @@ namespace IrrationalSpace
         public Vector3 Position = Vector3.Zero;
         public Vector3 Orientation = new Vector3((float)Math.PI, 0f, 0f);
         public float MoveSpeed = 0.2f;
-        public float MouseSensitivity = 0.02f;
+        public float MouseSensitivity = 0.002f;
 
         public Camera()
         {
@@ -49,7 +49,7 @@ namespace IrrationalSpace
             x = x * MouseSensitivity;
             y = y * MouseSensitivity;
 
-            Orientation.x = (Orientation.x + x) % ((float)Math.PI * 0.2f);
+            Orientation.x = (Orientation.x + x) % ((float)Math.PI * 2.0f);
             Orientation.y = Math.Max(Math.Min(Orientation.y + y, (float)Math.PI / 2.0f - 0.1f), (float)-Math.PI / 2.0f + 0.1f);
            
         }
