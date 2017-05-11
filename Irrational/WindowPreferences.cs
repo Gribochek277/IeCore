@@ -42,8 +42,8 @@ namespace IrrationalSpace
 
             Gl.Enable(EnableCap.DepthTest);
             Gl.Disable(EnableCap.Blend);
-            SceneObject sceneObject = new SceneObject("resources/h.obj", new OpenGL.Vector3(-0.3f, -1.2f, 1), new OpenGL.Vector3(1, 1, 1) * 0.01f, new OpenGL.Vector3(1, 1, 1));
-            sceneObject.SetMAterial("resources/h.jpg", "resources/hbump.jpg", true, new OpenGL.Vector3(0, 0, 1), lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
+            SceneObject sceneObject = new SceneObject("resources/h.obj", new OpenGL.Vector3(-0.3f, -1.2f, 1), new OpenGL.Vector3(1, 1, 1) * 1f, new OpenGL.Vector3(1, 1, 1));
+            sceneObject.SetMAterial("images.jpg", "images.jpg", true, new OpenGL.Vector3(0, 0, 1), lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
 
 
 

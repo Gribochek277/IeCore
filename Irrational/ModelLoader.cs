@@ -8,6 +8,7 @@ using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
+
 namespace IrrationalSpace
 {
     static class ModelLoader
@@ -17,18 +18,34 @@ namespace IrrationalSpace
             List<Vector3> objVertexies = new List<Vector3>();
         
                 string line;
-                System.IO.StreamReader file = new System.IO.StreamReader(pathToModel);
-                
-                while ((line = file.ReadLine()) != null)
-                {
-                    string[] coords = line.Replace("  ", " ").Split();
-                    if (coords[0] == "v")
-                    {
-                    Vector3 vertex = new Vector3(float.Parse(coords[1], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[2], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[3], CultureInfo.InvariantCulture.NumberFormat));
-                        objVertexies.Add(vertex);
-                      //  Console.WriteLine(objVertexies[objVertexies.Count-1]);
-                    }
-                }
+			if (File.Exists(pathToModel))
+			{
+				System.IO.StreamReader file = new System.IO.StreamReader(pathToModel);
+
+				while ((line = file.ReadLine()) != null)
+				{
+					string[] coords = line.Replace("  ", " ").Split();
+					if (coords[0] == "v")
+					{
+						Vector3 vertex = new Vector3(float.Parse(coords[1], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[2], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[3], CultureInfo.InvariantCulture.NumberFormat));
+						objVertexies.Add(vertex);
+						//  Console.WriteLine(objVertexies[objVertexies.Count-1]);
+					}
+				}
+			}
+			else
+			{
+				foreach (var substring in Cube.cube.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+				{ 
+					string[] coords = substring.Replace("  ", " ").Split();
+					if (coords[0] == "v")
+					{
+						Vector3 vertex = new Vector3(float.Parse(coords[1], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[2], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[3], CultureInfo.InvariantCulture.NumberFormat));
+						objVertexies.Add(vertex);
+						//  Console.WriteLine(objVertexies[objVertexies.Count-1]);
+					}
+				}
+			}
                 
            return objVertexies;
         }
@@ -37,18 +54,34 @@ namespace IrrationalSpace
             List<Vector3> objNormals = new List<Vector3>();
 
             string line;
-            System.IO.StreamReader file = new System.IO.StreamReader(pathToModel);
+			if (File.Exists(pathToModel))
+			{
+				System.IO.StreamReader file = new System.IO.StreamReader(pathToModel);
 
-            while ((line = file.ReadLine()) != null)
-            {
-                string[] coords = line.Replace("  "," ").Split();
-                if (coords[0] == "vn")
-                {
-                    Vector3 vertex = new Vector3(float.Parse(coords[1], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[2], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[3], CultureInfo.InvariantCulture.NumberFormat));
-                    objNormals.Add(vertex);
-          //          Console.WriteLine(objNormals[objNormals.Count-1]);
-                }
-            }
+				while ((line = file.ReadLine()) != null)
+				{
+					string[] coords = line.Replace("  ", " ").Split();
+					if (coords[0] == "vn")
+					{
+						Vector3 vertex = new Vector3(float.Parse(coords[1], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[2], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[3], CultureInfo.InvariantCulture.NumberFormat));
+						objNormals.Add(vertex);
+						//          Console.WriteLine(objNormals[objNormals.Count-1]);
+					}
+				}
+			}
+			else
+			{
+				foreach (var substring in Cube.cube.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					string[] coords = substring.Replace("  ", " ").Split();
+					if (coords[0] == "vn")
+					{
+						Vector3 vertex = new Vector3(float.Parse(coords[1], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[2], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[3], CultureInfo.InvariantCulture.NumberFormat));
+						objNormals.Add(vertex);
+						//          Console.WriteLine(objNormals[objNormals.Count-1]);
+					}
+				}
+			}
 
             return objNormals;
         }
@@ -57,19 +90,34 @@ namespace IrrationalSpace
             List<Vector2> objUV = new List<Vector2>();
 
             string line;
-            System.IO.StreamReader file = new System.IO.StreamReader(pathToModel);
+			if (File.Exists(pathToModel))
+			{
+				System.IO.StreamReader file = new System.IO.StreamReader(pathToModel);
 
-            while ((line = file.ReadLine()) != null)
-            {
-                string[] coords = line.Replace("  ", " ").Split();
-                if (coords[0] == "vt")
-                {
-                    Vector2 vertex = new Vector2(float.Parse(coords[1], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[2], CultureInfo.InvariantCulture.NumberFormat));
-                    objUV.Add(vertex);
-                 // Console.WriteLine(objUV[objUV.Count-1]);
-                }
-            }
-
+				while ((line = file.ReadLine()) != null)
+				{
+					string[] coords = line.Replace("  ", " ").Split();
+					if (coords[0] == "vt")
+					{
+						Vector2 vertex = new Vector2(float.Parse(coords[1], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[2], CultureInfo.InvariantCulture.NumberFormat));
+						objUV.Add(vertex);
+						// Console.WriteLine(objUV[objUV.Count-1]);
+					}
+				}
+			}
+			else
+			{
+				foreach (var substring in Cube.cube.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					string[] coords = substring.Replace("  ", " ").Split();
+					if (coords[0] == "vt")
+					{
+						Vector2 vertex = new Vector2(float.Parse(coords[1], CultureInfo.InvariantCulture.NumberFormat), float.Parse(coords[2], CultureInfo.InvariantCulture.NumberFormat));
+						objUV.Add(vertex);
+						// Console.WriteLine(objUV[objUV.Count-1]);
+					}
+				}
+			}
             return objUV;
         }
         public static WavefrontModel LoadModel(string pathToModel)
@@ -89,33 +137,42 @@ namespace IrrationalSpace
             List<Vector2> objUV = new List<Vector2>();
 
             string line;
-            System.IO.StreamReader file = new System.IO.StreamReader(pathToModel);
+			if (File.Exists(pathToModel))
+			{
+				System.IO.StreamReader file = new System.IO.StreamReader(pathToModel);
 
-            while ((line = file.ReadLine()) != null)
-            {
-                string[] splitedLine = line.Split(' ');
-                if (splitedLine[0] == "f")
-                {
-                    MatchCollection rows = Regex.Matches(line, "(\\d*)\\/(\\d*)\\/(\\d*)");
-                    for (int i=0;i<rows.Count;i++)
-                    {
-                        objVertexies.Add(tempVertices[Int32.Parse(rows[i].Groups[1].Value) - 1]);
-                        objUV.Add(tempUvCoords[Int32.Parse(rows[i].Groups[2].Value) - 1]);
-                        objNormals.Add(tempnormals[Int32.Parse(rows[i].Groups[3].Value) - 1]);
-                    }
-                    //objVertexies.Add(tempVertices[Int32.Parse(row.Groups[1].Value) - 1]);
-                    //objVertexies.Add(tempVertices[Int32.Parse(row.Groups[4].Value) - 1]);
-                    //objVertexies.Add(tempVertices[Int32.Parse(row.Groups[7].Value) - 1]);
-
-                    //objUV.Add(tempUvCoords[Int32.Parse(row.Groups[2].Value) - 1]);
-                    //objUV.Add(tempUvCoords[Int32.Parse(row.Groups[5].Value) - 1]);
-                    //objUV.Add(tempUvCoords[Int32.Parse(row.Groups[8].Value) - 1]);
-
-                    //objNormals.Add(tempnormals[Int32.Parse(row.Groups[3].Value) - 1]);
-                    //objNormals.Add(tempnormals[Int32.Parse(row.Groups[6].Value) - 1]);
-                    //objNormals.Add(tempnormals[Int32.Parse(row.Groups[9].Value) - 1]);
-                }
-            }
+				while ((line = file.ReadLine()) != null)
+				{
+					string[] splitedLine = line.Split(' ');
+					if (splitedLine[0] == "f")
+					{
+						MatchCollection rows = Regex.Matches(line, "(\\d*)\\/(\\d*)\\/(\\d*)");
+						for (int i = 0; i < rows.Count; i++)
+						{
+							objVertexies.Add(tempVertices[Int32.Parse(rows[i].Groups[1].Value) - 1]);
+							objUV.Add(tempUvCoords[Int32.Parse(rows[i].Groups[2].Value) - 1]);
+							objNormals.Add(tempnormals[Int32.Parse(rows[i].Groups[3].Value) - 1]);
+						}
+					}
+				}
+			}
+			else
+			{
+				foreach (var substring in Cube.cube.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					string[] splitedLine = substring.Split(' ');
+					if (splitedLine[0] == "f")
+					{
+						MatchCollection rows = Regex.Matches(substring, "(\\d*)\\/(\\d*)\\/(\\d*)");
+						for (int i = 0; i < rows.Count; i++)
+						{
+							objVertexies.Add(tempVertices[Int32.Parse(rows[i].Groups[1].Value) - 1]);
+							objUV.Add(tempUvCoords[Int32.Parse(rows[i].Groups[2].Value) - 1]);
+							objNormals.Add(tempnormals[Int32.Parse(rows[i].Groups[3].Value) - 1]);
+						}
+					}
+				}
+			}
             _model.vertices = objVertexies.ToArray();
             _model.normals = objNormals.ToArray();
             _model.uvCoords = objUV.ToArray();

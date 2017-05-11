@@ -60,6 +60,7 @@
     <Compile Include="Shaders\SceneObject.cs" />
     <Compile Include="WindowPreferences.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="Cube.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
