@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using OpenGL;
 
@@ -120,7 +120,7 @@ vec4 sample = lighting * texture2D(colorTexture, uv);
             Console.WriteLine(program.ProgramLog);
 
             //TODO : вынести в отдельеую функцию перемещения обхекта
-            program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)WindowPreferences.widght / WindowPreferences.height, 0.1f, 1000f));
+            program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)ApplicationWindow.widght / ApplicationWindow.height, 0.1f, 1000f));
             program["view_matrix"].SetValue(Matrix4.LookAt(new Vector3(0, 0, 10), Vector3.Zero, Vector3.Up));
             //TODO : вынести сущность глобального освещения в отдельный класс
             program["light_direction"].SetValue(lightDirection);

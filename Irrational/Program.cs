@@ -12,18 +12,13 @@ namespace IrrationalSpace
     {
        
        
-        private static System.Diagnostics.Stopwatch watch;
-        private static float xangle, yangle;
-        public static bool autorotate = false;
-
-        private static  bool enableLight = true;
        
+        public static bool autorotate = false;
         private static List<Star> stars = new List<Star>();
         private static Random generator = new Random(Environment.TickCount);
         private static List<SceneObject> objectsOnScene = new List<SceneObject>();
 
-        private static int currentObject = 0;
-       
+      
         public static float lightStr = 1f;
         public static bool fullscreen = false;
         public static bool alphaBlending = false;
@@ -32,21 +27,10 @@ namespace IrrationalSpace
 
         static void Main(string[] args)
         {
-
-
-
-
-            WindowPreferences window = new WindowPreferences();
-            
-
-
-
-            // SceneObject sceneObject2 = new SceneObject("model.txt",new Vector3(1, -1, 1), new Vector3(1, 1, 1), new Vector3(1, 1, 1));
-            //sceneObject2.SetMAterial("african_head_diffuse.jpg", true, new Vector3(0, 0, 1), lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
-
-            //objectsOnScene.Add(sceneObject2);
-            watch = System.Diagnostics.Stopwatch.StartNew();
-            window.Run(60);
+			using (ApplicationWindow window = new ApplicationWindow())
+			{
+				window.Run(60);
+			}
         }
 
 

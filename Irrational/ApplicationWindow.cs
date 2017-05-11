@@ -7,7 +7,7 @@ using OpenTK.Input;
 
 namespace IrrationalSpace
 {
-    public class WindowPreferences : GameWindow
+    public class ApplicationWindow : GameWindow
     {
         public static int widght = 800, height = 600;
         public enum ControlMode { FreeMouse,RotateModel, RotateCam };
@@ -30,7 +30,7 @@ namespace IrrationalSpace
         public static bool alphaBlending  = false;
         public static float alphaStr = 2f;
 
-        public WindowPreferences() : base(widght, height, GraphicsMode.Default, "Irrational engine",
+        public ApplicationWindow() : base(widght, height, GraphicsMode.Default, "Irrational engine",
             GameWindowFlags.Default, DisplayDevice.Default,
             // ask for an OpenGL 3.0 forward compatible context
             3, 0, GraphicsContextFlags.ForwardCompatible)
@@ -56,13 +56,13 @@ namespace IrrationalSpace
         
         protected override void OnResize(EventArgs e)
         {
-            WindowPreferences.widght = this.Width;
-            WindowPreferences.height = this.Height;
+            ApplicationWindow.widght = this.Width;
+            ApplicationWindow.height = this.Height;
             for (int i = 0; i < objectsOnScene.Count; i++)
             {
-                Gl.Viewport(0, 0, WindowPreferences.widght, WindowPreferences.height);
+                Gl.Viewport(0, 0, ApplicationWindow.widght, ApplicationWindow.height);
                 objectsOnScene[i].program.Use();
-                objectsOnScene[i].program["projection_matrix"].SetValue(OpenGL.Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)WindowPreferences.widght / WindowPreferences.height, 0.1f, 1000f));
+                objectsOnScene[i].program["projection_matrix"].SetValue(OpenGL.Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)ApplicationWindow.widght / ApplicationWindow.height, 0.1f, 1000f));
             }
         }
 

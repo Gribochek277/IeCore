@@ -58,7 +58,7 @@
     <Compile Include="Star.cs" />
     <Compile Include="WavefrontModel.cs" />
     <Compile Include="Shaders\SceneObject.cs" />
-    <Compile Include="WindowPreferences.cs" />
+    <Compile Include="ApplicationWindow.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Cube.cs" />
   </ItemGroup>
