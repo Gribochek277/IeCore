@@ -15,7 +15,8 @@ namespace IrrationalSpace
 			using (ApplicationWindow window = new ApplicationWindow())
 			{
 				//Framerate as parameter
-				window.Run(60);
+				window.VSync = OpenTK.VSyncMode.Adaptive;
+				window.Run(60,0.0);
 			}
         }
 	}

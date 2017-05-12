@@ -64,6 +64,8 @@
     <Compile Include="Entities\SceneObject.cs" />
     <Compile Include="Shaders\VertexShaders.cs" />
     <Compile Include="Shaders\FragmentShaders.cs" />
+    <Compile Include="Entities\Interfaces\ISceneObject.cs" />
+    <Compile Include="Entities\Material.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -76,6 +78,7 @@
     <Folder Include="Entities\" />
     <Folder Include="Utils\" />
     <Folder Include="Shaders\" />
+    <Folder Include="Entities\Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
