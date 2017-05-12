@@ -32,8 +32,6 @@ namespace IrrationalSpace
             program.Use();
             Console.WriteLine(program.ProgramLog);
 
-            //TODO : вынести в отдельеую функцию перемещения обхекта
-            program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)ApplicationWindow.widght / ApplicationWindow.height, 0.001f, 10000f));
             program["view_matrix"].SetValue(Matrix4.LookAt(new Vector3(0, 0, 10), Vector3.Zero, Vector3.Up));
 			program["light_direction"].SetValue(scene.LightDirection);
 			program["enable_lighting"].SetValue(scene.EnableLight);

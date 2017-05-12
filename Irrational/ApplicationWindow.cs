@@ -45,8 +45,7 @@ namespace IrrationalSpace
 			sceneObject.SetMAterial();
 
             objectsOnScene.Add(sceneObject);
-			objectsOnScene[0].mat.shader["projection_matrix"].SetValue(curretnScene.MainCamera.GetViewMatrix() * OpenGL.Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f));
-            Gl.BlendFunc(BlendingFactorSrc.OneMinusConstantAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+			Gl.BlendFunc(BlendingFactorSrc.OneMinusConstantAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
         
         protected override void OnResize(EventArgs e)
