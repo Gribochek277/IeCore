@@ -13,19 +13,11 @@ namespace IrrationalSpace
         public enum ControlMode { FreeMouse,RotateModel, RotateCam };
         public static ControlMode controlMode = ControlMode.FreeMouse;
         public OpenTK.Vector2 lastMousePos = new OpenTK.Vector2();
-        public OpenTK.Vector2 lastMousePos1 = new OpenTK.Vector2();
-
-        public static bool autorotate = false;
-
-        private static bool enableLight = true;
-
-        private static List<Star> stars = new List<Star>();
-        private static Random generator = new Random(Environment.TickCount);
-        private static List<SceneObject> objectsOnScene = new List<SceneObject>();
-
-        Camera cam = new Camera();
-
-        public static float lightStr = 1f;
+       
+		//TODO: this should be in scene entity. thisnk how to inject to it;
+		private static List<ISceneObject> objectsOnScene = new List<ISceneObject>();
+		private Scene curretnScene;
+        
         public static bool fullscreen = false;
         public static bool alphaBlending  = false;
         public static float alphaStr = 2f;
@@ -38,19 +30,22 @@ namespace IrrationalSpace
 
         protected override void OnLoad(EventArgs e)
         {
-			Scene curretnScene = new Scene() { LightDirection = new OpenGL.Vector3(0, 0, 1), EnableLight = true, LightStr = lightStr};
+			curretnScene = new Scene() { LightDirection = new OpenGL.Vector3(0, 0, 1), MainCamera = new Camera(), EnableLight = true, LightStr = 1f};
             Gl.Enable(EnableCap.DepthTest);
             Gl.Disable(EnableCap.Blend);
             SceneObject sceneObject = new SceneObject("resources/h.obj", new OpenGL.Vector3(-0.3f, -1.2f, 1), new OpenGL.Vector3(1, 1, 1) * .01f, new OpenGL.Vector3(1, 1, 1));
 
-			sceneObject.SetMAterial("resources/h.jpg", "resources/hbump.jpg", curretnScene, alphaStr, VertexShaders.VertexShaderDefault, FragmentShaders.FragmentShaderDefault);
-
-
-
-
+			sceneObject.mat = new Material() 
+			{ 
+				diffuse=new Texture("resources/h.jpg"),
+				normal =  new Texture("resources/hbump.jpg"), 
+				shader = new ShaderProgram(VertexShaders.VertexShaderDefault,FragmentShaders.FragmentShaderDefault)
+			};
+			sceneObject.scene = curretnScene;
+			sceneObject.SetMAterial();
 
             objectsOnScene.Add(sceneObject);
-            objectsOnScene[0].program["projection_matrix"].SetValue(cam.GetViewMatrix() * OpenGL.Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f));
+			objectsOnScene[0].mat.shader["projection_matrix"].SetValue(curretnScene.MainCamera.GetViewMatrix() * OpenGL.Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f));
             Gl.BlendFunc(BlendingFactorSrc.OneMinusConstantAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
         
@@ -61,8 +56,8 @@ namespace IrrationalSpace
             for (int i = 0; i < objectsOnScene.Count; i++)
             {
                 Gl.Viewport(0, 0, ApplicationWindow.widght, ApplicationWindow.height);
-                objectsOnScene[i].program.Use();
-                objectsOnScene[i].program["projection_matrix"].SetValue(OpenGL.Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)ApplicationWindow.widght / ApplicationWindow.height, 0.1f, 1000f));
+				objectsOnScene[i].mat.shader.Use();
+				objectsOnScene[i].mat.shader["projection_matrix"].SetValue(OpenGL.Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)ApplicationWindow.widght / ApplicationWindow.height, 0.1f, 1000f));
             }
         }
 
@@ -70,8 +65,8 @@ namespace IrrationalSpace
         {
             for (int i = 0; i < objectsOnScene.Count; i++)
             {
-                objectsOnScene[i].program.DisposeChildren = true;
-                objectsOnScene[i].program.Dispose();
+				objectsOnScene[i].mat.shader.DisposeChildren = true;
+				objectsOnScene[i].mat.shader.Dispose();
             }
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -81,19 +76,22 @@ namespace IrrationalSpace
             if (controlMode == ControlMode.RotateModel)
             {
                 OpenTK.Vector2 delta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
-                objectsOnScene[0].rotation.x -= delta.X * 0.005f;
-                objectsOnScene[0].rotation.y -= delta.Y * 0.005f;
+				OpenGL.Vector3 rotate = objectsOnScene[0].rotation;
+				rotate.x -= delta.X * 0.005f;
+				rotate.y -= delta.Y * 0.005f;
+				objectsOnScene[0].rotation = rotate;
             }
             if (controlMode == ControlMode.RotateCam)
             {    
                 OpenTK.Vector2 mousedelta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
-                 cam.AddRotation(mousedelta.X, mousedelta.Y);
+				curretnScene.MainCamera.AddRotation(mousedelta.X, mousedelta.Y);
 			}
 			if(controlMode != ControlMode.FreeMouse)
             ResetCursor();
 
            
-            objectsOnScene[0].program["projection_matrix"].SetValue(cam.GetViewMatrix() * OpenGL.Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f));
+			objectsOnScene[0].mat.shader["projection_matrix"].SetValue(curretnScene.MainCamera.GetViewMatrix() * OpenGL.Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f));
+			objectsOnScene[0].ChangeTransform();
         }
         protected override void OnKeyPress(OpenTK.KeyPressEventArgs e)
         {
@@ -112,26 +110,32 @@ namespace IrrationalSpace
             {
                 case 119:
                     {
-                        cam.Move(0f, 1f, 0f);
+						curretnScene.MainCamera.Move(0f, 1f, 0f);
                         Console.WriteLine("w");
                         break;
                     }
                    case 100:
                     {
-                        cam.Move(1f, 0f, 0f);
+                        curretnScene.MainCamera.Move(1f, 0f, 0f);
                         Console.WriteLine("d");
                         break;
                     }
                     case 115:
                     {
-                        cam.Move(0f, -1f, 0f);
+                        curretnScene.MainCamera.Move(0f, -1f, 0f);
                         Console.WriteLine("s");
                         break;
                     }
                     case 97:
                     {
-                        cam.Move(-1f, 0f, 0f);
+                        curretnScene.MainCamera.Move(-1f, 0f, 0f);
                         Console.WriteLine("a");
+                        break;
+                    }
+					 case 108:
+                    {
+						curretnScene.EnableLight = !curretnScene.EnableLight;
+                        Console.WriteLine("l");
                         break;
                     }
             }
@@ -143,25 +147,24 @@ namespace IrrationalSpace
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             for (int i = 0; i < objectsOnScene.Count; i++)
             {
-                objectsOnScene[i].program["enable_lighting"].SetValue(enableLight);
-                objectsOnScene[i].program["light_strenght"].SetValue(lightStr);
-                objectsOnScene[i].program["alpha_str"].SetValue(alphaStr);
+				objectsOnScene[i].mat.shader["enable_lighting"].SetValue(curretnScene.EnableLight);
+				objectsOnScene[i].mat.shader["light_strenght"].SetValue(curretnScene.LightStr);
+                objectsOnScene[i].mat.shader["alpha_str"].SetValue(alphaStr);
 
-                objectsOnScene[i].program.Use();
-                objectsOnScene[i].ChangeTransform();
-
+                objectsOnScene[i].mat.shader.Use();
+               
                 Gl.ActiveTexture(TextureUnit.Texture1);
-                Gl.BindTexture(objectsOnScene[i].normal);
+				Gl.BindTexture(objectsOnScene[i].mat.normal);
                 Gl.ActiveTexture(TextureUnit.Texture0);
-                Gl.BindTexture(objectsOnScene[i].diffuse);
+				Gl.BindTexture(objectsOnScene[i].mat.diffuse);
 
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelVertex, objectsOnScene[i].program, "vertexPosition");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelNormals, objectsOnScene[i].program, "vertexNormal");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelTangents, objectsOnScene[i].program, "vertexTangent");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelUV, objectsOnScene[i].program, "vertexUV");
-                Gl.BindBuffer(objectsOnScene[i].modelElements);
+				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelVertex, objectsOnScene[i].mat.shader, "vertexPosition");
+				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelNormals, objectsOnScene[i].mat.shader, "vertexNormal");
+				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelTangents, objectsOnScene[i].mat.shader, "vertexTangent");
+				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelUV, objectsOnScene[i].mat.shader, "vertexUV");
+				Gl.BindBuffer(objectsOnScene[i].model.modelElements);
 
-                Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+				Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].model.modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
             }
 	            this.SwapBuffers();
         }

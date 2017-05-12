@@ -4,42 +4,41 @@ using OpenGL;
 
 namespace IrrationalSpace
 {
-	public class SceneObject
+	public class SceneObject : ISceneObject
 	{
         public Texture diffuse,normal;
         public WavefrontModel mesh;
         public ShaderProgram program;
-        private Vector3 shadingColor = new Vector3(1, 1, 1);
-        public VBO<Vector2> modelUV;
-        public VBO<Vector3> modelNormals;
-        public VBO<Vector3> modelVertex;
-        public VBO<Vector3> modelTangents;
-        public VBO<int> modelElements;
+		private Vector3 shadingColor = new Vector3(1, 1, 1);
 
-        public Vector3 position;
+        public Vector3 position{ get; set; }
 
-        public Vector3 scale;
+        public Vector3 scale{ get; set; }
 
-        public Vector3 rotation;
+        public Vector3 rotation{ get; set; }
 
-       
+		public Material mat{ get; set; }
 
-		public void SetMAterial(string diffuseTextureName,string normalTextureName,Scene scene, float alphaStr,string VertextShader, string FragmentsShader)
+		public Scene scene { get; set; }
+
+		public Mesh model { get; set;}
+
+		public void SetMAterial()
         {
-            program =  new ShaderProgram(VertextShader, FragmentsShader);
-            diffuse = new Texture(diffuseTextureName);
-            normal = new Texture(normalTextureName);
+			program =  mat.shader;
+			diffuse = mat.diffuse;
+			normal = mat.normal;
             Console.WriteLine(program.ProgramLog);
             program.Use();
             Console.WriteLine(program.ProgramLog);
 
             //TODO : вынести в отдельеую функцию перемещения обхекта
-            program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)ApplicationWindow.widght / ApplicationWindow.height, 0.1f, 1000f));
+            program["projection_matrix"].SetValue(Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)ApplicationWindow.widght / ApplicationWindow.height, 0.001f, 10000f));
             program["view_matrix"].SetValue(Matrix4.LookAt(new Vector3(0, 0, 10), Vector3.Zero, Vector3.Up));
 			program["light_direction"].SetValue(scene.LightDirection);
 			program["enable_lighting"].SetValue(scene.EnableLight);
 			program["light_strenght"].SetValue(scene.LightStr);
-            program["alpha_str"].SetValue(alphaStr);
+            program["alpha_str"].SetValue(1f);
             program["color"].SetValue(shadingColor);
 
             program["normalTexture"].SetValue(1);
@@ -48,21 +47,23 @@ namespace IrrationalSpace
 
         public SceneObject(string meshName,Vector3 _position,Vector3 _scale,Vector3 _rotation)
         {
+			//TODO : change the way of initialisation
             position = _position;
             scale = _scale;
             rotation = _rotation;
             mesh = ModelLoader.LoadModel(meshName);
-            modelVertex = new VBO<Vector3>(mesh.vertices);//right
+			this.model = new Mesh();
+            model.modelVertex = new VBO<Vector3>(mesh.vertices);//right
           
             List<int> elements = new List<int>();
             for (int i = 0; i < mesh.vertices.Length; i++)
             {
                 elements.Add(i);
             }
-            modelElements = new VBO<int>(elements.ToArray(), BufferTarget.ElementArrayBuffer);
-            modelTangents = new VBO<Vector3>(ModelLoader.CalculateTangents(mesh.vertices, mesh.normals, elements.ToArray(), mesh.uvCoords));
-            modelUV = new VBO<Vector2>(mesh.uvCoords);
-            modelNormals = new VBO<Vector3>(mesh.normals);
+            model.modelElements = new VBO<int>(elements.ToArray(), BufferTarget.ElementArrayBuffer);
+            model.modelTangents = new VBO<Vector3>(ModelLoader.CalculateTangents(mesh.vertices, mesh.normals, elements.ToArray(), mesh.uvCoords));
+            model.modelUV = new VBO<Vector2>(mesh.uvCoords);
+            model.modelNormals = new VBO<Vector3>(mesh.normals);
 
         }
 
