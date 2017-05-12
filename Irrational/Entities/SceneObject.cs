@@ -9,12 +9,7 @@ namespace IrrationalSpace
         public Texture diffuse,normal;
         public WavefrontModel mesh;
         public ShaderProgram program;
-        private Vector3 shadingColor = new Vector3(1, 1, 1);
-        public VBO<Vector2> modelUV;
-        public VBO<Vector3> modelNormals;
-        public VBO<Vector3> modelVertex;
-        public VBO<Vector3> modelTangents;
-        public VBO<int> modelElements;
+		private Vector3 shadingColor = new Vector3(1, 1, 1);
 
         public Vector3 position{ get; set; }
 
@@ -25,6 +20,8 @@ namespace IrrationalSpace
 		public Material mat{ get; set; }
 
 		public Scene scene { get; set; }
+
+		public Mesh model { get; set;}
 
 		public void SetMAterial()
         {
@@ -50,21 +47,23 @@ namespace IrrationalSpace
 
         public SceneObject(string meshName,Vector3 _position,Vector3 _scale,Vector3 _rotation)
         {
+			//TODO : change the way of initialisation
             position = _position;
             scale = _scale;
             rotation = _rotation;
             mesh = ModelLoader.LoadModel(meshName);
-            modelVertex = new VBO<Vector3>(mesh.vertices);//right
+			this.model = new Mesh();
+            model.modelVertex = new VBO<Vector3>(mesh.vertices);//right
           
             List<int> elements = new List<int>();
             for (int i = 0; i < mesh.vertices.Length; i++)
             {
                 elements.Add(i);
             }
-            modelElements = new VBO<int>(elements.ToArray(), BufferTarget.ElementArrayBuffer);
-            modelTangents = new VBO<Vector3>(ModelLoader.CalculateTangents(mesh.vertices, mesh.normals, elements.ToArray(), mesh.uvCoords));
-            modelUV = new VBO<Vector2>(mesh.uvCoords);
-            modelNormals = new VBO<Vector3>(mesh.normals);
+            model.modelElements = new VBO<int>(elements.ToArray(), BufferTarget.ElementArrayBuffer);
+            model.modelTangents = new VBO<Vector3>(ModelLoader.CalculateTangents(mesh.vertices, mesh.normals, elements.ToArray(), mesh.uvCoords));
+            model.modelUV = new VBO<Vector2>(mesh.uvCoords);
+            model.modelNormals = new VBO<Vector3>(mesh.normals);
 
         }
 

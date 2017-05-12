@@ -35,7 +35,13 @@ namespace IrrationalSpace
             Gl.Disable(EnableCap.Blend);
             SceneObject sceneObject = new SceneObject("resources/h.obj", new OpenGL.Vector3(-0.3f, -1.2f, 1), new OpenGL.Vector3(1, 1, 1) * .01f, new OpenGL.Vector3(1, 1, 1));
 
-			sceneObject.mat = new Material;
+			sceneObject.mat = new Material() 
+			{ 
+				diffuse=new Texture("resources/h.jpg"),
+				normal =  new Texture("resources/hbump.jpg"), 
+				shader = new ShaderProgram(VertexShaders.VertexShaderDefault,FragmentShaders.FragmentShaderDefault)
+			};
+			sceneObject.scene = curretnScene;
 			sceneObject.SetMAterial();
 
             objectsOnScene.Add(sceneObject);
@@ -70,8 +76,10 @@ namespace IrrationalSpace
             if (controlMode == ControlMode.RotateModel)
             {
                 OpenTK.Vector2 delta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
-                objectsOnScene[0].rotation.x -= delta.X * 0.005f;
-                objectsOnScene[0].rotation.y -= delta.Y * 0.005f;
+				OpenGL.Vector3 rotate = objectsOnScene[0].rotation;
+				rotate.x -= delta.X * 0.005f;
+				rotate.y -= delta.Y * 0.005f;
+				objectsOnScene[0].rotation = rotate;
             }
             if (controlMode == ControlMode.RotateCam)
             {    
@@ -150,13 +158,13 @@ namespace IrrationalSpace
                 Gl.ActiveTexture(TextureUnit.Texture0);
 				Gl.BindTexture(objectsOnScene[i].mat.diffuse);
 
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelVertex, objectsOnScene[i].program, "vertexPosition");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelNormals, objectsOnScene[i].program, "vertexNormal");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelTangents, objectsOnScene[i].program, "vertexTangent");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelUV, objectsOnScene[i].program, "vertexUV");
-                Gl.BindBuffer(objectsOnScene[i].modelElements);
+				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelVertex, objectsOnScene[i].mat.shader, "vertexPosition");
+				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelNormals, objectsOnScene[i].mat.shader, "vertexNormal");
+				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelTangents, objectsOnScene[i].mat.shader, "vertexTangent");
+				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelUV, objectsOnScene[i].mat.shader, "vertexUV");
+				Gl.BindBuffer(objectsOnScene[i].model.modelElements);
 
-                Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+				Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].model.modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
             }
 	            this.SwapBuffers();
         }

@@ -66,6 +66,7 @@
     <Compile Include="Shaders\FragmentShaders.cs" />
     <Compile Include="Entities\Interfaces\ISceneObject.cs" />
     <Compile Include="Entities\Material.cs" />
+    <Compile Include="Entities\Mesh.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

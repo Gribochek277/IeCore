@@ -14,6 +14,8 @@ namespace IrrationalSpace
 
 		Scene scene { get; set; }
 
+		Mesh model { get; set; }
+
 		void SetMAterial();
 
 		void ChangeTransform();
