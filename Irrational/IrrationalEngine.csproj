@@ -53,14 +53,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ModelLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Star.cs" />
-    <Compile Include="WavefrontModel.cs" />
-    <Compile Include="Shaders\SceneObject.cs" />
     <Compile Include="ApplicationWindow.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="Cube.cs" />
+    <Compile Include="Entities\Scene.cs" />
+    <Compile Include="Entities\Star.cs" />
+    <Compile Include="Entities\WavefrontModel.cs" />
+    <Compile Include="Utils\ModelLoader.cs" />
+    <Compile Include="Entities\Cube.cs" />
+    <Compile Include="Entities\Camera.cs" />
+    <Compile Include="Entities\SceneObject.cs" />
+    <Compile Include="Shaders\VertexShaders.cs" />
+    <Compile Include="Shaders\FragmentShaders.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -69,6 +72,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Utils\" />
+    <Folder Include="Shaders\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

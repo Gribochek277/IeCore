@@ -30,7 +30,7 @@ namespace IrrationalSpace
         public static bool alphaBlending  = false;
         public static float alphaStr = 2f;
 
-        public ApplicationWindow() : base(widght, height, GraphicsMode.Default, "Irrational engine",
+		public ApplicationWindow() : base(widght, height, GraphicsMode.Default, "Irrational engine",
             GameWindowFlags.Default, DisplayDevice.Default,
             // ask for an OpenGL 3.0 forward compatible context
             3, 0, GraphicsContextFlags.ForwardCompatible)
@@ -38,12 +38,12 @@ namespace IrrationalSpace
 
         protected override void OnLoad(EventArgs e)
         {
-           
-
+			Scene curretnScene = new Scene() { LightDirection = new OpenGL.Vector3(0, 0, 1), EnableLight = true, LightStr = lightStr};
             Gl.Enable(EnableCap.DepthTest);
             Gl.Disable(EnableCap.Blend);
             SceneObject sceneObject = new SceneObject("resources/h.obj", new OpenGL.Vector3(-0.3f, -1.2f, 1), new OpenGL.Vector3(1, 1, 1) * .01f, new OpenGL.Vector3(1, 1, 1));
-            sceneObject.SetMAterial("resources/h.jpg", "resources/hbump.jpg", true, new OpenGL.Vector3(0, 0, 1), lightStr, alphaStr, SceneObject.VertextShader, SceneObject.FragmentShader);
+
+			sceneObject.SetMAterial("resources/h.jpg", "resources/hbump.jpg", curretnScene, alphaStr, VertexShaders.VertexShaderDefault, FragmentShaders.FragmentShaderDefault);
 
 
 
@@ -140,19 +140,12 @@ namespace IrrationalSpace
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-        
-
-
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             for (int i = 0; i < objectsOnScene.Count; i++)
             {
                 objectsOnScene[i].program["enable_lighting"].SetValue(enableLight);
                 objectsOnScene[i].program["light_strenght"].SetValue(lightStr);
                 objectsOnScene[i].program["alpha_str"].SetValue(alphaStr);
-
-
-
-
 
                 objectsOnScene[i].program.Use();
                 objectsOnScene[i].ChangeTransform();
@@ -162,8 +155,6 @@ namespace IrrationalSpace
                 Gl.ActiveTexture(TextureUnit.Texture0);
                 Gl.BindTexture(objectsOnScene[i].diffuse);
 
-
-
                 Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelVertex, objectsOnScene[i].program, "vertexPosition");
                 Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelNormals, objectsOnScene[i].program, "vertexNormal");
                 Gl.BindBufferToShaderAttribute(objectsOnScene[i].modelTangents, objectsOnScene[i].program, "vertexTangent");
@@ -172,8 +163,7 @@ namespace IrrationalSpace
 
                 Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
             }
-            this.SwapBuffers();
-
+	            this.SwapBuffers();
         }
 
         void ResetCursor()
