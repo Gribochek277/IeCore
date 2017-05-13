@@ -33,7 +33,15 @@ namespace IrrationalSpace
 			curretnScene = new Scene() { LightDirection = new OpenGL.Vector3(0, 0, 1), MainCamera = new Camera(), EnableLight = true, LightStr = 1f};
             Gl.Enable(EnableCap.DepthTest);
             Gl.Disable(EnableCap.Blend);
-            SceneObject sceneObject = new SceneObject("resources/h.obj", new OpenGL.Vector3(-0.3f, -1.2f, 1), new OpenGL.Vector3(1, 1, 1) * .01f, new OpenGL.Vector3(1, 1, 1));
+            Mesh sceneObjectMesh = ModelLoader.LoadModel("resources/h.obj");
+            SceneObject sceneObject = new SceneObject()
+            {
+                mesh = sceneObjectMesh,
+                position = new OpenGL.Vector3(-0.3f, -1.2f, 1),
+                scale = new OpenGL.Vector3(1, 1, 1) * .01f,
+                rotation = new OpenGL.Vector3(1, 1, 1)
+            };
+                                                     
 
 			sceneObject.mat = new Material() 
 			{ 
@@ -41,7 +49,7 @@ namespace IrrationalSpace
 				normal =  new Texture("resources/hbump.jpg"), 
 				shader = new ShaderProgram(VertexShaders.VertexShaderDefault,FragmentShaders.FragmentShaderDefault)
 			};
-			sceneObject.scene = curretnScene;
+			
 			sceneObject.SetMAterial();
 
             objectsOnScene.Add(sceneObject);
@@ -146,6 +154,9 @@ namespace IrrationalSpace
             Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             for (int i = 0; i < objectsOnScene.Count; i++)
             {
+                objectsOnScene[i].mat.shader["light_direction"].SetValue(curretnScene.LightDirection);
+                objectsOnScene[i].mat.shader["enable_lighting"].SetValue(curretnScene.EnableLight);
+                objectsOnScene[i].mat.shader["light_strenght"].SetValue(curretnScene.LightStr);
 				objectsOnScene[i].mat.shader["enable_lighting"].SetValue(curretnScene.EnableLight);
 				objectsOnScene[i].mat.shader["light_strenght"].SetValue(curretnScene.LightStr);
                 objectsOnScene[i].mat.shader["alpha_str"].SetValue(alphaStr);
@@ -157,13 +168,13 @@ namespace IrrationalSpace
                 Gl.ActiveTexture(TextureUnit.Texture0);
 				Gl.BindTexture(objectsOnScene[i].mat.diffuse);
 
-				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelVertex, objectsOnScene[i].mat.shader, "vertexPosition");
-				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelNormals, objectsOnScene[i].mat.shader, "vertexNormal");
-				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelTangents, objectsOnScene[i].mat.shader, "vertexTangent");
-				Gl.BindBufferToShaderAttribute(objectsOnScene[i].model.modelUV, objectsOnScene[i].mat.shader, "vertexUV");
-				Gl.BindBuffer(objectsOnScene[i].model.modelElements);
+                Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelVertex, objectsOnScene[i].mat.shader, "vertexPosition");
+				Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelNormals, objectsOnScene[i].mat.shader, "vertexNormal");
+                Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelTangents, objectsOnScene[i].mat.shader, "vertexTangent");
+                Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelUV, objectsOnScene[i].mat.shader, "vertexUV");
+				Gl.BindBuffer(objectsOnScene[i].mesh.modelElements);
 
-				Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].model.modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+				Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].mesh.modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
             }
 	            this.SwapBuffers();
         }

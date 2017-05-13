@@ -10,11 +10,9 @@ namespace IrrationalSpace
 
 		Vector3 rotation { get; set;}
 
-		Material mat { get; set;}
+        Material mat { get; set; }
 
-		Scene scene { get; set; }
-
-		Mesh model { get; set; }
+		Mesh mesh { get; set; }
 
 		void SetMAterial();
 

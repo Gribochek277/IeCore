@@ -57,7 +57,6 @@
     <Compile Include="ApplicationWindow.cs" />
     <Compile Include="Entities\Scene.cs" />
     <Compile Include="Entities\Star.cs" />
-    <Compile Include="Entities\WavefrontModel.cs" />
     <Compile Include="Utils\ModelLoader.cs" />
     <Compile Include="Entities\Cube.cs" />
     <Compile Include="Entities\Camera.cs" />

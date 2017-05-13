@@ -120,10 +120,9 @@ namespace IrrationalSpace
 			}
             return objUV;
         }
-        public static WavefrontModel LoadModel(string pathToModel)
+        public static Mesh LoadModel(string pathToModel)
         {
 
-            WavefrontModel _model = new WavefrontModel();
             List<int> objFaces = new List<int>();
 
             Vector3[] tempVertices = LoadVertexes(pathToModel).ToArray();
@@ -173,11 +172,24 @@ namespace IrrationalSpace
 					}
 				}
 			}
-            _model.vertices = objVertexies.ToArray();
-            _model.normals = objNormals.ToArray();
-            _model.uvCoords = objUV.ToArray();
 
-            return _model;
+            Mesh model = new Mesh();
+
+			model.modelVertex = new VBO<Vector3>(objVertexies.ToArray());//right
+
+
+			List<int> elements = new List<int>();
+            for (int i = 0; i<objVertexies.ToArray().Length; i++)
+
+			{
+	            elements.Add(i);
+            }
+            model.modelElements = new VBO<int>(elements.ToArray(), BufferTarget.ElementArrayBuffer);
+            model.modelTangents = new VBO<Vector3>(ModelLoader.CalculateTangents(objVertexies.ToArray(), objNormals.ToArray(), elements.ToArray(), objUV.ToArray()));
+            model.modelUV = new VBO<Vector2>(objUV.ToArray());
+            model.modelNormals = new VBO<Vector3>(objNormals.ToArray());
+
+            return model;
         }
 
 
