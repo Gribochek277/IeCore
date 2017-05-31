@@ -28,5 +28,15 @@ namespace IrrationalSpace
 				vec4 sample = lighting * texture2D(colorTexture, uv);
    				fragment = vec4(sample.xyz*color, sample.a*alpha_str);
 			}";
+		public static string FragmentShaderOpenTKTest = @"
+        #version 130
+ 
+        in vec4 color;
+        out vec4 outputColor;
+ 
+        void main()
+        {
+          outputColor = color;
+        }";
 	}
 }

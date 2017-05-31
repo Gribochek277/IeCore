@@ -26,5 +26,19 @@ public static string VertexShaderDefault = @"
     				light = (enable_mapping ? light_direction * tbnMatrix : light_direction);
     				gl_Position = projection_matrix * view_matrix * model_matrix * vec4(vertexPosition, 1);
 				}";
+        public static string VertexShaderOpenTKTest = @"
+        #version 130
+ 
+                in vec3 vPosition;
+                in  vec3 vColor;
+                out vec4 color;
+                uniform mat4 modelview;
+ 
+            void main()
+            {
+                gl_Position = modelview * vec4(vPosition, 1.0);
+ 
+                color = vec4( vColor, 1.0);
+            }";
 	}
 }

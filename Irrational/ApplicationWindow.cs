@@ -1,15 +1,20 @@
 ﻿using System;
-using OpenGL;
+//using OpenGL;
 using OpenTK;
 using System.Collections.Generic;
 using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
+using IrrationalSpace.Shaders;
+using System.Drawing;
 
 namespace IrrationalSpace
 {
     public class ApplicationWindow : GameWindow
     {
-        public static int widght = 800, height = 600;
+        ShaderProg prog;
+
+		public static int widght = 800, height = 600;
         public enum ControlMode { FreeMouse,RotateModel, RotateCam };
         public static ControlMode controlMode = ControlMode.FreeMouse;
         public OpenTK.Vector2 lastMousePos = new OpenTK.Vector2();
@@ -30,76 +35,105 @@ namespace IrrationalSpace
 
         protected override void OnLoad(EventArgs e)
         {
-			curretnScene = new Scene() { LightDirection = new OpenGL.Vector3(0, 0, 1), MainCamera = new Camera(), EnableLight = true, LightStr = 1f};
-            Gl.Enable(EnableCap.DepthTest);
-            Gl.Disable(EnableCap.Blend);
-            Mesh sceneObjectMesh = ModelLoader.LoadModel("resources/h.obj");
-            SceneObject sceneObject = new SceneObject()
-            {
-                mesh = sceneObjectMesh,
-                position = new OpenGL.Vector3(-0.3f, -1.2f, 1),
-                scale = new OpenGL.Vector3(1, 1, 1) * .01f,
-                rotation = new OpenGL.Vector3(1, 1, 1)
-            };
-                                                     
+			Title = "Hello OpenTK!";
 
-			sceneObject.mat = new Material() 
-			{ 
-				diffuse=new Texture("resources/h.jpg"),
-				normal =  new Texture("resources/hbump.jpg"), 
-				shader = new ShaderProgram(VertexShaders.VertexShaderDefault,FragmentShaders.FragmentShaderDefault)
-			};
-			
-			sceneObject.SetMAterial();
+			GL.ClearColor(Color.CornflowerBlue);
+		
 
-            objectsOnScene.Add(sceneObject);
-			Gl.BlendFunc(BlendingFactorSrc.OneMinusConstantAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+		/*curretnScene = new Scene() { LightDirection = new OpenGL.Vector3(0, 0, 1), MainCamera = new Camera(), EnableLight = true, LightStr = 1f};
+		Gl.Enable(EnableCap.DepthTest);
+		Gl.Disable(EnableCap.Blend);
+		Mesh sceneObjectMesh = ModelLoader.LoadModel("resources/h.obj");
+		SceneObject sceneObject = new SceneObject()
+		{
+			mesh = sceneObjectMesh,
+			position = new OpenGL.Vector3(-0.3f, -1.2f, 1),
+			scale = new OpenGL.Vector3(1, 1, 1) * .01f,
+			rotation = new OpenGL.Vector3(1, 1, 1)
+		};
+
+
+		sceneObject.mat = new Material() 
+		{ 
+			diffuse=new Texture("resources/h.jpg"),
+			normal =  new Texture("resources/hbump.jpg"), 
+			shader = new ShaderProgram(VertexShaders.VertexShaderDefault,FragmentShaders.FragmentShaderDefault)
+		};
+
+		sceneObject.SetMAterial();
+
+		objectsOnScene.Add(sceneObject);*/
+		prog = new ShaderProg();
+            prog.InitShaderProgram(VertexShaders.VertexShaderOpenTKTest, FragmentShaders.FragmentShaderOpenTKTest);
+			//Gl.BlendFunc(BlendingFactorSrc.OneMinusConstantAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
         
         protected override void OnResize(EventArgs e)
         {
-            ApplicationWindow.widght = this.Width;
+            /*ApplicationWindow.widght = this.Width;
             ApplicationWindow.height = this.Height;
             for (int i = 0; i < objectsOnScene.Count; i++)
             {
                 Gl.Viewport(0, 0, ApplicationWindow.widght, ApplicationWindow.height);
 				objectsOnScene[i].mat.shader.Use();
 				objectsOnScene[i].mat.shader["projection_matrix"].SetValue(OpenGL.Matrix4.CreatePerspectiveFieldOfView(0.45f, (float)ApplicationWindow.widght / ApplicationWindow.height, 0.1f, 1000f));
-            }
+            }*/
         }
 
         private void OnClose()
         {
-            for (int i = 0; i < objectsOnScene.Count; i++)
+            /*for (int i = 0; i < objectsOnScene.Count; i++)
             {
 				objectsOnScene[i].mat.shader.DisposeChildren = true;
 				objectsOnScene[i].mat.shader.Dispose();
-            }
+            }*/
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            // this is called every frame, put game logic here
-           
-            if (controlMode == ControlMode.RotateModel)
-            {
-                OpenTK.Vector2 delta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
-				OpenGL.Vector3 rotate = objectsOnScene[0].rotation;
-				rotate.x -= delta.X * 0.005f;
-				rotate.y -= delta.Y * 0.005f;
-				objectsOnScene[0].rotation = rotate;
-            }
-            if (controlMode == ControlMode.RotateCam)
-            {    
-                OpenTK.Vector2 mousedelta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
-				curretnScene.MainCamera.AddRotation(mousedelta.X, mousedelta.Y);
-			}
-			if(controlMode != ControlMode.FreeMouse)
-            ResetCursor();
+            GL.BindBuffer(BufferTarget.ArrayBuffer,prog.vbo_position);
+            GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(prog.vertdata.Length * Vector3.SizeInBytes),
+                                   prog.vertdata, BufferUsageHint.StaticDraw);
+			GL.VertexAttribPointer(prog.attribute_vpos, 3, VertexAttribPointerType.Float, false, 0, 0);
 
-           
-			objectsOnScene[0].mat.shader["projection_matrix"].SetValue(curretnScene.MainCamera.GetViewMatrix() * OpenGL.Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f));
-			objectsOnScene[0].ChangeTransform();
-        }
+			GL.BindBuffer(BufferTarget.ArrayBuffer, prog.vbo_position);
+			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(prog.vertdata.Length * Vector3.SizeInBytes), prog.vertdata, BufferUsageHint.StaticDraw);
+			GL.VertexAttribPointer(prog.attribute_vpos, 3, VertexAttribPointerType.Float, false, 0, 0);
+
+
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, prog.vbo_color);
+			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(prog.coldata.Length * Vector3.SizeInBytes), prog.coldata, BufferUsageHint.StaticDraw);
+			GL.VertexAttribPointer(prog.attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
+
+			GL.UniformMatrix4(prog.uniform_mview, false, ref prog.mviewdata[0]);
+
+            GL.UseProgram(prog.programId);
+
+			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+
+			// this is called every frame, put game logic here
+			/* 
+			  if (controlMode == ControlMode.RotateModel)
+			  {
+				  OpenTK.Vector2 delta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
+				  OpenGL.Vector3 rotate = objectsOnScene[0].rotation;
+				  rotate.x -= delta.X * 0.005f;
+				  rotate.y -= delta.Y * 0.005f;
+				  objectsOnScene[0].rotation = rotate;
+			  }
+			  if (controlMode == ControlMode.RotateCam)
+			  {    
+				  OpenTK.Vector2 mousedelta = lastMousePos - new OpenTK.Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
+				  curretnScene.MainCamera.AddRotation(mousedelta.X, mousedelta.Y);
+			  }
+			  if(controlMode != ControlMode.FreeMouse)
+			  ResetCursor();
+
+
+			  objectsOnScene[0].mat.shader["projection_matrix"].SetValue(curretnScene.MainCamera.GetViewMatrix() * OpenGL.Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f));
+			  objectsOnScene[0].ChangeTransform();
+			  */
+		}
         protected override void OnKeyPress(OpenTK.KeyPressEventArgs e)
         {
             base.OnKeyPress(e);
@@ -151,32 +185,42 @@ namespace IrrationalSpace
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            for (int i = 0; i < objectsOnScene.Count; i++)
-            {
-                objectsOnScene[i].mat.shader["light_direction"].SetValue(curretnScene.LightDirection);
-                objectsOnScene[i].mat.shader["enable_lighting"].SetValue(curretnScene.EnableLight);
-                objectsOnScene[i].mat.shader["light_strenght"].SetValue(curretnScene.LightStr);
-				objectsOnScene[i].mat.shader["enable_lighting"].SetValue(curretnScene.EnableLight);
-				objectsOnScene[i].mat.shader["light_strenght"].SetValue(curretnScene.LightStr);
-                objectsOnScene[i].mat.shader["alpha_str"].SetValue(alphaStr);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+			/* Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+			 for (int i = 0; i < objectsOnScene.Count; i++)
+			 {
+				 objectsOnScene[i].mat.shader["light_direction"].SetValue(curretnScene.LightDirection);
+				 objectsOnScene[i].mat.shader["enable_lighting"].SetValue(curretnScene.EnableLight);
+				 objectsOnScene[i].mat.shader["light_strenght"].SetValue(curretnScene.LightStr);
+				 objectsOnScene[i].mat.shader["enable_lighting"].SetValue(curretnScene.EnableLight);
+				 objectsOnScene[i].mat.shader["light_strenght"].SetValue(curretnScene.LightStr);
+				 objectsOnScene[i].mat.shader["alpha_str"].SetValue(alphaStr);
 
-                objectsOnScene[i].mat.shader.Use();
-               
-                Gl.ActiveTexture(TextureUnit.Texture1);
-				Gl.BindTexture(objectsOnScene[i].mat.normal);
-                Gl.ActiveTexture(TextureUnit.Texture0);
-				Gl.BindTexture(objectsOnScene[i].mat.diffuse);
+				 objectsOnScene[i].mat.shader.Use();
 
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelVertex, objectsOnScene[i].mat.shader, "vertexPosition");
-				Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelNormals, objectsOnScene[i].mat.shader, "vertexNormal");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelTangents, objectsOnScene[i].mat.shader, "vertexTangent");
-                Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelUV, objectsOnScene[i].mat.shader, "vertexUV");
-				Gl.BindBuffer(objectsOnScene[i].mesh.modelElements);
+				 Gl.ActiveTexture(TextureUnit.Texture1);
+				 Gl.BindTexture(objectsOnScene[i].mat.normal);
+				 Gl.ActiveTexture(TextureUnit.Texture0);
+				 Gl.BindTexture(objectsOnScene[i].mat.diffuse);
 
-				Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].mesh.modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
-            }
-	            this.SwapBuffers();
+				 Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelVertex, objectsOnScene[i].mat.shader, "vertexPosition");
+				 Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelNormals, objectsOnScene[i].mat.shader, "vertexNormal");
+				 Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelTangents, objectsOnScene[i].mat.shader, "vertexTangent");
+				 Gl.BindBufferToShaderAttribute(objectsOnScene[i].mesh.modelUV, objectsOnScene[i].mat.shader, "vertexUV");
+				 Gl.BindBuffer(objectsOnScene[i].mesh.modelElements);
+
+				 Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].mesh.modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
+			 }*/
+			GL.EnableVertexAttribArray(prog.attribute_vpos);
+			GL.EnableVertexAttribArray(prog.attribute_vcol);
+			GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
+
+			GL.DisableVertexAttribArray(prog.attribute_vpos);
+			GL.DisableVertexAttribArray(prog.attribute_vcol);
+
+			GL.Flush();
+
+			this.SwapBuffers();
         }
 
         void ResetCursor()

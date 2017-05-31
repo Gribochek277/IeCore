@@ -23,8 +23,6 @@ Global
 		BaseDirectory = Irrational
 		Policies = $0
 		$0.StandardHeader = $1
-		$1.Text = 
-		$1.IncludeInNewFiles = True
 		$0.NameConventionPolicy = $2
 		$2.Rules = $3
 		$3.NamingRule = $4
@@ -39,7 +37,6 @@ Global
 		$4.RequiredSuffixes = $6
 		$6.String = Exception
 		$0.VersionControlPolicy = $7
-		$7.inheritsSet = Mono
 		outputpath = build\bin
 	EndGlobalSection
 EndGlobal
