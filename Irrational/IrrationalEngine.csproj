@@ -66,6 +66,10 @@
     <Compile Include="Entities\Interfaces\ISceneObject.cs" />
     <Compile Include="Entities\Material.cs" />
     <Compile Include="Entities\Mesh.cs" />
+    <Compile Include="Shaders\ShaderProg.cs" />
+    <Compile Include="Shaders\ShaderEntity.cs" />
+    <Compile Include="Shaders\AttributeInfo.cs" />
+    <Compile Include="Shaders\UniformInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

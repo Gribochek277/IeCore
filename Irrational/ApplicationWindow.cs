@@ -12,8 +12,15 @@ namespace IrrationalSpace
 {
     public class ApplicationWindow : GameWindow
     {
-        ShaderProg prog;
+		Dictionary<string, ShaderProg> shaders = new Dictionary<string, ShaderProg>();
+		string activeShader = "default";
+		#region
+		Vector3[] vertdata;
+		Vector3[] coldata;
+		int[] indicedata;
+		int ibo_elements;
 
+		#endregion
 		public static int widght = 800, height = 600;
         public enum ControlMode { FreeMouse,RotateModel, RotateCam };
         public static ControlMode controlMode = ControlMode.FreeMouse;
@@ -21,8 +28,7 @@ namespace IrrationalSpace
        
 		//TODO: this should be in scene entity. thisnk how to inject to it;
 		private static List<ISceneObject> objectsOnScene = new List<ISceneObject>();
-		private Scene curretnScene;
-        
+	
         public static bool fullscreen = false;
         public static bool alphaBlending  = false;
         public static float alphaStr = 2f;
@@ -35,10 +41,26 @@ namespace IrrationalSpace
 
         protected override void OnLoad(EventArgs e)
         {
-			Title = "Hello OpenTK!";
+			vertdata = new Vector3[] { new Vector3(-0.8f, -0.8f, 0f),
+				new Vector3( 0.8f, -0.8f, 0f),
+				new Vector3( 0f,  0.8f, 0f)};
+
+
+			coldata = new Vector3[] { new Vector3(1f, 0f, 0f),
+				new Vector3( 0f, 0f, 1f),
+				new Vector3( 0f,  1f, 0f)};
+
+
+
+			Title = "Irrational engine";
 
 			GL.ClearColor(Color.CornflowerBlue);
-		
+
+			GL.GenBuffers(1, out ibo_elements);
+
+            shaders.Add("default", new ShaderProg(VertexShaders.VertexShaderOpenTKTest,
+                                                  FragmentShaders.FragmentShaderOpenTKTest,
+                                                  false));
 
 		/*curretnScene = new Scene() { LightDirection = new OpenGL.Vector3(0, 0, 1), MainCamera = new Camera(), EnableLight = true, LightStr = 1f};
 		Gl.Enable(EnableCap.DepthTest);
@@ -63,8 +85,7 @@ namespace IrrationalSpace
 		sceneObject.SetMAterial();
 
 		objectsOnScene.Add(sceneObject);*/
-		prog = new ShaderProg();
-            prog.InitShaderProgram(VertexShaders.VertexShaderOpenTKTest, FragmentShaders.FragmentShaderOpenTKTest);
+
 			//Gl.BlendFunc(BlendingFactorSrc.OneMinusConstantAlpha, BlendingFactorDest.OneMinusSrcAlpha);
         }
         
@@ -90,27 +111,23 @@ namespace IrrationalSpace
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            GL.BindBuffer(BufferTarget.ArrayBuffer,prog.vbo_position);
-            GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(prog.vertdata.Length * Vector3.SizeInBytes),
-                                   prog.vertdata, BufferUsageHint.StaticDraw);
-			GL.VertexAttribPointer(prog.attribute_vpos, 3, VertexAttribPointerType.Float, false, 0, 0);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
 
-			GL.BindBuffer(BufferTarget.ArrayBuffer, prog.vbo_position);
-			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(prog.vertdata.Length * Vector3.SizeInBytes), prog.vertdata, BufferUsageHint.StaticDraw);
-			GL.VertexAttribPointer(prog.attribute_vpos, 3, VertexAttribPointerType.Float, false, 0, 0);
+			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
+			GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
 
+			if (shaders[activeShader].GetAttribute("vColor") != -1)
+			{
+				GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vColor"));
+				GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(coldata.Length * Vector3.SizeInBytes), coldata, BufferUsageHint.StaticDraw);
+				GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
+			}
 
+         //   GL.UniformMatrix4(shaders[activeShader].GetUniform("modelview"), false, ref mviewdata);
 
-			GL.BindBuffer(BufferTarget.ArrayBuffer, prog.vbo_color);
-			GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(prog.coldata.Length * Vector3.SizeInBytes), prog.coldata, BufferUsageHint.StaticDraw);
-			GL.VertexAttribPointer(prog.attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
-
-			GL.UniformMatrix4(prog.uniform_mview, false, ref prog.mviewdata[0]);
-
-            GL.UseProgram(prog.programId);
+			GL.UseProgram(shaders[activeShader].ProgramID);
 
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
 			// this is called every frame, put game logic here
 			/* 
 			  if (controlMode == ControlMode.RotateModel)
@@ -146,7 +163,7 @@ namespace IrrationalSpace
                 controlMode = ((int)controlMode < 3) ? controlMode + 1 : ControlMode.FreeMouse;
                 Console.WriteLine(controlMode.ToString());
 			}
-
+            /*
             switch ((int)e.KeyChar)
             {
                 case 119:
@@ -180,12 +197,16 @@ namespace IrrationalSpace
                         break;
                     }
             }
-                
+              */  
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+			base.OnRenderFrame(e);
+			GL.Viewport(0, 0, Width, Height);
+			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+			GL.Enable(EnableCap.DepthTest);
 			/* Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			 for (int i = 0; i < objectsOnScene.Count; i++)
 			 {
@@ -211,12 +232,13 @@ namespace IrrationalSpace
 
 				 Gl.DrawElements(BeginMode.Triangles, objectsOnScene[i].mesh.modelElements.Count, DrawElementsType.UnsignedInt, IntPtr.Zero);
 			 }*/
-			GL.EnableVertexAttribArray(prog.attribute_vpos);
-			GL.EnableVertexAttribArray(prog.attribute_vcol);
-			GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
 
-			GL.DisableVertexAttribArray(prog.attribute_vpos);
-			GL.DisableVertexAttribArray(prog.attribute_vcol);
+			shaders[activeShader].EnableVertexAttribArrays();
+           
+            GL.DrawArrays(PrimitiveType.Quads, 0, 3);
+
+			shaders[activeShader].DisableVertexAttribArrays();
+
 
 			GL.Flush();
 

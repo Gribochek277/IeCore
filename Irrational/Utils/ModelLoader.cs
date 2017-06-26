@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenGL;
+using OpenTK;
 using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -120,6 +120,7 @@ namespace IrrationalSpace
 			}
             return objUV;
         }
+        /*
         public static Mesh LoadModel(string pathToModel)
         {
 
@@ -234,6 +235,6 @@ namespace IrrationalSpace
                 tangentData[i] = (tangents[i] - normals[i] * Vector3.Dot(normals[i], tangents[i])).Normalize();
 
             return tangentData;
-        }
+        }*/
     }
 }
