@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using OpenGL;
 namespace IrrationalSpace
 {
@@ -10,4 +10,4 @@ namespace IrrationalSpace
 		public VBO<Vector3> modelTangents;
 		public VBO<int> modelElements;
 	}
-}
+}*/

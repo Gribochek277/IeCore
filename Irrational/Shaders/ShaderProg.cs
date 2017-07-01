@@ -189,5 +189,6 @@ namespace IrrationalSpace.Shaders
 				return 0;
 			}
 		}
+
     }
 }
