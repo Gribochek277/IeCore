@@ -10,185 +10,183 @@ namespace IrrationalSpace.Shaders
 {
     public class ShaderProg
     {
-		public int ProgramID = -1;
-		public int VShaderID = -1;
-		public int FShaderID = -1;
-		public int AttributeCount = 0;
-		public int UniformCount = 0;
+        public int ProgramID = -1;
+        public int VShaderID = -1;
+        public int FShaderID = -1;
+        public int AttributeCount = 0;
+        public int UniformCount = 0;
 
-		public Dictionary<String, AttributeInfo> Attributes = new Dictionary<string, AttributeInfo>();
-		public Dictionary<String, UniformInfo> Uniforms = new Dictionary<string, UniformInfo>();
-		public Dictionary<String, uint> Buffers = new Dictionary<string, uint>();
+        public Dictionary<String, AttributeInfo> Attributes = new Dictionary<string, AttributeInfo>();
+        public Dictionary<String, UniformInfo> Uniforms = new Dictionary<string, UniformInfo>();
+        public Dictionary<String, uint> Buffers = new Dictionary<string, uint>();
 
-		public ShaderProg()
-		{
-			ProgramID = GL.CreateProgram();
-		}
+        public ShaderProg()
+        {
+            ProgramID = GL.CreateProgram();
+        }
 
-        public ShaderProg(String vertexshader, String fragmentshader, bool fromFile = false)
-		{
-			ProgramID = GL.CreateProgram();
+        private void loadShader(String code, ShaderType type, out int address)
+        {
+            address = GL.CreateShader(type);
+            GL.ShaderSource(address, code);
+            GL.CompileShader(address);
+            GL.AttachShader(ProgramID, address);
+            Console.WriteLine(GL.GetShaderInfoLog(address));
+        }
 
-			if (fromFile)
-			{
-				LoadShaderFromFile(vertexshader, ShaderType.VertexShader);
-				LoadShaderFromFile(fragmentshader, ShaderType.FragmentShader);
-			}
-			else
-			{
-				LoadShaderFromString(vertexshader, ShaderType.VertexShader);
-				LoadShaderFromString(fragmentshader, ShaderType.FragmentShader);
-			}
+        public void LoadShaderFromString(String code, ShaderType type)
+        {
+            if (type == ShaderType.VertexShader)
+            {
+                loadShader(code, type, out VShaderID);
+            }
+            else if (type == ShaderType.FragmentShader)
+            {
+                loadShader(code, type, out FShaderID);
+            }
+        }
 
-			Link();
-			GenBuffers();
-		}
+        public void LoadShaderFromFile(String filename, ShaderType type)
+        {
+            using (StreamReader sr = new StreamReader(filename))
+            {
+                if (type == ShaderType.VertexShader)
+                {
+                    loadShader(sr.ReadToEnd(), type, out VShaderID);
+                }
+                else if (type == ShaderType.FragmentShader)
+                {
+                    loadShader(sr.ReadToEnd(), type, out FShaderID);
+                }
+            }
+        }
 
-		private void loadShader(String code, ShaderType type, out int address)
-		{
-			address = GL.CreateShader(type);
-			GL.ShaderSource(address, code);
-			GL.CompileShader(address);
-			GL.AttachShader(ProgramID, address);
-			Console.WriteLine(GL.GetShaderInfoLog(address));
-		}
+        public void Link()
+        {
+            GL.LinkProgram(ProgramID);
 
-		public void LoadShaderFromString(String code, ShaderType type)
-		{
-			if (type == ShaderType.VertexShader)
-			{
-				loadShader(code, type, out VShaderID);
-			}
-			else if (type == ShaderType.FragmentShader)
-			{
-				loadShader(code, type, out FShaderID);
-			}
-		}
+            Console.WriteLine(GL.GetProgramInfoLog(ProgramID));
 
-		public void LoadShaderFromFile(String filename, ShaderType type)
-		{
-			using (StreamReader sr = new StreamReader(filename))
-			{
-				if (type == ShaderType.VertexShader)
-				{
-					loadShader(sr.ReadToEnd(), type, out VShaderID);
-				}
-				else if (type == ShaderType.FragmentShader)
-				{
-					loadShader(sr.ReadToEnd(), type, out FShaderID);
-				}
-			}
-		}
+            GL.GetProgram(ProgramID, GetProgramParameterName.ActiveAttributes, out AttributeCount);
+            GL.GetProgram(ProgramID, GetProgramParameterName.ActiveUniforms, out UniformCount);
 
-		public void Link()
-		{
-			GL.LinkProgram(ProgramID);
+            for (int i = 0; i < AttributeCount; i++)
+            {
+                AttributeInfo info = new AttributeInfo();
+                int length = 0;
 
-			Console.WriteLine(GL.GetProgramInfoLog(ProgramID));
+                StringBuilder name = new StringBuilder();
 
-            //TODO:Fix this later
-			GL.GetProgram(ProgramID, ProgramParameter.ActiveAttributes, out AttributeCount);
-			GL.GetProgram(ProgramID, ProgramParameter.ActiveUniforms, out UniformCount);
+                GL.GetActiveAttrib(ProgramID, i, 256, out length, out info.size, out info.type, name);
 
-			for (int i = 0; i < AttributeCount; i++)
-			{
-				AttributeInfo info = new AttributeInfo();
-				int length = 0;
+                info.name = name.ToString();
+                info.address = GL.GetAttribLocation(ProgramID, info.name);
+                Attributes.Add(name.ToString(), info);
+            }
 
-				StringBuilder name = new StringBuilder();
+            for (int i = 0; i < UniformCount; i++)
+            {
+                UniformInfo info = new UniformInfo();
+                int length = 0;
 
-				GL.GetActiveAttrib(ProgramID, i, 256, out length, out info.size, out info.type, name);
+                StringBuilder name = new StringBuilder();
 
-				info.name = name.ToString();
-				info.address = GL.GetAttribLocation(ProgramID, info.name);
-				Attributes.Add(name.ToString(), info);
-			}
+                GL.GetActiveUniform(ProgramID, i, 256, out length, out info.size, out info.type, name);
 
-			for (int i = 0; i < UniformCount; i++)
-			{
-				UniformInfo info = new UniformInfo();
-				int length = 0;
+                info.name = name.ToString();
+                Uniforms.Add(name.ToString(), info);
+                info.address = GL.GetUniformLocation(ProgramID, info.name);
+            }
+        }
 
-				StringBuilder name = new StringBuilder();
+        public void GenBuffers()
+        {
+            for (int i = 0; i < Attributes.Count; i++)
+            {
+                uint buffer = 0;
+                GL.GenBuffers(1, out buffer);
 
-				GL.GetActiveUniform(ProgramID, i, 256, out length, out info.size, out info.type, name);
+                Buffers.Add(Attributes.Values.ElementAt(i).name, buffer);
+            }
 
-				info.name = name.ToString();
-				Uniforms.Add(name.ToString(), info);
-				info.address = GL.GetUniformLocation(ProgramID, info.name);
-			}
-		}
+            for (int i = 0; i < Uniforms.Count; i++)
+            {
+                uint buffer = 0;
+                GL.GenBuffers(1, out buffer);
 
-		public void GenBuffers()
-		{
-			for (int i = 0; i < Attributes.Count; i++)
-			{
-				uint buffer = 0;
-				GL.GenBuffers(1, out buffer);
+                Buffers.Add(Uniforms.Values.ElementAt(i).name, buffer);
+            }
+        }
 
-				Buffers.Add(Attributes.Values.ElementAt(i).name, buffer);
-			}
+        public void EnableVertexAttribArrays()
+        {
+            for (int i = 0; i < Attributes.Count; i++)
+            {
+                GL.EnableVertexAttribArray(Attributes.Values.ElementAt(i).address);
+            }
+        }
 
-			for (int i = 0; i < Uniforms.Count; i++)
-			{
-				uint buffer = 0;
-				GL.GenBuffers(1, out buffer);
+        public void DisableVertexAttribArrays()
+        {
+            for (int i = 0; i < Attributes.Count; i++)
+            {
+                GL.DisableVertexAttribArray(Attributes.Values.ElementAt(i).address);
+            }
+        }
 
-				Buffers.Add(Uniforms.Values.ElementAt(i).name, buffer);
-			}
-		}
+        public int GetAttribute(string name)
+        {
+            if (Attributes.ContainsKey(name))
+            {
+                return Attributes[name].address;
+            }
+            else
+            {
+                return -1;
+            }
+        }
 
-		public void EnableVertexAttribArrays()
-		{
-			for (int i = 0; i < Attributes.Count; i++)
-			{
-				GL.EnableVertexAttribArray(Attributes.Values.ElementAt(i).address);
-			}
-		}
+        public int GetUniform(string name)
+        {
+            if (Uniforms.ContainsKey(name))
+            {
+                return Uniforms[name].address;
+            }
+            else
+            {
+                return -1;
+            }
+        }
 
-		public void DisableVertexAttribArrays()
-		{
-			for (int i = 0; i < Attributes.Count; i++)
-			{
-				GL.DisableVertexAttribArray(Attributes.Values.ElementAt(i).address);
-			}
-		}
+        public uint GetBuffer(string name)
+        {
+            if (Buffers.ContainsKey(name))
+            {
+                return Buffers[name];
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
-		public int GetAttribute(string name)
-		{
-			if (Attributes.ContainsKey(name))
-			{
-				return Attributes[name].address;
-			}
-			else
-			{
-				return -1;
-			}
-		}
+        public ShaderProg(String vshader, String fshader, bool fromFile = false)
+        {
+            ProgramID = GL.CreateProgram();
 
-		public int GetUniform(string name)
-		{
-			if (Uniforms.ContainsKey(name))
-			{
-				return Uniforms[name].address;
-			}
-			else
-			{
-				return -1;
-			}
-		}
+            if (fromFile)
+            {
+                LoadShaderFromFile(vshader, ShaderType.VertexShader);
+                LoadShaderFromFile(fshader, ShaderType.FragmentShader);
+            }
+            else
+            {
+                LoadShaderFromString(vshader, ShaderType.VertexShader);
+                LoadShaderFromString(fshader, ShaderType.FragmentShader);
+            }
 
-		public uint GetBuffer(string name)
-		{
-			if (Buffers.ContainsKey(name))
-			{
-				return Buffers[name];
-			}
-			else
-			{
-				return 0;
-			}
-		}
-
+            Link();
+            GenBuffers();
+        }
     }
 }

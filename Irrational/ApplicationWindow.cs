@@ -14,14 +14,14 @@ namespace IrrationalSpace
     public class ApplicationWindow : GameWindow
     {
 
-        public ApplicationWindow() : base(512, 512, new GraphicsMode(32, 24, 0, 4)) { }
+        public ApplicationWindow() : base(800, 600, new GraphicsMode(32, 24, 0, 4)) { }
 
         Vector3[] vertdata;
         Vector3[] coldata;
         Vector2[] texcoorddata;
         int[] indicedata;
         int ibo_elements;
-        //Camera cam = new Camera();
+        Camera cam = new Camera();
         Vector2 lastMousePos = new Vector2();
 
         List<Volume> objects = new List<Volume>();
@@ -58,7 +58,7 @@ namespace IrrationalSpace
             objects.Add(tc2);
 
             // Move camera away from origin
-           // cam.Position += new Vector3(0f, 0f, 3f);
+            cam.Position += new Vector3(0f, 0f, 3f);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -165,7 +165,7 @@ namespace IrrationalSpace
             foreach (Volume v in objects)
             {
                 v.CalculateModelMatrix();
-               // v.ViewProjectionMatrix = cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f);
+                v.ViewProjectionMatrix = cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, ClientSize.Width / (float)ClientSize.Height, 1.0f, 40.0f);
                 v.ModelViewProjectionMatrix = v.ModelMatrix * v.ViewProjectionMatrix;
             }
 
@@ -184,7 +184,7 @@ namespace IrrationalSpace
                 Vector2 delta = lastMousePos - new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
                 lastMousePos += delta;
 
-             //   cam.AddRotation(delta.X, delta.Y);
+                cam.AddRotation(delta.X, delta.Y);
                 ResetCursor();
             }
         }
@@ -201,22 +201,22 @@ namespace IrrationalSpace
             switch (e.KeyChar)
             {
                 case 'w':
-             //       cam.Move(0f, 0.1f, 0f);
+                    cam.Move(0f, 0.1f, 0f);
                     break;
                 case 'a':
-             //       cam.Move(-0.1f, 0f, 0f);
+                    cam.Move(-0.1f, 0f, 0f);
                     break;
                 case 's':
-            //        cam.Move(0f, -0.1f, 0f);
+                    cam.Move(0f, -0.1f, 0f);
                     break;
                 case 'd':
-              //      cam.Move(0.1f, 0f, 0f);
+                    cam.Move(0.1f, 0f, 0f);
                     break;
                 case 'q':
-             //       cam.Move(0f, 0f, 0.1f);
+                    cam.Move(0f, 0f, 0.1f);
                     break;
                 case 'e':
-              //      cam.Move(0f, 0f, -0.1f);
+                    cam.Move(0f, 0f, -0.1f);
                     break;
             }
         }

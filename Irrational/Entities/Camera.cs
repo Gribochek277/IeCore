@@ -1,5 +1,5 @@
-﻿/*using System;
-using OpenGL;
+﻿using System;
+using OpenTK;
 
 namespace IrrationalSpace
 {
@@ -18,9 +18,9 @@ namespace IrrationalSpace
         {
             Vector3 lookat = new Vector3();
 
-            lookat.x = (float)(Math.Sin((float)Orientation.x) * Math.Cos((float)Orientation.y));
-            lookat.y = (float)Math.Sin((float)Orientation.y);
-            lookat.z = (float)(Math.Cos((float)Orientation.x) * Math.Cos((float)Orientation.y));
+            lookat.X = (float)(Math.Sin((float)Orientation.X) * Math.Cos((float)Orientation.Y));
+            lookat.Y = (float)Math.Sin((float)Orientation.Y);
+            lookat.Z = (float)(Math.Cos((float)Orientation.X) * Math.Cos((float)Orientation.Y));
 
             return Matrix4.LookAt(Position, Position + lookat, Vector3.UnitY);
         }
@@ -29,16 +29,16 @@ namespace IrrationalSpace
         {
             Vector3 offset = new Vector3();
 
-            Vector3 forward = new Vector3((float)Math.Sin((float)Orientation.x), 0, (float)Math.Cos((float)Orientation.x));
+            Vector3 forward = new Vector3((float)Math.Sin((float)Orientation.X), 0, (float)Math.Cos((float)Orientation.X));
 
-            Vector3 right = new Vector3(-forward.z, 0, forward.x);
+            Vector3 right = new Vector3(-forward.Z, 0, forward.X);
 
             offset += x * right;
             offset += y * forward;
-            offset.x += z;
+            offset.X += z;
 
             offset.Normalize();
-            OpenTK.Vector3 temp = OpenTK.Vector3.Multiply(new OpenTK.Vector3((float)offset.x, (float)offset.y, (float)offset.z), MoveSpeed);
+            OpenTK.Vector3 temp = OpenTK.Vector3.Multiply(new OpenTK.Vector3((float)offset.X, (float)offset.Y, (float)offset.Z), MoveSpeed);
             offset = new Vector3(temp.X,temp.Y,temp.Z);
 
             Position += offset;
@@ -49,10 +49,10 @@ namespace IrrationalSpace
             x = x * MouseSensitivity;
             y = y * MouseSensitivity;
 
-            Orientation.x = (Orientation.x + x) % ((float)Math.PI * 2.0f);
-            Orientation.y = Math.Max(Math.Min(Orientation.y + y, (float)Math.PI / 2.0f - 0.1f), (float)-Math.PI / 2.0f + 0.1f);
+            Orientation.X = (Orientation.X + x) % ((float)Math.PI * 2.0f);
+            Orientation.Y = Math.Max(Math.Min(Orientation.Y + y, (float)Math.PI / 2.0f - 0.1f), (float)-Math.PI / 2.0f + 0.1f);
            
         }
     }
 }
-*/
+
