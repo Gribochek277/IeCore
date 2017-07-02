@@ -14,7 +14,7 @@ namespace IrrationalSpace
     public class ApplicationWindow : GameWindow
     {
 
-        public ApplicationWindow() : base(800, 600, new GraphicsMode(32, 24, 0, 4)) { }
+        public ApplicationWindow() : base(800, 600, new GraphicsMode(32, 24, 0, 4),"Irrational") { }
 
         Vector3[] vertdata;
         Vector3[] coldata;
@@ -44,8 +44,8 @@ namespace IrrationalSpace
             activeShader = "textured";
 
             // Load textures from file
-            textures.Add("opentksquare.png", loadImage("opentksquare.png"));
-            textures.Add("opentksquare2.png", loadImage("opentksquare2.png"));
+            textures.Add("opentksquare.png", loadImage("Resources/opentksquare.png"));
+            textures.Add("opentksquare2.png", loadImage("Resources/opentksquare2.png"));
 
             // Create our objects
             TexturedCube tc = new TexturedCube();
@@ -57,6 +57,12 @@ namespace IrrationalSpace
             tc2.TextureID = textures["opentksquare2.png"];
             objects.Add(tc2);
 
+            WavefrontModelLoader modelLoader = new WavefrontModelLoader();
+            Mesh obj2 = modelLoader.LoadFromFile("Resources/teapot.obj");
+            obj2.Position += new Vector3(0, 0.1f, 0);
+            obj2.TextureID = textures["opentksquare2.png"];
+            objects.Add(obj2);
+
             // Move camera away from origin
             cam.Position += new Vector3(0f, 0f, 3f);
         }
@@ -67,7 +73,7 @@ namespace IrrationalSpace
 
             initProgram();
 
-            GL.ClearColor(Color.CornflowerBlue);
+            GL.ClearColor(Color.Black);
             GL.PointSize(5f);
         }
 
