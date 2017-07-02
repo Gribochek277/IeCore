@@ -123,7 +123,7 @@
     </None>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
-    <None Include="Resources\teapot.obj">
+    <None Include="Resources\teapot.obj1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="vs.glsl">

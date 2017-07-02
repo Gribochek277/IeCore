@@ -58,7 +58,7 @@ namespace IrrationalSpace
             objects.Add(tc2);
 
             WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-            Mesh obj2 = modelLoader.LoadFromFile("Resources/teapot.obj");
+            Mesh obj2 = modelLoader.LoadFromFile("Resources/teapot.obj1");
             obj2.Position += new Vector3(0, 0.1f, 0);
             obj2.TextureID = textures["opentksquare2.png"];
             objects.Add(obj2);
