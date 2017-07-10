@@ -58,11 +58,11 @@ namespace IrrationalSpace
             objects.Add(tc2);
 
             WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-            Mesh obj2 = modelLoader.LoadFromFile("Resources/teapot.obj1");
-            obj2.Position += new Vector3(0, 0.1f, 0);
+            Mesh obj2 = modelLoader.LoadFromFile("Resources/african_head.obj1");
+            obj2.Position += new Vector3(0, 0.0f, 0);
             obj2.TextureID = textures["opentksquare2.png"];
             objects.Add(obj2);
-
+			//objects[2].Scale = new Vector3(0.7f, 0.7f, 0.7f);
             // Move camera away from origin
             cam.Position += new Vector3(0f, 0f, 3f);
         }
@@ -99,7 +99,7 @@ namespace IrrationalSpace
                     GL.Uniform1(shaders[activeShader].GetAttribute("maintexture"), v.TextureID);
                 }
 
-                GL.DrawElements(BeginMode.Triangles, v.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
+				GL.DrawElements(BeginMode.Triangles, v.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += v.IndiceCount;
             }
 
@@ -232,7 +232,7 @@ namespace IrrationalSpace
         /// </summary>
         void ResetCursor()
         {
-            OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
+           // OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
             lastMousePos = new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
         }
 

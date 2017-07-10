@@ -24,7 +24,7 @@ namespace IrrationalSpace
                     loadedModel = LoadFromString(reader.ReadToEnd());
                 }
             }
-            catch (FileNotFoundException e)
+        catch (FileNotFoundException e)
             {
                 Console.WriteLine("File not found: {0}", path);
             }
@@ -93,7 +93,7 @@ namespace IrrationalSpace
                     }
 
                     verts.Add(vec);
-                }
+                }	
                 else if (line.StartsWith("f ")) // Face definition
                 {
                     // Cut off beginning of line
@@ -104,13 +104,14 @@ namespace IrrationalSpace
                     if (temp.Count((char c) => c == ' ') == 2) // Check if there's enough elements for a face
                     {
                         String[] faceparts = temp.Split(' ');
+						String[] faceIndexPart = { faceparts[0].Split('/')[0],faceparts[1].Split('/')[0],faceparts[2].Split('/')[0] };
 
-                        int i1, i2, i3;
+						int[] indeces = new int[3];
 
                         // Attempt to parse each part of the face
-                        bool success = int.TryParse(faceparts[0], out i1);
-                        success |= int.TryParse(faceparts[1], out i2);
-                        success |= int.TryParse(faceparts[2], out i3);
+                        bool success = int.TryParse(faceIndexPart[0], out indeces[0]);
+                        success |= int.TryParse(faceIndexPart[1], out indeces[1]);
+                        success |= int.TryParse(faceIndexPart[2], out indeces[2]);
 
                         // If any of the parses failed, report the error
                         if (!success)
@@ -120,11 +121,12 @@ namespace IrrationalSpace
                         else
                         {
                             // Decrement to get zero-based vertex numbers
-                            face = new Tuple<int, int, int>(i1 - 1, i2 - 1, i3 - 1);
+                            face = new Tuple<int, int, int>(indeces[0] - 1, indeces[1] - 1, indeces[2] - 1);
                             faces.Add(face);
                         }
                     }
                 }
+
             }
 
             // Create the Mesh
