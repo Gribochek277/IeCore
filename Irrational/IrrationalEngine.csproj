@@ -132,6 +132,22 @@
     <None Include="vs_tex.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\h.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\h.obj" />
+    <None Include="Resources\hbump.jpg" />
+    <None Include="Resources\knight3.mtl" />
+    <None Include="Resources\knight3.obj1">
+     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\NightText.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\sword.mtl" />
+    <None Include="Resources\sword.obj1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\opentksquare.png">

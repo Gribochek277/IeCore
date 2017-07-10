@@ -44,25 +44,26 @@ namespace IrrationalSpace
             activeShader = "textured";
 
             // Load textures from file
-            textures.Add("opentksquare.png", loadImage("Resources/opentksquare.png"));
-            textures.Add("opentksquare2.png", loadImage("Resources/opentksquare2.png"));
+            textures.Add("firstTexture", loadImage("Resources/h.jpg"));
+            textures.Add("secondTexture", loadImage("Resources/NightText.png"));
 
             // Create our objects
             TexturedCube tc = new TexturedCube();
-            tc.TextureID = textures["opentksquare.png"];
+            tc.TextureID = textures["firstTexture"];
             objects.Add(tc);
 
             TexturedCube tc2 = new TexturedCube();
             tc2.Position += new Vector3(1f, 1f, 1f);
-            tc2.TextureID = textures["opentksquare2.png"];
+            tc2.TextureID = textures["secondTexture"];
             objects.Add(tc2);
 
             WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-            Mesh obj2 = modelLoader.LoadFromFile("Resources/african_head.obj1");
+            Mesh obj2 = modelLoader.LoadFromFile("Resources/sword.obj1");
             obj2.Position += new Vector3(0, 0.0f, 0);
-            obj2.TextureID = textures["opentksquare2.png"];
+            obj2.TextureID = textures["secondTexture"];
             objects.Add(obj2);
-			//objects[2].Scale = new Vector3(0.7f, 0.7f, 0.7f);
+			objects[2].Scale = new Vector3(0.3f, 0.3f, 0.3f);
+            objects[2].Rotation = new Vector3(90, 0, 90);
             // Move camera away from origin
             cam.Position += new Vector3(0f, 0f, 3f);
         }
