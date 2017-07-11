@@ -8,6 +8,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using IrrationalSpace.Shaders;
+using IrrationalSpace.Utils;
 
 namespace IrrationalSpace
 {
@@ -19,6 +20,8 @@ namespace IrrationalSpace
         Vector3[] vertdata;
         Vector3[] coldata;
         Vector2[] texcoorddata;
+        Vector3[] normdata;
+
         int[] indicedata;
         int ibo_elements;
         Camera cam = new Camera();
@@ -27,6 +30,8 @@ namespace IrrationalSpace
         List<Volume> objects = new List<Volume>();
         Dictionary<string, int> textures = new Dictionary<string, int>();
         Dictionary<string, ShaderProg> shaders = new Dictionary<string, ShaderProg>();
+        Dictionary<String, Material> materials = new Dictionary<string, Material>();
+
         string activeShader = "default";
 
         float time = 0.0f;
@@ -40,30 +45,29 @@ namespace IrrationalSpace
             // Load shaders from file
             shaders.Add("default", new ShaderProg("vs.glsl", "fs.glsl", true));
             shaders.Add("textured", new ShaderProg("vs_tex.glsl", "fs_tex.glsl", true));
+            shaders.Add("normal", new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true));
 
             activeShader = "textured";
 
-            // Load textures from file
-            textures.Add("firstTexture", loadImage("Resources/h.jpg"));
-            textures.Add("secondTexture", loadImage("Resources/NightText.png"));
+            loadMaterials("Resources/knight3.mtl");
 
             // Create our objects
             TexturedCube tc = new TexturedCube();
-            tc.TextureID = textures["firstTexture"];
+            tc.TextureID = textures[materials["Knight"].DiffuseMap];
             objects.Add(tc);
 
             TexturedCube tc2 = new TexturedCube();
             tc2.Position += new Vector3(1f, 1f, 1f);
-            tc2.TextureID = textures["secondTexture"];
+            tc2.TextureID = textures[materials["Knight"].DiffuseMap];
             objects.Add(tc2);
 
             WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-            Mesh obj2 = modelLoader.LoadFromFile("Resources/sword.obj1");
+            Mesh obj2 = modelLoader.LoadFromFile("Resources/knight3.obj1");
             obj2.Position += new Vector3(0, 0.0f, 0);
-            obj2.TextureID = textures["secondTexture"];
+            obj2.TextureID = textures[materials["Knight"].DiffuseMap];
             objects.Add(obj2);
 			objects[2].Scale = new Vector3(0.3f, 0.3f, 0.3f);
-            objects[2].Rotation = new Vector3(90, 0, 90);
+           // objects[2].Rotation = new Vector3(90, 0, 90);
             // Move camera away from origin
             cam.Position += new Vector3(0f, 0f, 3f);
         }
@@ -118,6 +122,7 @@ namespace IrrationalSpace
             List<int> inds = new List<int>();
             List<Vector3> colors = new List<Vector3>();
             List<Vector2> texcoords = new List<Vector2>();
+            List<Vector3> normals = new List<Vector3>();
 
             // Assemble vertex and indice data for all volumes
             int vertcount = 0;
@@ -127,6 +132,7 @@ namespace IrrationalSpace
                 inds.AddRange(v.GetIndices(vertcount).ToList());
                 colors.AddRange(v.GetColorData().ToList());
                 texcoords.AddRange(v.GetTextureCoords());
+                normals.AddRange(v.GetNormals().ToList());
                 vertcount += v.VertCount;
             }
 
@@ -134,6 +140,7 @@ namespace IrrationalSpace
             indicedata = inds.ToArray();
             coldata = colors.ToArray();
             texcoorddata = texcoords.ToArray();
+            normdata = normals.ToArray();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
 
@@ -155,6 +162,13 @@ namespace IrrationalSpace
                 GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("texcoord"));
                 GL.BufferData<Vector2>(BufferTarget.ArrayBuffer, (IntPtr)(texcoorddata.Length * Vector2.SizeInBytes), texcoorddata, BufferUsageHint.StaticDraw);
                 GL.VertexAttribPointer(shaders[activeShader].GetAttribute("texcoord"), 2, VertexAttribPointerType.Float, true, 0, 0);
+            }
+
+            if (shaders[activeShader].GetAttribute("vNormal") != -1)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vNormal"));
+                GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(normdata.Length * Vector3.SizeInBytes), normdata, BufferUsageHint.StaticDraw);
+                GL.VertexAttribPointer(shaders[activeShader].GetAttribute("vNormal"), 3, VertexAttribPointerType.Float, true, 0, 0);
             }
 
             // Update object positions
@@ -275,6 +289,46 @@ namespace IrrationalSpace
             catch (FileNotFoundException e)
             {
                 return -1;
+            }
+        }
+
+        private void loadMaterials(String filename)
+        {
+            foreach (var mat in Material.LoadFromFile(filename))
+            {
+                if (!materials.ContainsKey(mat.Key))
+                {
+                    materials.Add(mat.Key, mat.Value);
+                }
+            }
+
+            // Load textures
+            foreach (Material mat in materials.Values)
+            {
+                if (File.Exists(mat.AmbientMap) && !textures.ContainsKey(mat.AmbientMap))
+                {
+                    textures.Add(mat.AmbientMap, loadImage(mat.AmbientMap));
+                }
+
+                if (File.Exists(mat.DiffuseMap) && !textures.ContainsKey(mat.DiffuseMap))
+                {
+                    textures.Add(mat.DiffuseMap, loadImage(mat.DiffuseMap));
+                }
+
+                if (File.Exists(mat.SpecularMap) && !textures.ContainsKey(mat.SpecularMap))
+                {
+                    textures.Add(mat.SpecularMap, loadImage(mat.SpecularMap));
+                }
+
+                if (File.Exists(mat.NormalMap) && !textures.ContainsKey(mat.NormalMap))
+                {
+                    textures.Add(mat.NormalMap, loadImage(mat.NormalMap));
+                }
+
+                if (File.Exists(mat.OpacityMap) && !textures.ContainsKey(mat.OpacityMap))
+                {
+                    textures.Add(mat.OpacityMap, loadImage(mat.OpacityMap));
+                }
             }
         }
     }

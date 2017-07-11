@@ -1,20 +1,21 @@
 ﻿using System;
 using OpenTK;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IrrationalSpace
 {
     public class Mesh : Volume
     {
-        public Vector3[] vertices;
-        public Vector3[] colors;
-        public Vector2[] texturecoords;
+        public List<Tuple<FaceVertex, FaceVertex, FaceVertex>> faces = new List<Tuple<FaceVertex, FaceVertex, FaceVertex>>();
 
-        public List<Tuple<int, int, int>> faces = new List<Tuple<int, int, int>>();
+        public override int VertCount { get { return faces.Count * 3; } }
 
-        public override int VertCount { get { return vertices.Length; } }
         public override int IndiceCount { get { return faces.Count * 3; } }
-        public override int ColorDataCount { get { return colors.Length; } }
+
+        public override int ColorDataCount { get { return faces.Count * 3; } }
+
+        public override int TextureCoordsCount { get { return faces.Count * 3; } }
 
         /// <summary>
         /// Get vertices for this object
@@ -22,7 +23,16 @@ namespace IrrationalSpace
         /// <returns></returns>
         public override Vector3[] GetVerts()
         {
-            return vertices;
+            List<Vector3> verts = new List<Vector3>();
+
+            foreach (var face in faces)
+            {
+                verts.Add(face.Item1.Position);
+                verts.Add(face.Item2.Position);
+                verts.Add(face.Item3.Position);
+            }
+
+            return verts.ToArray();
         }
 
         /// <summary>
@@ -32,16 +42,7 @@ namespace IrrationalSpace
         /// <returns>Array of indices with offset applied</returns>
         public override int[] GetIndices(int offset = 0)
         {
-            List<int> temp = new List<int>();
-
-            foreach (var face in faces)
-            {
-                temp.Add(face.Item1 + offset);
-                temp.Add(face.Item2 + offset);
-                temp.Add(face.Item3 + offset);
-            }
-
-            return temp.ToArray();
+            return Enumerable.Range(offset, IndiceCount).ToArray();
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace IrrationalSpace
         /// <returns></returns>
         public override Vector3[] GetColorData()
         {
-            return colors;
+            return new Vector3[ColorDataCount];
         }
 
         /// <summary>
@@ -59,7 +60,16 @@ namespace IrrationalSpace
         /// <returns></returns>
         public override Vector2[] GetTextureCoords()
         {
-            return texturecoords;
+            List<Vector2> coords = new List<Vector2>();
+
+            foreach (var face in faces)
+            {
+                coords.Add(face.Item1.TextureCoord);
+                coords.Add(face.Item2.TextureCoord);
+                coords.Add(face.Item3.TextureCoord);
+            }
+
+            return coords.ToArray();
         }
 
 
@@ -71,6 +81,21 @@ namespace IrrationalSpace
             ModelMatrix = Matrix4.Scale(Scale) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y) * Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateTranslation(Position);
         }
 
+    }
+
+    //Helper class for more readable realisation
+    public class FaceVertex
+    {
+        public Vector3 Position;
+        public Vector3 Normal;
+        public Vector2 TextureCoord;
+
+        public FaceVertex(Vector3 pos, Vector3 norm, Vector2 texcoord)
+        {
+            Position = pos;
+            Normal = norm;
+            TextureCoord = texcoord;
+        }
     }
 }
 

@@ -98,13 +98,13 @@
     <Compile Include="Entities\Star.cs" />
     <Compile Include="Entities\Primitives\TexturedCube.cs" />
     <Compile Include="Utils\Interfaces\IModelLoader.cs" />
+    <Compile Include="Utils\Material.cs" />
     <Compile Include="Utils\WavefrontModelLoader.cs" />
     <Compile Include="Entities\Camera.cs" />
     <Compile Include="Entities\SceneObject.cs" />
     <Compile Include="Shaders\VertexShaders.cs" />
     <Compile Include="Shaders\FragmentShaders.cs" />
     <Compile Include="Entities\Interfaces\ISceneObject.cs" />
-    <Compile Include="Entities\Material.cs" />
     <Compile Include="Entities\Mesh.cs" />
     <Compile Include="Shaders\ShaderProg.cs" />
     <Compile Include="Shaders\ShaderEntity.cs" />
@@ -118,6 +118,9 @@
     <None Include="fs.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="fs_norm.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="fs_tex.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -129,6 +132,9 @@
     <None Include="vs.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="vs_norm.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="vs_tex.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -137,9 +143,11 @@
     </None>
     <None Include="Resources\h.obj" />
     <None Include="Resources\hbump.jpg" />
-    <None Include="Resources\knight3.mtl" />
+    <None Include="Resources\knight3.mtl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\knight3.obj1">
-     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\NightText.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
