@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace IrrationalSpace.Utils
 {
@@ -145,11 +146,13 @@ namespace IrrationalSpace.Utils
                     Vector3 vec = new Vector3();
 
                     // Attempt to parse each part of the color
-                    bool success = float.TryParse(colorparts[0], out vec.X);
-                    success |= float.TryParse(colorparts[1], out vec.Y);
-                    success |= float.TryParse(colorparts[2], out vec.Z);
+                    bool success = float.TryParse(colorparts[0],NumberStyles.Any, CultureInfo.InvariantCulture, out vec.X);
+                    success |= float.TryParse(colorparts[1],NumberStyles.Any, CultureInfo.InvariantCulture, out vec.Y);
+                    success |= float.TryParse(colorparts[2],NumberStyles.Any, CultureInfo.InvariantCulture, out vec.Z);
 
-                    output.AmbientColor = new Vector3(float.Parse(colorparts[0]), float.Parse(colorparts[1]), float.Parse(colorparts[2]));
+                    output.AmbientColor = new Vector3(float.Parse(colorparts[0],CultureInfo.InvariantCulture.NumberFormat),
+					                                  float.Parse(colorparts[1],CultureInfo.InvariantCulture.NumberFormat),
+					                                  float.Parse(colorparts[2],CultureInfo.InvariantCulture.NumberFormat));
 
                     // If any of the parses failed, report the error
                     if (!success)
@@ -172,11 +175,13 @@ namespace IrrationalSpace.Utils
                     Vector3 vec = new Vector3();
 
                     // Attempt to parse each part of the color
-                    bool success = float.TryParse(colorparts[0], out vec.X);
-                    success |= float.TryParse(colorparts[1], out vec.Y);
-                    success |= float.TryParse(colorparts[2], out vec.Z);
+                    bool success = float.TryParse(colorparts[0],NumberStyles.Any, CultureInfo.InvariantCulture, out vec.X);
+                    success |= float.TryParse(colorparts[1], NumberStyles.Any, CultureInfo.InvariantCulture,out vec.Y);
+                    success |= float.TryParse(colorparts[2],NumberStyles.Any, CultureInfo.InvariantCulture, out vec.Z);
 
-                    output.DiffuseColor = new Vector3(float.Parse(colorparts[0]), float.Parse(colorparts[1]), float.Parse(colorparts[2]));
+                    output.DiffuseColor = new Vector3(float.Parse(colorparts[0],CultureInfo.InvariantCulture.NumberFormat),
+					                                  float.Parse(colorparts[1],CultureInfo.InvariantCulture.NumberFormat),
+					                                  float.Parse(colorparts[2],CultureInfo.InvariantCulture.NumberFormat));
 
                     // If any of the parses failed, report the error
                     if (!success)
@@ -199,11 +204,13 @@ namespace IrrationalSpace.Utils
                     Vector3 vec = new Vector3();
 
                     // Attempt to parse each part of the color
-                    bool success = float.TryParse(colorparts[0], out vec.X);
-                    success |= float.TryParse(colorparts[1], out vec.Y);
-                    success |= float.TryParse(colorparts[2], out vec.Z);
+                    bool success = float.TryParse(colorparts[0], NumberStyles.Any, CultureInfo.InvariantCulture,out vec.X);
+                    success |= float.TryParse(colorparts[1], NumberStyles.Any, CultureInfo.InvariantCulture,out vec.Y);
+                    success |= float.TryParse(colorparts[2],NumberStyles.Any, CultureInfo.InvariantCulture, out vec.Z);
 
-                    output.SpecularColor = new Vector3(float.Parse(colorparts[0]), float.Parse(colorparts[1]), float.Parse(colorparts[2]));
+                    output.SpecularColor = new Vector3(float.Parse(colorparts[0],CultureInfo.InvariantCulture.NumberFormat), 
+					                                   float.Parse(colorparts[1],CultureInfo.InvariantCulture.NumberFormat), 
+					                                   float.Parse(colorparts[2],CultureInfo.InvariantCulture.NumberFormat));
 
                     // If any of the parses failed, report the error
                     if (!success)
@@ -217,7 +224,7 @@ namespace IrrationalSpace.Utils
                 {
                     // Attempt to parse each part of the color
                     float exponent = 0.0f;
-                    bool success = float.TryParse(line.Substring(3), out exponent);
+                    bool success = float.TryParse(line.Substring(3), NumberStyles.Any, CultureInfo.InvariantCulture,out exponent);
 
                     output.SpecularExponent = exponent;
 
