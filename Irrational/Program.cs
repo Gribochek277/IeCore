@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OpenGL;
 
 
 namespace IrrationalSpace
@@ -16,7 +15,7 @@ namespace IrrationalSpace
 			{
 				//Framerate as parameter
 				window.VSync = OpenTK.VSyncMode.Adaptive;
-				window.Run(60,0.0);
+				window.Run(60,60);
 			}
         }
 	}
