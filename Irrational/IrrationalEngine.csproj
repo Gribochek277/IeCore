@@ -91,6 +91,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Abstractions\IUpdatable.cs" />
+    <Compile Include="Core\Abstractions\IRenderable.cs" />
+    <Compile Include="Core\Abstractions\IResisable.cs" />
+    <Compile Include="Core\Abstractions\AbstractWindow.cs" />
     <Compile Include="Entities\Primitives\Cube.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ApplicationWindow.cs" />
