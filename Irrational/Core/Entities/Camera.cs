@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK;
 
-namespace IrrationalSpace
+namespace Irrational
 {
     public class Camera
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL4;
-namespace IrrationalSpace.Shaders
+namespace Irrational.Shaders
 {
     public static class ShaderEntity
     {

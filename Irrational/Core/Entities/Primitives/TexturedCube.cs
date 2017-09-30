@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IrrationalSpace
+namespace Irrational
 {
     /// <summary>
     /// A cube with texture coordinates giving each side the entire texture

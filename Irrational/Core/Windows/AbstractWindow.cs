@@ -4,7 +4,7 @@ namespace Irrational.Core.Windows
 {
     public abstract class AbstractWindow
     {
-        private IRenderer _renderer;
+        protected IRenderer _renderer;
 
         virtual protected void OnLoad()
         {

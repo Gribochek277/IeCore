@@ -1,11 +1,6 @@
 ﻿using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IrrationalSpace
+namespace Irrational
 {
     /// <summary>
     /// A rectangular prism with square sides (seriously, you know what a cube is)

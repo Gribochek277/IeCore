@@ -7,9 +7,9 @@ using OpenTK;
 using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using IrrationalSpace.Utils.Interfaces;
+using Irrational.Utils.Interfaces;
 
-namespace IrrationalSpace
+namespace Irrational
 {
     class WavefrontModelLoader : IModelLoader
     {

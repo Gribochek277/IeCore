@@ -92,11 +92,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Abstractions\ILoadable.cs" />
+    <Compile Include="Core\Abstractions\ITransformable.cs" />
     <Compile Include="Core\Abstractions\IUpdatable.cs" />
     <Compile Include="Core\Abstractions\IRenderable.cs" />
     <Compile Include="Core\Abstractions\IResisable.cs" />
     <Compile Include="Core\Renderer\Abstractions\IRenderer.cs" />
-    <Compile Include="Core\Renderer\Renderer.cs" />
+    <Compile Include="Core\Renderer\OpenglRenderer.cs" />
     <Compile Include="Core\Windows\OpenTKWindow.cs" />
     <Compile Include="Core\Windows\AbstractWindow.cs" />
     <Compile Include="Core\Entities\Primitives\Cube.cs" />

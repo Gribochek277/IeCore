@@ -1,11 +1,6 @@
 ﻿using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IrrationalSpace
+namespace Irrational
 {
     /// <summary>
     /// An object made up of vertices
