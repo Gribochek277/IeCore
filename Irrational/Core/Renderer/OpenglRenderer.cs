@@ -60,8 +60,6 @@ namespace Irrational.Core.Renderer
             obj2.TextureID = textures[materials["Knight"].DiffuseMap];
             objects.Add(obj2);
             objects.FirstOrDefault().Scale = new Vector3(0.3f, 0.3f, 0.3f);
-            // objects[2].Rotation = new Vector3(90, 0, 90);
-            // Move camera away from origin
             cam.Position += new Vector3(0f, 0f, 3f);
             GL.ClearColor(Color.Black);
             GL.PointSize(5f);
@@ -110,29 +108,17 @@ namespace Irrational.Core.Renderer
 
         public void OnUpdated()
         {
-            List<Vector3> verts = new List<Vector3>();
-            List<int> inds = new List<int>();
-            List<Vector3> colors = new List<Vector3>();
-            List<Vector2> texcoords = new List<Vector2>();
-            List<Vector3> normals = new List<Vector3>();
-
             // Assemble vertex and indice data for all volumes
             int vertcount = 0;
             foreach (Volume v in objects)
             {
-                verts.AddRange(v.GetVerts().ToList());
-                inds.AddRange(v.GetIndices(vertcount).ToList());
-                colors.AddRange(v.GetColorData().ToList());
-                texcoords.AddRange(v.GetTextureCoords());
-                normals.AddRange(v.GetNormals().ToList());
+                vertdata = v.GetVerts();
+                indicedata = v.GetIndices(vertcount);
+                coldata = v.GetColorData();
+                texcoorddata = v.GetTextureCoords();
+                normdata = v.GetNormals();
                 vertcount += v.VertCount;
             }
-
-            vertdata = verts.ToArray();
-            indicedata = inds.ToArray();
-            coldata = colors.ToArray();
-            texcoorddata = texcoords.ToArray();
-            normdata = normals.ToArray();
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
 
