@@ -1,4 +1,5 @@
 ﻿using Irrational.Core.Renderer.Abstractions;
+using OpenTK;
 
 namespace Irrational.Core.Windows
 {
@@ -11,7 +12,7 @@ namespace Irrational.Core.Windows
             _renderer.OnLoad();
         }
 
-        virtual protected void OnRendered()
+        virtual protected void OnRendered(FrameEventArgs e)
         {
             _renderer.OnRendered();
         }

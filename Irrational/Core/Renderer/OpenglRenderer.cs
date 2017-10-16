@@ -24,7 +24,7 @@ namespace Irrational.Core.Renderer
         Camera cam = new Camera();
         Vector2 lastMousePos = new Vector2();
 
-        List<Volume> objects = new List<Volume>();
+        List<SceneObject> objects = new List<SceneObject>();
         Dictionary<string, int> textures = new Dictionary<string, int>();
         Dictionary<string, ShaderProg> shaders = new Dictionary<string, ShaderProg>();
         Dictionary<String, Material> materials = new Dictionary<string, Material>();
@@ -46,80 +46,59 @@ namespace Irrational.Core.Renderer
 
             activeShader = "textured";
 
+            for(int i = 0; i < 300; i++) { 
             SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/knight3.mtl" };
             sceneObject.OnLoad();
             materials = sceneObject.materials;
             textures = sceneObject.textures;
 
             // Create our objects
-
-
             WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-            Mesh obj2 = modelLoader.LoadFromFile("Resources/knight3.obj1");
-            obj2.Position += new Vector3(0, 0.0f, 0);
-            obj2.TextureID = textures[materials["Knight"].DiffuseMap];
-            objects.Add(obj2);
-            objects.FirstOrDefault().Scale = new Vector3(0.3f, 0.3f, 0.3f);
+            sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/knight3.obj1");
+            sceneObject.Position += new Vector3(0+(i*3), 0.0f, 0);
+            sceneObject.ModelMesh.TextureID = textures[materials["Knight"].DiffuseMap];
+            sceneObject.Scale = new Vector3(0.3f, 0.3f, 0.3f);
+            objects.Add(sceneObject);
+            }
+
+
             cam.Position += new Vector3(0f, 0f, 3f);
             GL.ClearColor(Color.Black);
             GL.PointSize(5f);
+
+
+
+            // Assemble vertex and indice data for all volumes
+            int vertcount = 0;
+
+            List<Vector3> verts = new List<Vector3>();
+            List < int > inds = new List<int>();
+            List < Vector3 > colors = new List<Vector3>();
+            List < Vector2 > texcoords = new List<Vector2>();
+            List < Vector3 > normals = new List<Vector3>();
+
+            foreach (SceneObject v in objects)
+            {
+                verts.AddRange(v.ModelMesh.GetVerts().ToList());
+                inds.AddRange(v.ModelMesh.GetIndices(vertcount).ToList());
+                colors.AddRange(v.ModelMesh.GetColorData().ToList());
+                texcoords.AddRange(v.ModelMesh.GetTextureCoords());
+                normals.AddRange(v.ModelMesh.GetNormals().ToList());
+                vertcount += v.ModelMesh.VertCount;
+            }
+
+            vertdata = verts.ToArray();
+            indicedata = inds.ToArray();
+            coldata = colors.ToArray();
+            texcoorddata = texcoords.ToArray();
+            normdata = normals.ToArray();
+
+            Console.WriteLine("Vertexies: " + vertdata.Length);
+            Console.WriteLine("Triangles: " + vertdata.Length/3);
         }
 
         public void OnRendered()
         {
-            GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.Enable(EnableCap.DepthTest);
-
-            shaders[activeShader].EnableVertexAttribArrays();
-
-            int indiceat = 0;
-
-            // Draw all our objects
-            foreach (Volume v in objects)
-            {
-                GL.BindTexture(TextureTarget.Texture2D, v.TextureID);
-                GL.UniformMatrix4(shaders[activeShader].GetUniform("modelview"), false, ref v.ModelViewProjectionMatrix);
-
-                if (shaders[activeShader].GetAttribute("maintexture") != -1)
-                {
-                    GL.Uniform1(shaders[activeShader].GetAttribute("maintexture"), v.TextureID);
-                }
-
-                GL.DrawElements(BeginMode.Triangles, v.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
-                indiceat += v.IndiceCount;
-            }
-
-            shaders[activeShader].DisableVertexAttribArrays();
-
-            GL.Flush();
-            _gameWindow.SwapBuffers();
-        }
-
-        public void OnResized()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnUnload()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnUpdated()
-        {
-            // Assemble vertex and indice data for all volumes
-            int vertcount = 0;
-            foreach (Volume v in objects)
-            {
-                vertdata = v.GetVerts();
-                indicedata = v.GetIndices(vertcount);
-                coldata = v.GetColorData();
-                texcoorddata = v.GetTextureCoords();
-                normdata = v.GetNormals();
-                vertcount += v.VertCount;
-            }
-
             GL.BindBuffer(BufferTarget.ArrayBuffer, shaders[activeShader].GetBuffer("vPosition"));
 
             GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
@@ -153,13 +132,7 @@ namespace Irrational.Core.Renderer
             time += (float)this._gameWindow.UpdatePeriod;
 
 
-            // Update model view matrices
-            foreach (Volume v in objects)
-            {
-                v.CalculateModelMatrix();
-                v.ViewProjectionMatrix = cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
-                v.ModelViewProjectionMatrix = v.ModelMatrix * v.ViewProjectionMatrix;
-            }
+
 
             GL.UseProgram(shaders[activeShader].ProgramID);
 
@@ -168,6 +141,65 @@ namespace Irrational.Core.Renderer
             // Buffer index data
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
+
+
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
+
+            shaders[activeShader].EnableVertexAttribArrays();
+            
+
+            int indiceat = 0;
+
+            // Draw all our objects
+            foreach(SceneObject v in objects)
+            {
+
+                GL.BindTexture(TextureTarget.Texture2D, v.ModelMesh.TextureID);
+                GL.UniformMatrix4(shaders[activeShader].GetUniform("modelview"), false, ref v.ModelMesh.ModelViewProjectionMatrix);
+
+                if (shaders[activeShader].GetAttribute("maintexture") != -1)
+                {
+                    GL.Uniform1(shaders[activeShader].GetAttribute("maintexture"), v.ModelMesh.TextureID);
+                }
+
+                GL.DrawElements(BeginMode.Triangles, v.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
+                indiceat += v.ModelMesh.IndiceCount;
+            }
+
+            shaders[activeShader].DisableVertexAttribArrays();
+
+            GL.Flush();
+            _gameWindow.SwapBuffers();
+        }
+
+        public void OnResized()
+        {
+            GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
+        }
+
+        public void OnUnload()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnUpdated()
+        {
+            for(int i=0;i<objects.Count;i++)
+            {
+                objects[i].Position = new Vector3(-(objects.Count/2) +i + ((float)Math.Sin(time) * 2), -0.5f + (float)Math.Sin(time), -3.0f);
+                objects[i].Rotation = new Vector3(0.55f * time, 0.25f * time, 0);
+            }
+
+
+            // Update model view matrices
+            foreach (SceneObject v in objects)
+            {
+                v.ModelMesh.CalculateModelMatrix();
+                v.ModelMesh.ViewProjectionMatrix = cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
+                v.ModelMesh.ModelViewProjectionMatrix = v.ModelMesh.ModelMatrix * v.ModelMesh.ViewProjectionMatrix;
+            }
 
 
             // Reset mouse position

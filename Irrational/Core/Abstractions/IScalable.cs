@@ -2,8 +2,8 @@
 
 namespace Irrational.Core.Abstractions
 {
-    public interface IResisable
+    public interface IScalable
     {
-        void OnResized();
+        Vector3 Scale { get; set; }
     }
 }

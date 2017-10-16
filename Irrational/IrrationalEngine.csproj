@@ -6,7 +6,7 @@
     <ProjectGuid>{B85D84DB-46F7-4518-8CDB-3B1523E1223C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IrrationalSpace</RootNamespace>
+    <RootNamespace>Irrational</RootNamespace>
     <AssemblyName>Irrational</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -92,6 +92,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Abstractions\ILoadable.cs" />
+    <Compile Include="Core\Abstractions\IRotatable.cs" />
+    <Compile Include="Core\Abstractions\IScalable.cs" />
     <Compile Include="Core\Abstractions\ITransformable.cs" />
     <Compile Include="Core\Abstractions\IUpdatable.cs" />
     <Compile Include="Core\Abstractions\IRenderable.cs" />
@@ -104,7 +106,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ApplicationWindow.cs" />
     <Compile Include="Core\Entities\Scene.cs" />
-    <Compile Include="Core\Entities\Star.cs" />
     <Compile Include="Core\Entities\Primitives\TexturedCube.cs" />
     <Compile Include="Utils\Interfaces\IModelLoader.cs" />
     <Compile Include="Utils\Material.cs" />

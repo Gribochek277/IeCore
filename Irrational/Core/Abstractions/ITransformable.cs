@@ -1,9 +1,10 @@
-﻿namespace Irrational.Core.Abstractions
+﻿using OpenTK;
+
+namespace Irrational.Core.Abstractions
 {
     public interface ITransformable
     {
-        int X { get; set; }
-        int Y { get; set; }
+        Vector3 Position { get; set;}
         void OnTransform();
     }
 }

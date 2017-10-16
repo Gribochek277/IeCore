@@ -1,5 +1,5 @@
 ﻿//using System;
-//namespace IrrationalSpace
+//namespace Irrational
 //{
 //	public class Scene
 //	{

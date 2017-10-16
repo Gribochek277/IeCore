@@ -2,8 +2,8 @@
 
 namespace Irrational.Core.Abstractions
 {
-    public interface IResisable
+    public interface IRotatable
     {
-        void OnResized();
+        Vector3 Rotation { get; set; }
     }
 }

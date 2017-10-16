@@ -7,12 +7,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using OpenTK;
 
 namespace Irrational.Core.Entities
 {
     public class SceneObject : ISceneObject
     {
         AbstractWindow window;
+
+        Volume _modelMesh;
+        string _mdlSource;
+        string _matSource;
 
         public SceneObject()
         {
@@ -24,9 +29,55 @@ namespace Irrational.Core.Entities
         public Dictionary<string, int> textures = new Dictionary<string, int>();
         public Dictionary<String, Material> materials = new Dictionary<string, Material>();
 
-        public int X { get; set; }
-        public int Y { get; set; }
-        string _matSource;
+        public Vector3 Position {
+            get {
+                if (_modelMesh != null)
+                {
+                    return _modelMesh.Position;
+                }
+                else
+                {
+                    return Vector3.Zero;
+                }
+               } 
+            set {
+                if (_modelMesh != null)
+                {
+                    _modelMesh.Position = value;
+                }
+                else
+                {
+                    //TODO: handle input to null position somehow;
+                }
+            }
+        }
+
+        public Vector3 Scale
+        {
+            get
+            {
+                if (_modelMesh != null)
+                {
+                    return _modelMesh.Scale;
+                }
+                else
+                {
+                    return Vector3.Zero;
+                }
+            }
+            set
+            {
+                if (_modelMesh != null)
+                {
+                    _modelMesh.Scale = value;
+                }
+                else
+                {
+                    //TODO: handle input to null position somehow;
+                }
+            }
+        }
+
         public string MaterialSource
         {
             get
@@ -38,7 +89,7 @@ namespace Irrational.Core.Entities
             }
             set { _matSource = value; }
         }
-        string _mdlSource;
+        
         public string ModelSource
         {
             get
@@ -46,9 +97,46 @@ namespace Irrational.Core.Entities
                 if (_mdlSource != null)
                     return _mdlSource;
                 else
-                    throw new NullReferenceException();//TODO: create default model
+                    throw new NullReferenceException();//TODO: create default model source
             }
             set { _mdlSource = value; }
+        }
+        
+        public Volume ModelMesh {
+            get
+            {
+                if (_modelMesh != null)
+                    return _modelMesh;
+                else
+                    throw new NullReferenceException();//TODO: Remove get for realisation of incapsulation
+            }
+            set { _modelMesh = value; }
+        }
+
+        public Vector3 Rotation
+        {
+            get
+            {
+                if (_modelMesh != null)
+                {
+                    return _modelMesh.Rotation;
+                }
+                else
+                {
+                    return Vector3.Zero;
+                }
+            }
+            set
+            {
+                if (_modelMesh != null)
+                {
+                    _modelMesh.Rotation = value;
+                }
+                else
+                {
+                    //TODO: handle input to null position somehow;
+                }
+            }
         }
 
         public void OnLoad()
