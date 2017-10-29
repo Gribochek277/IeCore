@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 
-namespace IrrationalSpace.Utils
+namespace Irrational.Utils
 {
     /// <summary>
     /// Stores information about a material applied to a <c>Volume</c>

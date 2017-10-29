@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK.Graphics.OpenGL;
 
-namespace IrrationalSpace.Shaders
+namespace Irrational.Shaders
 {
     public class UniformInfo
     {

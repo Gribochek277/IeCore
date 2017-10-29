@@ -7,10 +7,10 @@ using System.Linq;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using IrrationalSpace.Shaders;
-using IrrationalSpace.Utils;
+using Irrational.Shaders;
+using Irrational.Utils;
 
-namespace IrrationalSpace
+namespace Irrational
 {
     public class ApplicationWindow : GameWindow
     {

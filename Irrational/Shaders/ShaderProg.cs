@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace IrrationalSpace.Shaders
+namespace Irrational.Shaders
 {
     public class ShaderProg
     {
