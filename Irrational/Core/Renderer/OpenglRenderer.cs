@@ -46,7 +46,7 @@ namespace Irrational.Core.Renderer
             shaders.Add("textured", new ShaderProg("vs_tex.glsl", "fs_tex.glsl", true));
             shaders.Add("normal", new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true));
 
-            activeShader = "normal";
+            activeShader = "textured";
 
             light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(1, 1, 1) } };
 
