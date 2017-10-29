@@ -17,10 +17,12 @@ namespace Irrational
 
         public override int TextureCoordsCount { get { return faces.Count * 3; } }
 
+        public override int NormalCount { get { return faces.Count * 3; } }
+
         /// <summary>
         /// Get vertices for this object
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Vertecies forobject</returns>
         public override Vector3[] GetVerts()
         {
             List<Vector3> verts = new List<Vector3>();
@@ -33,6 +35,29 @@ namespace Irrational
             }
 
             return verts.ToArray();
+        }
+
+        /// <summary>
+        /// Get normals for this object
+        /// </summary>
+        /// <returns>normals for object</returns>
+        public override Vector3[] GetNormals()
+        {
+            if (base.GetNormals().Length > 0)
+            {
+                return base.GetNormals();
+            }
+
+            List<Vector3> normals = new List<Vector3>();
+
+            foreach (var face in faces)
+            {
+                normals.Add(face.Item1.Normal);
+                normals.Add(face.Item2.Normal);
+                normals.Add(face.Item3.Normal);
+            }
+
+            return normals.ToArray();
         }
 
         /// <summary>

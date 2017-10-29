@@ -29,6 +29,8 @@ namespace Irrational.Core.Renderer
         Dictionary<string, ShaderProg> shaders = new Dictionary<string, ShaderProg>();
         Dictionary<String, Material> materials = new Dictionary<string, Material>();
 
+        SceneObject light = null;
+
         string activeShader = "default";
 
         float time = 0.0f;
@@ -44,7 +46,9 @@ namespace Irrational.Core.Renderer
             shaders.Add("textured", new ShaderProg("vs_tex.glsl", "fs_tex.glsl", true));
             shaders.Add("normal", new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true));
 
-            activeShader = "textured";
+            activeShader = "normal";
+
+            light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(1f, 1f, 10f) } };
 
             for(int i = 0; i < 1; i++) { 
             SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/knight3.mtl" };
@@ -55,9 +59,10 @@ namespace Irrational.Core.Renderer
             // Create our objects
             WavefrontModelLoader modelLoader = new WavefrontModelLoader();
             sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/knight3.obj1");
-            sceneObject.Position += new Vector3(0+(i*3), 0.0f, 0);
+            //sceneObject.ModelMesh.CalculateNormals();
+            sceneObject.Position += new Vector3(0+(i*3), 0.0f, -10);
             sceneObject.ModelMesh.TextureID = textures[materials["Knight"].DiffuseMap];
-            sceneObject.Scale = new Vector3(0.3f, 0.3f, 0.3f);
+            sceneObject.Scale = new Vector3(1f, 1f, 1f);
             objects.Add(sceneObject);
             }
 
@@ -155,17 +160,30 @@ namespace Irrational.Core.Renderer
             foreach(SceneObject v in objects)
             {
                 GL.BindTexture(TextureTarget.Texture2D, v.ModelMesh.TextureID);
-                GL.UniformMatrix4(shaders[activeShader].GetUniform("modelview"), false, ref v.ModelMesh.ModelViewProjectionMatrix);
+                GL.UniformMatrix4(shaders[activeShader].GetUniform("model"), false, ref v.ModelMesh.ModelMatrix);
+                Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
+                GL.UniformMatrix4(shaders[activeShader].GetUniform("projection"), false, ref projection);
+                Matrix4 view = cam.GetViewMatrix();
+                GL.UniformMatrix4(shaders[activeShader].GetUniform("view"), false, ref view);
 
                 if (shaders[activeShader].GetUniform("lightColor") != -1)
                 {
-                    int light = shaders[activeShader].GetUniform("lightColor");
-                    GL.Uniform4(light, 1f, 1f, 1F, 1f);
+                    GL.Uniform3(shaders[activeShader].GetUniform("lightColor"), 1f, 1f, 1F);
                 }
-                if (shaders[activeShader].GetAttribute("maintexture") != -1)
+
+                if (shaders[activeShader].GetUniform("ambientStr") != -1)
                 {
-                    GL.Uniform1(shaders[activeShader].GetAttribute("maintexture"), v.ModelMesh.TextureID);
-                    
+                    GL.Uniform1(shaders[activeShader].GetUniform("ambientStr"), 1f);
+                }
+
+                if (shaders[activeShader].GetUniform("lightPos") != -1)
+                {
+                    GL.Uniform3(shaders[activeShader].GetUniform("lightPos"), light.Position.X,light.Position.Y,light.Position.Z);
+                }
+
+                if (shaders[activeShader].GetUniform("maintexture") != -1)
+                {
+                    GL.Uniform1(shaders[activeShader].GetAttribute("maintexture"), v.ModelMesh.TextureID);                    
                 }
 
                 GL.DrawElements(BeginMode.Triangles, v.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
@@ -192,7 +210,7 @@ namespace Irrational.Core.Renderer
         {
             for(int i=0;i<objects.Count;i++)
             {
-                objects[i].Position = new Vector3(-(objects.Count/2) +i + ((float)Math.Sin(time) * 2), -0.5f + (float)Math.Sin(time), -3.0f);
+                objects[i].Position = new Vector3(-(objects.Count / 2) + i + ((float)Math.Sin(time) * 2), -0.5f + (float)Math.Sin(time), -3.0f);
                 objects[i].Rotation = new Vector3(0.55f * time, 0.25f * time, 0);
             }
 
@@ -205,6 +223,9 @@ namespace Irrational.Core.Renderer
                 v.ModelMesh.ModelViewProjectionMatrix = v.ModelMesh.ModelMatrix * v.ModelMesh.ViewProjectionMatrix;
             }
 
+            light.ModelMesh.CalculateModelMatrix();
+            light.ModelMesh.ViewProjectionMatrix = cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
+            light.ModelMesh.ModelViewProjectionMatrix = light.ModelMesh.ModelMatrix * light.ModelMesh.ViewProjectionMatrix;
 
             // Reset mouse position
             if (_gameWindow.Focused)
@@ -212,7 +233,7 @@ namespace Irrational.Core.Renderer
                 Vector2 delta = lastMousePos - new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
                 lastMousePos += delta;
 
-                cam.AddRotation(delta.X, delta.Y);
+              //  cam.AddRotation(delta.X, delta.Y);
                 ResetCursor((float)deltatime);
             }
         }
