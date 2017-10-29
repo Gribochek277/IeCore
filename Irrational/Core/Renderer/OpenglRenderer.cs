@@ -46,7 +46,7 @@ namespace Irrational.Core.Renderer
 
             activeShader = "textured";
 
-            for(int i = 0; i < 10; i++) { 
+            for(int i = 0; i < 1; i++) { 
             SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/knight3.mtl" };
             sceneObject.OnLoad();
             materials = sceneObject.materials;
@@ -130,7 +130,6 @@ namespace Irrational.Core.Renderer
 
             // Update object positions
             time += (float)this._gameWindow.RenderPeriod;
-            Console.WriteLine(_gameWindow.RenderPeriod + "vs" + _gameWindow.UpdatePeriod);
 
 
 
@@ -158,9 +157,15 @@ namespace Irrational.Core.Renderer
                 GL.BindTexture(TextureTarget.Texture2D, v.ModelMesh.TextureID);
                 GL.UniformMatrix4(shaders[activeShader].GetUniform("modelview"), false, ref v.ModelMesh.ModelViewProjectionMatrix);
 
+                if (shaders[activeShader].GetUniform("lightColor") != -1)
+                {
+                    int light = shaders[activeShader].GetUniform("lightColor");
+                    GL.Uniform4(light, 1f, 1f, 1F, 1f);
+                }
                 if (shaders[activeShader].GetAttribute("maintexture") != -1)
                 {
                     GL.Uniform1(shaders[activeShader].GetAttribute("maintexture"), v.ModelMesh.TextureID);
+                    
                 }
 
                 GL.DrawElements(BeginMode.Triangles, v.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
