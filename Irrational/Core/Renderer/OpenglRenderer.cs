@@ -72,10 +72,10 @@ namespace Irrational.Core.Renderer
             int vertcount = 0;
 
             List<Vector3> verts = new List<Vector3>();
-            List < int > inds = new List<int>();
-            List < Vector3 > colors = new List<Vector3>();
-            List < Vector2 > texcoords = new List<Vector2>();
-            List < Vector3 > normals = new List<Vector3>();
+            List <int> inds = new List<int>();
+            List <Vector3> colors = new List<Vector3>();
+            List <Vector2> texcoords = new List<Vector2>();
+            List <Vector3> normals = new List<Vector3>();
 
             foreach (SceneObject v in objects)
             {
@@ -155,7 +155,6 @@ namespace Irrational.Core.Renderer
             // Draw all our objects
             foreach(SceneObject v in objects)
             {
-
                 GL.BindTexture(TextureTarget.Texture2D, v.ModelMesh.TextureID);
                 GL.UniformMatrix4(shaders[activeShader].GetUniform("modelview"), false, ref v.ModelMesh.ModelViewProjectionMatrix);
 
