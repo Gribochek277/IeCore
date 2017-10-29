@@ -48,7 +48,7 @@ namespace Irrational.Core.Renderer
 
             activeShader = "normal";
 
-            light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(1f, 1f, 10f) } };
+            light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(1, 1, 1) } };
 
             for(int i = 0; i < 1; i++) { 
             SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/knight3.mtl" };
@@ -173,7 +173,18 @@ namespace Irrational.Core.Renderer
 
                 if (shaders[activeShader].GetUniform("ambientStr") != -1)
                 {
-                    GL.Uniform1(shaders[activeShader].GetUniform("ambientStr"), 1f);
+                    GL.Uniform1(shaders[activeShader].GetUniform("ambientStr"), 0.3f);
+                }
+
+                if(shaders[activeShader].GetUniform("specularIntensivity") != -1)
+                {
+                    //TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered
+                    GL.Uniform1(shaders[activeShader].GetUniform("specularIntensivity"), 100f);
+                }
+
+                if (shaders[activeShader].GetUniform("cameraPosition") != -1)
+                {
+                    GL.Uniform3(shaders[activeShader].GetUniform("cameraPosition"), cam.Position.X, cam.Position.Y, cam.Position.Z);
                 }
 
                 if (shaders[activeShader].GetUniform("lightPos") != -1)

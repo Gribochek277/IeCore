@@ -10,8 +10,6 @@ out vec2 f_texcoord;
 
 out vec3 f_pos;
 
-uniform vec3 lightPos;
-out vec3 calcLightPos;
 
 uniform mat4 model;
 uniform mat4 projection;
@@ -22,7 +20,6 @@ main()
 {
     gl_Position =  projection * view * model * vec4(vPosition, 1.0);
     f_pos = vec3(model * vec4(vPosition, 1.0));
-	calcLightPos = vec3(model * vec4(lightPos, 1.0));
 	f_texcoord = texcoord;
-	v_norm = vNormal;
+	v_norm = mat3(transpose(inverse(model))) * vNormal;
 }
