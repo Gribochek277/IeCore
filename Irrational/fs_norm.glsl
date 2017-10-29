@@ -40,7 +40,7 @@ main()
 
 	vec3 diffuse = (diff * (lightColor + ambientStr + specular));
    
-    outputColor = vec4(vec4(n,0)*vec4(diffuse,1.0));
+    outputColor = vec4(texture(maintexture, flipped_texcoord)*vec4(diffuse,1.0));
 
 
 	//outputColor = vec4( 0.5 + 0.5 * n, 1.0);
