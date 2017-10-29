@@ -2,6 +2,6 @@
 {
     public interface IUpdatable
     {
-        void OnUpdated();
+        void OnUpdated(double deltatime);
     }
 }

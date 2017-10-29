@@ -12,7 +12,7 @@ namespace Irrational.Core.Windows
             _renderer.OnLoad();
         }
 
-        virtual protected void OnRendered(FrameEventArgs e)
+        virtual protected void OnRendered(double deltatime)
         {
             _renderer.OnRendered();
         }
@@ -22,9 +22,9 @@ namespace Irrational.Core.Windows
             _renderer.OnResized();
         }
 
-        virtual protected void OnUpdated()
+        virtual protected void OnUpdated(double deltatime)
         {
-            _renderer.OnUpdated();
+            _renderer.OnUpdated(deltatime);
         }
 
         virtual protected void OnUnload()

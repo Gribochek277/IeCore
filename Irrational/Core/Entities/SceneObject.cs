@@ -164,7 +164,7 @@ namespace Irrational.Core.Entities
             throw new NotImplementedException();
         }
 
-        public void OnUpdated()
+        public void OnUpdated(double deltatime)
         {
             throw new NotImplementedException();
         }

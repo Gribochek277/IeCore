@@ -46,7 +46,7 @@ namespace Irrational.Core.Renderer
 
             activeShader = "textured";
 
-            for(int i = 0; i < 300; i++) { 
+            for(int i = 0; i < 10; i++) { 
             SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/knight3.mtl" };
             sceneObject.OnLoad();
             materials = sceneObject.materials;
@@ -129,8 +129,8 @@ namespace Irrational.Core.Renderer
             }
 
             // Update object positions
-            time += (float)this._gameWindow.UpdatePeriod;
-
+            time += (float)this._gameWindow.RenderPeriod;
+            Console.WriteLine(_gameWindow.RenderPeriod + "vs" + _gameWindow.UpdatePeriod);
 
 
 
@@ -183,7 +183,7 @@ namespace Irrational.Core.Renderer
             throw new NotImplementedException();
         }
 
-        public void OnUpdated()
+        public void OnUpdated(double deltatime)
         {
             for(int i=0;i<objects.Count;i++)
             {
@@ -208,14 +208,14 @@ namespace Irrational.Core.Renderer
                 lastMousePos += delta;
 
                 cam.AddRotation(delta.X, delta.Y);
-                ResetCursor();
+                ResetCursor((float)deltatime);
             }
         }
 
         /// <summary>
         /// Moves the mouse cursor to the center of the screen
         /// </summary>
-        void ResetCursor()
+        void ResetCursor(float deltatime)
         {
             // OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
             lastMousePos = new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);

@@ -24,8 +24,8 @@ namespace Irrational.Core.Windows
         {
             _gameWindow.Load += (object o, EventArgs e) => { OnLoad(); };
             _gameWindow.Unload += (object o, EventArgs e) => { OnUnload(); };
-            _gameWindow.RenderFrame += (object o, FrameEventArgs e) => { OnRendered(e); };
-            _gameWindow.UpdateFrame += (object o, FrameEventArgs e) => { OnUpdated(); };
+            _gameWindow.RenderFrame += (object o, FrameEventArgs e) => { OnRendered(e.Time); };
+            _gameWindow.UpdateFrame += (object o, FrameEventArgs e) => { OnUpdated(e.Time); };
             _gameWindow.Resize += (object o, EventArgs e) => { OnResized(); };
         }
 
@@ -34,16 +34,16 @@ namespace Irrational.Core.Windows
             _renderer.OnLoad();
         }
 
-        protected override void OnRendered(FrameEventArgs e)//TODO:Remove FrameEventArgs
+        protected override void OnRendered(double deltatime)//TODO:Remove FrameEventArgs
         {
-            _gameWindow.Title = "FPS: " + (1f / e.Time).ToString("0.");
+            _gameWindow.Title = "FPS: " + (1f / deltatime).ToString("0.");
 
             _renderer.OnRendered();
         }
 
-        protected override void OnUpdated()
+        protected override void OnUpdated(double deltatime)
         {
-            _renderer.OnUpdated();
+            _renderer.OnUpdated(deltatime);
         }
       
 
