@@ -8,7 +8,7 @@ out vec4 outputColor;
 
 uniform vec3 cameraPosition;
 
-uniform float specularIntensivity;
+uniform float specStr;
 
 uniform vec3 lightPos;
 
@@ -36,7 +36,7 @@ main()
 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128);
 
-	vec3 specular = specularIntensivity * spec * lightColor;  
+	vec3 specular = specStr * spec * lightColor;  
 
 	vec3 diffuse = (diff * (lightColor + ambientStr + specular));
    

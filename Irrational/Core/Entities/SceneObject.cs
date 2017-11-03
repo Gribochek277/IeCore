@@ -8,23 +8,16 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using OpenTK;
+using Irrational.Shaders;
 
 namespace Irrational.Core.Entities
 {
     public class SceneObject : ISceneObject
     {
-        AbstractWindow window;
-
-        Volume _modelMesh;
+         Volume _modelMesh;
         string _mdlSource;
         string _matSource;
-
-        public SceneObject()
-        {
-
-        }
-
-        
+		       
 
         public Dictionary<string, int> textures = new Dictionary<string, int>();
         public Dictionary<String, Material> materials = new Dictionary<string, Material>();
@@ -139,14 +132,35 @@ namespace Irrational.Core.Entities
             }
         }
 
-        public void OnLoad()
+		ShaderProg _shader = null;
+		public ShaderProg shader
+		{
+			get
+			{
+				if (_shader != null)
+				{
+					return _shader;
+				}
+				else
+				{
+					return null;
+				}
+			}
+
+			set
+			{
+				_shader = value;
+			}
+		}
+
+		public void OnLoad()
         {
             loadMaterials(MaterialSource);
         }
 
         public void OnRendered()
         {
-            throw new NotImplementedException();
+	
         }
 
         public void OnResized()

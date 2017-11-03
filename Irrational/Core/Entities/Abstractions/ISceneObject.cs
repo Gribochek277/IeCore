@@ -1,4 +1,5 @@
 ﻿using Irrational.Core.Abstractions;
+using Irrational.Shaders;
 
 namespace Irrational.Core.Entities.Abstractions
 {
@@ -7,5 +8,6 @@ namespace Irrational.Core.Entities.Abstractions
         string MaterialSource { get; set; }
         string ModelSource { get; set; }
         Volume ModelMesh { get; set; }
+		ShaderProg shader { get; set;}
     }
 }

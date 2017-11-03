@@ -29,6 +29,7 @@ namespace Irrational.Shaders
         {
             address = GL.CreateShader(type);
             GL.ShaderSource(address, code);
+			Console.WriteLine(code);
             GL.CompileShader(address);
             GL.AttachShader(ProgramID, address);
             Console.WriteLine(GL.GetShaderInfoLog(address));
