@@ -50,27 +50,28 @@ namespace Irrational.Core.Renderer
 
             light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(1, 1, 1) } };
 
-            for (int i = 0; i < 2; i++) { 
-            SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/knight3.mtl" };
+            for (int i = 0; i < 1; i++) { 
+            SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/Lion/Lion-snake.mtl" };
             sceneObject.OnLoad();
                
-                sceneObject.shader = new ShaderProg("vs_tex.glsl", "fs_tex.glsl", true);
+                sceneObject.shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true);
 
                 materials[sceneObject.materials.FirstOrDefault().Key] = sceneObject.materials.FirstOrDefault().Value;
-                textures[sceneObject.textures.FirstOrDefault().Key] = sceneObject.textures.FirstOrDefault().Value;
+                foreach(var texture in sceneObject.textures)
+                textures[texture.Key] = texture.Value;
 
                 // Create our objects
                 WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-            sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/knight3.obj1");
+            sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/Lion/Lion-snake.obj");
             sceneObject.ModelMesh.CalculateNormals();
-            sceneObject.Position += new Vector3(0+(i*3), 0.0f, -10);
-            sceneObject.ModelMesh.TextureID = textures[materials["Knight"].DiffuseMap];
-         //   sceneObject.Scale = new Vector3(1f, 1f, 1f);
+            sceneObject.Position += new Vector3(0+(i*3), 0.0f-100, -10);
+            sceneObject.ModelMesh.TextureID = textures[materials["ZBrushPolyMesh3DSG"].DiffuseMap];
+            sceneObject.Scale = new Vector3(1f, 1f, 1f)*0.2f;
             objects.Add(sceneObject);
 
            }
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 0; i++)
             {
                 SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/knight3.mtl" };
                 sceneObject.OnLoad();
@@ -258,7 +259,7 @@ namespace Irrational.Core.Renderer
         {
             for(int i=0;i<objects.Count;i++)
             {
-				objects[i].Position = new Vector3(-(objects.Count) + i*3.5f, 0, -5.0f);
+				objects[i].Position = new Vector3(-(objects.Count) + i*3.5f, 0-2.5f, -5.0f);
                 objects[i].Rotation = new Vector3(0, 0.25f * time, 0);
             }
 
