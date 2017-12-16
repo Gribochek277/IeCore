@@ -51,7 +51,7 @@ namespace Irrational.Core.Renderer
             light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(1, 1, 1) } };
 
             for (int i = 0; i < 1; i++) { 
-            SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/Lion/Lion-snake.mtl" };
+            SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/Lion-snake.mtl" };
             sceneObject.OnLoad();
                
                 sceneObject.shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true);
@@ -62,7 +62,7 @@ namespace Irrational.Core.Renderer
 
                 // Create our objects
                 WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-            sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/Lion/Lion-snake.obj");
+            sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/Lion-snake.obj");
             sceneObject.ModelMesh.CalculateNormals();
             sceneObject.Position += new Vector3(0+(i*3), 0.0f-100, -10);
             sceneObject.ModelMesh.TextureID = textures[materials["ZBrushPolyMesh3DSG"].DiffuseMap];

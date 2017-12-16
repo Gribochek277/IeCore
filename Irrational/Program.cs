@@ -13,12 +13,6 @@ namespace Irrational
 		static void Main(string[] args)
         {
             OpenTKWindow window = new OpenTKWindow();
-			//using (ApplicationWindow window = new ApplicationWindow())
-			//{
-			//	//Framerate as parameter
-			//	window.VSync = OpenTK.VSyncMode.Adaptive;
-			//	window.Run(60,60);
-			//}
         }
 	}
 }

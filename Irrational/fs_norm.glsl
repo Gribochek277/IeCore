@@ -15,6 +15,7 @@ uniform vec3 lightPos;
 uniform float ambientStr;
 uniform vec3 lightColor;
 uniform sampler2D maintexture;
+uniform sampler2D normaltexture;
 
 
 
