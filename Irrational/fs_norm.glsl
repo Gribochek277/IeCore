@@ -29,7 +29,7 @@ main()
 
 	vec3 lightDir = normalize(lightPos - f_pos);
 
-	float diff = max(dot(lightDir,texture(normaltexture, flipped_texcoord).rgb*2-1), 0.0);
+	float diff = max(dot(lightDir,texture(normaltexture, flipped_texcoord).rgb), 0.0);
 
 	vec3 viewDir = normalize(cameraPosition - f_pos);
 

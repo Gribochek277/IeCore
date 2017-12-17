@@ -233,7 +233,7 @@ namespace Irrational.Core.Renderer
                 if (v.shader.GetUniform("specStr") != -1)
                 {
                     //TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered
-                    GL.Uniform1(v.shader.GetUniform("specStr"), 10f);
+                    GL.Uniform1(v.shader.GetUniform("specStr"), 1f);
                 }
 
                 if (v.shader.GetUniform("cameraPosition") != -1)
