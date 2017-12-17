@@ -182,7 +182,7 @@ namespace Irrational.Core.Renderer
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.CullFace);
+            //GL.Enable(EnableCap.CullFace);
 
              
 			int indiceat = 0;
@@ -191,11 +191,10 @@ namespace Irrational.Core.Renderer
             // Draw all our objects
             foreach(SceneObject v in objects)
             {
-				GL.UseProgram(v.shader.ProgramID);
-				v.shader.EnableVertexAttribArrays();
-                
-                int texId = textures[materials[v.materials.FirstOrDefault().Value.MaterialName].DiffuseMap];              
+                int texId = textures[materials[v.materials.FirstOrDefault().Value.MaterialName].DiffuseMap];
                 int normId = textures[materials[v.materials.FirstOrDefault().Value.MaterialName].NormalMap];
+                GL.UseProgram(v.shader.ProgramID);
+				v.shader.EnableVertexAttribArrays();
                
                
                 GL.UniformMatrix4(v.shader.GetUniform("model"), false, ref v.ModelMesh.ModelMatrix);
@@ -204,23 +203,22 @@ namespace Irrational.Core.Renderer
                 Matrix4 view = cam.GetViewMatrix();
                 GL.UniformMatrix4(v.shader.GetUniform("view"), false, ref view);
 
-                if (v.shader.GetUniform("normaltexture") != -1)
-                {
-                    SetUniform("normaltexture", v.shader.ProgramID, 1);
-                }
-
+                
+                
+               
                 if (v.shader.GetUniform("maintexture") != -1)
                 {
+                    GL.ActiveTexture(TextureUnit.Texture0);
+                    GL.BindTexture(TextureTarget.Texture2D, texId);
                     SetUniform("maintexture", v.shader.ProgramID, 0);
                 }
 
-
-                GL.ActiveTexture(TextureUnit.Texture0);
-                GL.BindTexture(TextureTarget.Texture2D, texId);
-                GL.ActiveTexture(TextureUnit.Texture1);
-                GL.BindTexture(TextureTarget.Texture2D, normId);               
-
-                
+                if (v.shader.GetUniform("normaltexture") != -1)
+                {
+                    GL.ActiveTexture(TextureUnit.Texture1);
+                    GL.BindTexture(TextureTarget.Texture2D, normId);
+                    SetUniform("normaltexture", v.shader.ProgramID, 1);                   
+                }
 
                 if (v.shader.GetUniform("lightColor") != -1)
                 {
@@ -235,7 +233,7 @@ namespace Irrational.Core.Renderer
                 if (v.shader.GetUniform("specStr") != -1)
                 {
                     //TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered
-                    GL.Uniform1(v.shader.GetUniform("specStr"), 10f);
+                    GL.Uniform1(v.shader.GetUniform("specStr"), 1);
                 }
 
                 if (v.shader.GetUniform("cameraPosition") != -1)
@@ -312,9 +310,10 @@ namespace Irrational.Core.Renderer
             lastMousePos = new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
         }
 
-        public void SetUniform(string name,int programId, float value)
+        public void SetUniform(string name,int programId, int value)
         {
-            GL.Uniform1(GL.GetUniformLocation(programId, name), value);
+            int uniformLocation = GL.GetUniformLocation(programId, name);
+            GL.Uniform1(uniformLocation, value);
         }
     }
 }

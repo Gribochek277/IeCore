@@ -198,35 +198,34 @@ namespace Irrational.Core.Entities
             {               
                 if (File.Exists(mat.DiffuseMap) && !textures.ContainsKey(mat.DiffuseMap))
                 {
-                    textures.Add(mat.DiffuseMap, loadImage(mat.DiffuseMap,TextureUnit.Texture0));
+                    textures.Add(mat.DiffuseMap, loadImage(mat.DiffuseMap));
                 }               
 
                 if (File.Exists(mat.NormalMap) && !textures.ContainsKey(mat.NormalMap))
                 {
-                    textures.Add(mat.NormalMap, loadImage(mat.NormalMap, TextureUnit.Texture1));
+                    textures.Add(mat.NormalMap, loadImage(mat.NormalMap));
                 }
 
                 if (File.Exists(mat.OpacityMap) && !textures.ContainsKey(mat.OpacityMap))
                 {
-                    textures.Add(mat.OpacityMap, loadImage(mat.OpacityMap, TextureUnit.Texture2));
+                    textures.Add(mat.OpacityMap, loadImage(mat.OpacityMap));
                 }
 
                 if (File.Exists(mat.AmbientMap) && !textures.ContainsKey(mat.AmbientMap))
                 {
-                    textures.Add(mat.AmbientMap, loadImage(mat.AmbientMap, TextureUnit.Texture3));
+                    textures.Add(mat.AmbientMap, loadImage(mat.AmbientMap));
                 }
 
                 if (File.Exists(mat.SpecularMap) && !textures.ContainsKey(mat.SpecularMap))
                 {
-                    textures.Add(mat.SpecularMap, loadImage(mat.SpecularMap, TextureUnit.Texture4));
+                    textures.Add(mat.SpecularMap, loadImage(mat.SpecularMap));
                 }
             }
         }
 
-        int loadImage(Bitmap image, TextureUnit textureUnit)
+        int loadImage(Bitmap image)
         {
             int texID = GL.GenTexture();
-            GL.ActiveTexture(textureUnit);
             GL.BindTexture(TextureTarget.Texture2D, texID);
             BitmapData data = image.LockBits(new System.Drawing.Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -241,12 +240,12 @@ namespace Irrational.Core.Entities
             return texID;
         }
 
-        int loadImage(string filename, TextureUnit textureUnit)
+        int loadImage(string filename)
         {
             try
             {
                 Bitmap file = new Bitmap(filename);
-                return loadImage(file, textureUnit);
+                return loadImage(file);
             }
             catch (FileNotFoundException e)
             {
