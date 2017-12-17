@@ -14,6 +14,7 @@ namespace Irrational.Utils
     /// </summary>
    public class Material
     {
+        public string MaterialName = String.Empty;
         public Vector3 AmbientColor = new Vector3();
         public Vector3 DiffuseColor = new Vector3();
         public Vector3 SpecularColor = new Vector3();
@@ -85,8 +86,8 @@ namespace Irrational.Utils
                 {
                     Material newMat = new Material();
                     String newMatName = "";
-
-                    newMat = LoadFromString(currentmat, out newMatName);
+                    
+                    newMat = LoadFromString(currentmat, out newMatName);                   
 
                     mats.Add(newMatName, newMat);
                 }
@@ -116,8 +117,9 @@ namespace Irrational.Utils
             // Make sure an actual material was included
             if (lines.Count != 0)
             {
-                // Get name from first line
+                // Get name from first line                
                 name = lines[0].Substring("newmtl ".Length);
+                output.MaterialName = name;
             }
 
             // Remove leading whitespace

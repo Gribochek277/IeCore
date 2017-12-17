@@ -51,7 +51,7 @@ namespace Irrational.Core.Renderer
             light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(1, 1, 1) } };
 
             for (int i = 0; i < 1; i++) { 
-            SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/Lion-snake.mtl" };
+            SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/Lion/Lion-snake.mtl" };
             sceneObject.OnLoad();
                
                 sceneObject.shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true);
@@ -62,10 +62,10 @@ namespace Irrational.Core.Renderer
 
                 // Create our objects
                 WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-            sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/Lion-snake.obj");
-            sceneObject.ModelMesh.CalculateNormals();
+            sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/Lion/Lion-snake.obj");
+            //sceneObject.ModelMesh.CalculateNormals();
             sceneObject.Position += new Vector3(0+(i*3), 0.0f-100, -10);
-            sceneObject.ModelMesh.TextureID = textures[materials["ZBrushPolyMesh3DSG"].DiffuseMap];
+           // sceneObject.ModelMesh.TextureID = textures[materials["ZBrushPolyMesh3DSG"].DiffuseMap];
             sceneObject.Scale = new Vector3(1f, 1f, 1f)*0.2f;
             objects.Add(sceneObject);
 
@@ -86,7 +86,7 @@ namespace Irrational.Core.Renderer
                 sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/knight3.obj1");
                  sceneObject.ModelMesh.CalculateNormals();
                 sceneObject.Position += new Vector3(0 + (i * 3), 0.0f, -10);
-                sceneObject.ModelMesh.TextureID = textures[materials["Knight"].DiffuseMap];
+               // sceneObject.ModelMesh.TextureID = textures[materials["Knight"].DiffuseMap];
                 //   sceneObject.Scale = new Vector3(1f, 1f, 1f);
                 objects.Add(sceneObject);
 
@@ -193,18 +193,34 @@ namespace Irrational.Core.Renderer
             {
 				GL.UseProgram(v.shader.ProgramID);
 				v.shader.EnableVertexAttribArrays();
-
-                GL.BindTexture(TextureTarget.Texture2D, v.ModelMesh.TextureID);
-
+                
+                int texId = textures[materials[v.materials.FirstOrDefault().Value.MaterialName].DiffuseMap];              
+                int normId = textures[materials[v.materials.FirstOrDefault().Value.MaterialName].NormalMap];
+               
+               
                 GL.UniformMatrix4(v.shader.GetUniform("model"), false, ref v.ModelMesh.ModelMatrix);
                 Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
                 GL.UniformMatrix4(v.shader.GetUniform("projection"), false, ref projection);
                 Matrix4 view = cam.GetViewMatrix();
                 GL.UniformMatrix4(v.shader.GetUniform("view"), false, ref view);
+
+                if (v.shader.GetUniform("normaltexture") != -1)
+                {
+                    SetUniform("normaltexture", v.shader.ProgramID, 1);
+                }
+
                 if (v.shader.GetUniform("maintexture") != -1)
                 {
-                    GL.Uniform1(v.shader.GetAttribute("maintexture"), v.ModelMesh.TextureID);
+                    SetUniform("maintexture", v.shader.ProgramID, 0);
                 }
+
+
+                GL.ActiveTexture(TextureUnit.Texture0);
+                GL.BindTexture(TextureTarget.Texture2D, texId);
+                GL.ActiveTexture(TextureUnit.Texture1);
+                GL.BindTexture(TextureTarget.Texture2D, normId);               
+
+                
 
                 if (v.shader.GetUniform("lightColor") != -1)
                 {
@@ -294,6 +310,11 @@ namespace Irrational.Core.Renderer
         {
             // OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
             lastMousePos = new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
+        }
+
+        public void SetUniform(string name,int programId, float value)
+        {
+            GL.Uniform1(GL.GetUniformLocation(programId, name), value);
         }
     }
 }

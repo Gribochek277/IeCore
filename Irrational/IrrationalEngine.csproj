@@ -136,10 +136,10 @@
     </None>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
-    <None Include="Resources\Lion-snake.mtl">
+    <None Include="Resources\Lion\Lion-snake.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Lion-snake.obj">
+    <None Include="Resources\Lion\Lion-snake.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Resources\teapot.obj1">
@@ -157,7 +157,6 @@
     <None Include="Resources\h.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\h.obj" />
     <None Include="Resources\hbump.jpg" />
     <None Include="Resources\knight3.mtl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -174,23 +173,23 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Lion\_LiondefaultMat_Base_Color.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Lion\_LiondefaultMat_Mixed_AO.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Lion\_LiondefaultMat_Normal_DirectX.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Lion\_LiondefaultMat_Roughness.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\opentksquare.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\opentksquare2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\_LiondefaultMat_Base_Color.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\_LiondefaultMat_Mixed_AO.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\_LiondefaultMat_Normal_DirectX.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\_LiondefaultMat_Roughness.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup />

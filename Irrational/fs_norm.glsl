@@ -33,7 +33,7 @@ main()
 
 	vec3 viewDir = normalize(cameraPosition - f_pos);
 
-	vec3 reflectDir = reflect(-lightDir, n); 
+	vec3 reflectDir = reflect(-lightDir, texture(normaltexture, flipped_texcoord).rgb*2-1); 
 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128);
 

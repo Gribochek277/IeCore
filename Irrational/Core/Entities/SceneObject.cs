@@ -195,38 +195,38 @@ namespace Irrational.Core.Entities
 
             // Load textures
             foreach (Material mat in materials.Values)
-            {
-                if (File.Exists(mat.AmbientMap) && !textures.ContainsKey(mat.AmbientMap))
-                {
-                    textures.Add(mat.AmbientMap, loadImage(mat.AmbientMap));
-                }
-
+            {               
                 if (File.Exists(mat.DiffuseMap) && !textures.ContainsKey(mat.DiffuseMap))
                 {
-                    textures.Add(mat.DiffuseMap, loadImage(mat.DiffuseMap));
-                }
-
-                if (File.Exists(mat.SpecularMap) && !textures.ContainsKey(mat.SpecularMap))
-                {
-                    textures.Add(mat.SpecularMap, loadImage(mat.SpecularMap));
-                }
+                    textures.Add(mat.DiffuseMap, loadImage(mat.DiffuseMap,TextureUnit.Texture0));
+                }               
 
                 if (File.Exists(mat.NormalMap) && !textures.ContainsKey(mat.NormalMap))
                 {
-                    textures.Add(mat.NormalMap, loadImage(mat.NormalMap));
+                    textures.Add(mat.NormalMap, loadImage(mat.NormalMap, TextureUnit.Texture1));
                 }
 
                 if (File.Exists(mat.OpacityMap) && !textures.ContainsKey(mat.OpacityMap))
                 {
-                    textures.Add(mat.OpacityMap, loadImage(mat.OpacityMap));
+                    textures.Add(mat.OpacityMap, loadImage(mat.OpacityMap, TextureUnit.Texture2));
+                }
+
+                if (File.Exists(mat.AmbientMap) && !textures.ContainsKey(mat.AmbientMap))
+                {
+                    textures.Add(mat.AmbientMap, loadImage(mat.AmbientMap, TextureUnit.Texture3));
+                }
+
+                if (File.Exists(mat.SpecularMap) && !textures.ContainsKey(mat.SpecularMap))
+                {
+                    textures.Add(mat.SpecularMap, loadImage(mat.SpecularMap, TextureUnit.Texture4));
                 }
             }
         }
 
-        int loadImage(Bitmap image)
+        int loadImage(Bitmap image, TextureUnit textureUnit)
         {
             int texID = GL.GenTexture();
-
+            GL.ActiveTexture(textureUnit);
             GL.BindTexture(TextureTarget.Texture2D, texID);
             BitmapData data = image.LockBits(new System.Drawing.Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -241,12 +241,12 @@ namespace Irrational.Core.Entities
             return texID;
         }
 
-        int loadImage(string filename)
+        int loadImage(string filename, TextureUnit textureUnit)
         {
             try
             {
                 Bitmap file = new Bitmap(filename);
-                return loadImage(file);
+                return loadImage(file, textureUnit);
             }
             catch (FileNotFoundException e)
             {
