@@ -48,7 +48,7 @@ namespace Irrational.Core.Renderer
 
             //activeShader = "normal";
 
-            light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(1, 1, 1) } };
+            light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(0, 0, 3) } };
 
             for (int i = 0; i < 1; i++) { 
             SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/Lion/Lion-snake.mtl" };
@@ -182,7 +182,7 @@ namespace Irrational.Core.Renderer
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
-            //GL.Enable(EnableCap.CullFace);
+            GL.Enable(EnableCap.CullFace);
 
              
 			int indiceat = 0;
@@ -222,18 +222,18 @@ namespace Irrational.Core.Renderer
 
                 if (v.shader.GetUniform("lightColor") != -1)
                 {
-                    GL.Uniform3(v.shader.GetUniform("lightColor"), 1f, 1f, 1F);
+                    GL.Uniform3(v.shader.GetUniform("lightColor"), 1f, 1f, 1f);
                 }
 
                 if (v.shader.GetUniform("ambientStr") != -1)
                 {
-                    GL.Uniform1(v.shader.GetUniform("ambientStr"), 0.3f);
+                    GL.Uniform1(v.shader.GetUniform("ambientStr"), 0.1f);
                 }
 
                 if (v.shader.GetUniform("specStr") != -1)
                 {
                     //TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered
-                    GL.Uniform1(v.shader.GetUniform("specStr"), 1);
+                    GL.Uniform1(v.shader.GetUniform("specStr"), 10f);
                 }
 
                 if (v.shader.GetUniform("cameraPosition") != -1)
@@ -312,8 +312,7 @@ namespace Irrational.Core.Renderer
 
         public void SetUniform(string name,int programId, int value)
         {
-            int uniformLocation = GL.GetUniformLocation(programId, name);
-            GL.Uniform1(uniformLocation, value);
+            GL.Uniform1(GL.GetUniformLocation(programId, name), value);
         }
     }
 }
