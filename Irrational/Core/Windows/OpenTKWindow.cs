@@ -59,7 +59,7 @@ namespace Irrational.Core.Windows
 
         private void RemoveListeners()
         {
-            //TODO Check memory lick after closing window
+            //TODO Check memory leak after closing window
         }
     }
 }

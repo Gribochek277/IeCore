@@ -18,7 +18,8 @@ uniform sampler2D maintexture;
 uniform sampler2D normaltexture;
 
 
-
+//TODO: split one shader into two 
+//one for normal map and one for normal from model or calculated
 void
 main()
 {

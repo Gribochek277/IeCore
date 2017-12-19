@@ -25,9 +25,6 @@ namespace Irrational.Core.Renderer
         Vector2 lastMousePos = new Vector2();
 
         List<SceneObject> objects = new List<SceneObject>();
-        Dictionary<string, int> textures = new Dictionary<string, int>();
-        Dictionary<string, ShaderProg> shaders = new Dictionary<string, ShaderProg>();
-        Dictionary<String, Material> materials = new Dictionary<string, Material>();
 
         SceneObject light = null;
 
@@ -40,32 +37,19 @@ namespace Irrational.Core.Renderer
             lastMousePos = new Vector2(_gameWindow.Mouse.X, _gameWindow.Mouse.Y);
 
             GL.GenBuffers(1, out ibo_elements);
-
-            // Load shaders from file
-            //shaders.Add("default", new ShaderProg("vs.glsl", "fs.glsl", true));
-            //shaders.Add("textured", new ShaderProg("vs_tex.glsl", "fs_tex.glsl", true));
-            //shaders.Add("normal", new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true));
-
-            //activeShader = "normal";
-
-            light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(0, 0, 3) } };
+            
+            light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(0, 3, 3) } };
 
             for (int i = 0; i < 1; i++) { 
             SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/Lion/Lion-snake.mtl" };
-            sceneObject.OnLoad();
-               
-                sceneObject.shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true);
-
-                materials[sceneObject.materials.FirstOrDefault().Key] = sceneObject.materials.FirstOrDefault().Value;
-                foreach(var texture in sceneObject.textures)
-                textures[texture.Key] = texture.Value;
-
+            sceneObject.OnLoad();               
+            sceneObject.shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true);
+                
                 // Create our objects
-                WavefrontModelLoader modelLoader = new WavefrontModelLoader();
+            WavefrontModelLoader modelLoader = new WavefrontModelLoader();
             sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/Lion/Lion-snake.obj");
             //sceneObject.ModelMesh.CalculateNormals();
             sceneObject.Position += new Vector3(0+(i*3), 0.0f-100, -10);
-           // sceneObject.ModelMesh.TextureID = textures[materials["ZBrushPolyMesh3DSG"].DiffuseMap];
             sceneObject.Scale = new Vector3(1f, 1f, 1f)*0.2f;
             objects.Add(sceneObject);
 
@@ -77,16 +61,12 @@ namespace Irrational.Core.Renderer
                 sceneObject.OnLoad();
 
                 sceneObject.shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true);
-
-                materials[sceneObject.materials.FirstOrDefault().Key] = sceneObject.materials.FirstOrDefault().Value;
-                textures[sceneObject.textures.FirstOrDefault().Key] = sceneObject.textures.FirstOrDefault().Value;
-
+   
                 // Create our objects
                 WavefrontModelLoader modelLoader = new WavefrontModelLoader();
                 sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/knight3.obj1");
                  sceneObject.ModelMesh.CalculateNormals();
                 sceneObject.Position += new Vector3(0 + (i * 3), 0.0f, -10);
-               // sceneObject.ModelMesh.TextureID = textures[materials["Knight"].DiffuseMap];
                 //   sceneObject.Scale = new Vector3(1f, 1f, 1f);
                 objects.Add(sceneObject);
 
@@ -169,9 +149,6 @@ namespace Irrational.Core.Renderer
           
             // Update object positions
             time += (float)this._gameWindow.RenderPeriod;
-
-
-
            
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
@@ -179,45 +156,38 @@ namespace Irrational.Core.Renderer
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
 
-
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
-
              
 			int indiceat = 0;
-
            
             // Draw all our objects
             foreach(SceneObject v in objects)
             {
-                int texId = textures[materials[v.materials.FirstOrDefault().Value.MaterialName].DiffuseMap];
-                int normId = textures[materials[v.materials.FirstOrDefault().Value.MaterialName].NormalMap];
+                int texId = v.textures[v.materials.FirstOrDefault().Value.DiffuseMap];
+                int normId = v.textures[v.materials.FirstOrDefault().Value.NormalMap];
                 GL.UseProgram(v.shader.ProgramID);
 				v.shader.EnableVertexAttribArrays();
-               
                
                 GL.UniformMatrix4(v.shader.GetUniform("model"), false, ref v.ModelMesh.ModelMatrix);
                 Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
                 GL.UniformMatrix4(v.shader.GetUniform("projection"), false, ref projection);
                 Matrix4 view = cam.GetViewMatrix();
                 GL.UniformMatrix4(v.shader.GetUniform("view"), false, ref view);
-
-                
-                
                
                 if (v.shader.GetUniform("maintexture") != -1)
                 {
                     GL.ActiveTexture(TextureUnit.Texture0);
                     GL.BindTexture(TextureTarget.Texture2D, texId);
-                    SetUniform("maintexture", v.shader.ProgramID, 0);
+                    GL.Uniform1(v.shader.GetUniform("v"), 0);
                 }
 
                 if (v.shader.GetUniform("normaltexture") != -1)
                 {
                     GL.ActiveTexture(TextureUnit.Texture1);
                     GL.BindTexture(TextureTarget.Texture2D, normId);
-                    SetUniform("normaltexture", v.shader.ProgramID, 1);                   
+                    GL.Uniform1(v.shader.GetUniform("normaltexture"), 1);
                 }
 
                 if (v.shader.GetUniform("lightColor") != -1)
@@ -248,12 +218,9 @@ namespace Irrational.Core.Renderer
 
                 GL.DrawElements(BeginMode.Triangles, v.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += v.ModelMesh.IndiceCount;
-          
-
 
                 v.shader.DisableVertexAttribArrays();
             }
-
 
             GL.Flush();
             _gameWindow.SwapBuffers();
@@ -276,7 +243,6 @@ namespace Irrational.Core.Renderer
 				objects[i].Position = new Vector3(-(objects.Count) + i*3.5f, 0-2.5f, -5.0f);
                 objects[i].Rotation = new Vector3(0, 0.25f * time, 0);
             }
-
 
             // Update model view matrices
             foreach (SceneObject v in objects)
@@ -308,11 +274,6 @@ namespace Irrational.Core.Renderer
         {
             // OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
             lastMousePos = new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
-        }
-
-        public void SetUniform(string name,int programId, int value)
-        {
-            GL.Uniform1(GL.GetUniformLocation(programId, name), value);
         }
     }
 }
