@@ -1,5 +1,4 @@
 using Irrational.Core.Entities.Abstractions;
-using Irrational.Core.Windows;
 using Irrational.Utils;
 using OpenTK.Graphics.OpenGL;
 using System;
@@ -14,7 +13,7 @@ namespace Irrational.Core.Entities
 {
     public class SceneObject : ISceneObject
     {
-         Volume _modelMesh;
+        Volume _modelMesh;
         string _mdlSource;
         string _matSource;
 		       

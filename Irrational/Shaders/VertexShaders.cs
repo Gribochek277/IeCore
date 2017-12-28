@@ -1,7 +1,6 @@
-﻿using System;
-namespace Irrational
+﻿namespace Irrational
 {
-	public static class VertexShaders
+    public static class VertexShaders
 	{
 public static string VertexShaderDefault = @"
                 #version 130

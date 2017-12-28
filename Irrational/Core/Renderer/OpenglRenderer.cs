@@ -3,7 +3,6 @@ using Irrational.Core.Renderer.Abstractions;
 using OpenTK;
 using System.Collections.Generic;
 using Irrational.Shaders;
-using Irrational.Utils;
 using Irrational.Core.Entities;
 using System.Linq;
 using System.Drawing;

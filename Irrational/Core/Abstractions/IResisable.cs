@@ -1,6 +1,4 @@
-﻿using OpenTK;
-
-namespace Irrational.Core.Abstractions
+﻿namespace Irrational.Core.Abstractions
 {
     public interface IResisable
     {
