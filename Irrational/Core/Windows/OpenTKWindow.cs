@@ -1,4 +1,4 @@
-﻿using Irrational.Core.Renderer;
+﻿using Irrational.Core.Renderer.OpenGL;
 using OpenTK;
 using OpenTK.Graphics;
 using System;

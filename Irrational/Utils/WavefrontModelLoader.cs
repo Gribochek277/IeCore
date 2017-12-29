@@ -54,8 +54,6 @@ namespace Irrational
             texs.Add(new Vector2());
             normals.Add(new Vector3());
 
-            int currentindice = 0;
-
             // Read file line by line
             foreach (String line in lines)
             {

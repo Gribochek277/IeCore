@@ -246,7 +246,7 @@ namespace Irrational.Core.Entities
                 Bitmap file = new Bitmap(filename);
                 return loadImage(file);
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 return -1;
             }

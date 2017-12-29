@@ -100,7 +100,9 @@
     <Compile Include="Core\Abstractions\IRenderable.cs" />
     <Compile Include="Core\Abstractions\IResisable.cs" />
     <Compile Include="Core\Renderer\Abstractions\IRenderer.cs" />
-    <Compile Include="Core\Renderer\OpenglRenderer.cs" />
+    <Compile Include="Core\Renderer\OpenGL\IUniformHelper.cs" />
+    <Compile Include="Core\Renderer\OpenGL\OpenglRenderer.cs" />
+    <Compile Include="Core\Renderer\OpenGL\UniformHelper.cs" />
     <Compile Include="Core\Windows\AbstractWindow.cs" />
     <Compile Include="Core\Entities\Primitives\Cube.cs" />
     <Compile Include="Core\Windows\OpenTKWindow.cs" />
@@ -112,12 +114,9 @@
     <Compile Include="Utils\WavefrontModelLoader.cs" />
     <Compile Include="Core\Entities\Camera.cs" />
     <Compile Include="Core\Entities\SceneObject.cs" />
-    <Compile Include="Shaders\VertexShaders.cs" />
-    <Compile Include="Shaders\FragmentShaders.cs" />
     <Compile Include="Core\Entities\Abstractions\ISceneObject.cs" />
     <Compile Include="Core\Entities\Mesh.cs" />
     <Compile Include="Shaders\ShaderProg.cs" />
-    <Compile Include="Shaders\ShaderEntity.cs" />
     <Compile Include="Shaders\AttributeInfo.cs" />
     <Compile Include="Shaders\UniformInfo.cs" />
     <Compile Include="Core\Entities\Abstractions\Volume.cs" />
