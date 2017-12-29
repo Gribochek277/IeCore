@@ -1,13 +1,11 @@
 ﻿using Irrational.Core.Abstractions;
-using Irrational.Shaders;
+using System.Collections.Generic;
 
 namespace Irrational.Core.Entities.Abstractions
 {
-    public interface ISceneObject : IRenderable, IScalable, IUpdatable, ILoadable, ITransformable, IRotatable
+    public interface ISceneObject : ILoadable, IScalable, IRotatable, ITransformable
     {
-        string MaterialSource { get; set; }
-        string ModelSource { get; set; }
-        Volume ModelMesh { get; set; }
-		ShaderProg shader { get; set;}
+        Dictionary<string, ISceneObjectComponent> components { get; }
+        void AddComponent(ISceneObjectComponent component);
     }
 }

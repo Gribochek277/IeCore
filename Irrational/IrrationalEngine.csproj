@@ -99,6 +99,9 @@
     <Compile Include="Core\Abstractions\IUpdatable.cs" />
     <Compile Include="Core\Abstractions\IRenderable.cs" />
     <Compile Include="Core\Abstractions\IResisable.cs" />
+    <Compile Include="Core\Entities\Abstractions\ISceneObjectComponent.cs" />
+    <Compile Include="Core\Entities\MaterialSceneObjectComponent.cs" />
+    <Compile Include="Core\Entities\MeshSceneObjectComponent.cs" />
     <Compile Include="Core\Renderer\Abstractions\IRenderer.cs" />
     <Compile Include="Core\Renderer\OpenGL\IUniformHelper.cs" />
     <Compile Include="Core\Renderer\OpenGL\OpenglRenderer.cs" />

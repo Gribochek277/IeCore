@@ -31,7 +31,7 @@ namespace Irrational.Core.Renderer.OpenGL
 
         List<SceneObject> objects = new List<SceneObject>();
 
-        SceneObject light = null;
+        MeshSceneObjectComponent light = null;
 
        // string activeShader = "default";
 
@@ -42,41 +42,38 @@ namespace Irrational.Core.Renderer.OpenGL
             lastMousePos = new Vector2(_gameWindow.Mouse.X, _gameWindow.Mouse.Y);
 
             GL.GenBuffers(1, out ibo_elements);
-            
-            light = new SceneObject() { ModelMesh = new Mesh() { Position = new Vector3(0, 3, 3) } };
 
-            for (int i = 0; i < 1; i++) { 
-            SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/Lion/Lion-snake.mtl" };
-            sceneObject.OnLoad();               
-            sceneObject.shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true);
-                
-                // Create our objects
-            WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-            sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/Lion/Lion-snake.obj");
-            //sceneObject.ModelMesh.CalculateNormals();
-            sceneObject.Position += new Vector3(0+(i*3), 0.0f-100, -10);
-            sceneObject.Scale = new Vector3(1f, 1f, 1f)*0.2f;
-            objects.Add(sceneObject);
-
-           }
-
-            for (int i = 0; i < 0; i++)
+            light = new MeshSceneObjectComponent()
             {
-                SceneObject sceneObject = new SceneObject() { MaterialSource = "Resources/knight3.mtl" };
-                sceneObject.OnLoad();
+                ModelMesh = new Mesh()
+                {
+                    Position = new Vector3(0, 3, 3)
+                }
+            };
+            
 
-                sceneObject.shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true);
-   
-                // Create our objects
-                WavefrontModelLoader modelLoader = new WavefrontModelLoader();
-                sceneObject.ModelMesh = modelLoader.LoadFromFile("Resources/knight3.obj1");
-                 sceneObject.ModelMesh.CalculateNormals();
-                sceneObject.Position += new Vector3(0 + (i * 3), 0.0f, -10);
-                //   sceneObject.Scale = new Vector3(1f, 1f, 1f);
+            for (int i = 0; i < 1; i++) {
+                MaterialSceneObjectComponent material = new MaterialSceneObjectComponent()
+                {
+                    MaterialSource = "Resources/Lion/Lion-snake.mtl",
+                    Shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true)
+                };
+                
+                MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
+                    new WavefrontModelLoader(),
+                    "Resources/Lion/Lion-snake.obj"
+                    );
+
+                SceneObject sceneObject = new SceneObject();
+                sceneObject.AddComponent(material);
+                sceneObject.AddComponent(meshComponent);
+                sceneObject.OnLoad();
+                //sceneObject.ModelMesh.CalculateNormals();
+                sceneObject.Position += new Vector3(0+(i*3), 0.0f-100, -10);
+                sceneObject.Scale = new Vector3(1f, 1f, 1f)*0.2f;
                 objects.Add(sceneObject);
 
-            }
-
+           }
 
             cam.Position += new Vector3(0f, 0f, 3f);
             GL.ClearColor(Color.Black);
@@ -93,12 +90,13 @@ namespace Irrational.Core.Renderer.OpenGL
 
             foreach (SceneObject v in objects)
             {
-                verts.AddRange(v.ModelMesh.GetVerts().ToList());
-                inds.AddRange(v.ModelMesh.GetIndices(vertcount).ToList());
-                colors.AddRange(v.ModelMesh.GetColorData().ToList());
-                texcoords.AddRange(v.ModelMesh.GetTextureCoords());
-                normals.AddRange(v.ModelMesh.GetNormals().ToList());
-                vertcount += v.ModelMesh.VertCount;
+                MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
+                verts.AddRange(meshComponent.ModelMesh.GetVerts().ToList());
+                inds.AddRange(meshComponent.ModelMesh.GetIndices(vertcount).ToList());
+                colors.AddRange(meshComponent.ModelMesh.GetColorData().ToList());
+                texcoords.AddRange(meshComponent.ModelMesh.GetTextureCoords());
+                normals.AddRange(meshComponent.ModelMesh.GetNormals().ToList());
+                vertcount += meshComponent.ModelMesh.VertCount;
             }
 
             vertdata = verts.ToArray();
@@ -113,37 +111,39 @@ namespace Irrational.Core.Renderer.OpenGL
             int indiceat = 0;
             foreach (SceneObject v in objects)
             {
+                MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
+                MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
 
-                GL.BindBuffer(BufferTarget.ArrayBuffer, v.shader.GetBuffer("vPosition"));
+                GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vPosition"));
 
                 GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
-                GL.VertexAttribPointer(v.shader.GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
+                GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
 
                 // Buffer vertex color if shader supports it
-                if (v.shader.GetAttribute("vColor") != -1)
+                if (materialComponent.Shader.GetAttribute("vColor") != -1)
                 {
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, v.shader.GetBuffer("vColor"));
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vColor"));
                     GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(coldata.Length * Vector3.SizeInBytes), coldata, BufferUsageHint.StaticDraw);
-                    GL.VertexAttribPointer(v.shader.GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
+                    GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
                 }
 
 
                 // Buffer texture coordinates if shader supports it
-                if (v.shader.GetAttribute("texcoord") != -1)
+                if (materialComponent.Shader.GetAttribute("texcoord") != -1)
                 {
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, v.shader.GetBuffer("texcoord"));
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("texcoord"));
                     GL.BufferData<Vector2>(BufferTarget.ArrayBuffer, (IntPtr)(texcoorddata.Length * Vector2.SizeInBytes), texcoorddata, BufferUsageHint.StaticDraw);
-                    GL.VertexAttribPointer(v.shader.GetAttribute("texcoord"), 2, VertexAttribPointerType.Float, true, 0, 0);
+                    GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("texcoord"), 2, VertexAttribPointerType.Float, true, 0, 0);
                 }
 
-                if (v.shader.GetAttribute("vNormal") != -1)
+                if (materialComponent.Shader.GetAttribute("vNormal") != -1)
                 {
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, v.shader.GetBuffer("vNormal"));
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vNormal"));
                     GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(normdata.Length * Vector3.SizeInBytes), normdata, BufferUsageHint.StaticDraw);
-                    GL.VertexAttribPointer(v.shader.GetAttribute("vNormal"), 3, VertexAttribPointerType.Float, true, 0, 0);
+                    GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vNormal"), 3, VertexAttribPointerType.Float, true, 0, 0);
                 }
 
-                indiceat += v.ModelMesh.IndiceCount;
+                indiceat += meshComponent.ModelMesh.IndiceCount;
             }
         }
 
@@ -168,29 +168,32 @@ namespace Irrational.Core.Renderer.OpenGL
             // Draw all our objects
             foreach(SceneObject v in objects)
             {
-                int texId = v.textures[v.materials.FirstOrDefault().Value.DiffuseMap];
-                int normId = v.textures[v.materials.FirstOrDefault().Value.NormalMap];
-                GL.UseProgram(v.shader.ProgramID);
-				v.shader.EnableVertexAttribArrays();
+                MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
+                MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
+
+                int texId = materialComponent.textures[materialComponent.materials.FirstOrDefault().Value.DiffuseMap];
+                int normId = materialComponent.textures[materialComponent.materials.FirstOrDefault().Value.NormalMap];
+                GL.UseProgram(materialComponent.Shader.ProgramID);
+                materialComponent.Shader.EnableVertexAttribArrays();
                
-                GL.UniformMatrix4(v.shader.GetUniform("model"), false, ref v.ModelMesh.ModelMatrix);
+                GL.UniformMatrix4(materialComponent.Shader.GetUniform("model"), false, ref meshComponent.ModelMesh.ModelMatrix);
                 Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
-                GL.UniformMatrix4(v.shader.GetUniform("projection"), false, ref projection);
+                GL.UniformMatrix4(materialComponent.Shader.GetUniform("projection"), false, ref projection);
                 Matrix4 view = cam.GetViewMatrix();
-                GL.UniformMatrix4(v.shader.GetUniform("view"), false, ref view);//think about adding to uniformhelper Matrix4 type, but for now it's not required.
+                GL.UniformMatrix4(materialComponent.Shader.GetUniform("view"), false, ref view);//think about adding to uniformhelper Matrix4 type, but for now it's not required.
 
-                _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", v.shader, TextureUnit.Texture0);
-                _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", v.shader, TextureUnit.Texture1);
-                _uniformHelper.TryAddUniform1(new Vector3(1f, 1f, 1f), "lightColor", v.shader);
-                _uniformHelper.TryAddUniform1(0.1f, "ambientStr", v.shader);
-                _uniformHelper.TryAddUniform1(1f, "specStr", v.shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
-                _uniformHelper.TryAddUniform1(cam.Position, "cameraPosition", v.shader);
-                _uniformHelper.TryAddUniform1(light.Position, "lightPos", v.shader);
+                _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
+                _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
+                _uniformHelper.TryAddUniform1(new Vector3(1f, 1f, 1f), "lightColor", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.1f, "ambientStr", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
+                _uniformHelper.TryAddUniform1(cam.Position, "cameraPosition", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(new Vector3(0f,0f,3f), "lightPos", materialComponent.Shader);
 
-                GL.DrawElements(BeginMode.Triangles, v.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
-                indiceat += v.ModelMesh.IndiceCount;
+                GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
+                indiceat += meshComponent.ModelMesh.IndiceCount;
 
-                v.shader.DisableVertexAttribArrays();
+                materialComponent.Shader.DisableVertexAttribArrays();
             }
 
             GL.Flush();
@@ -218,9 +221,11 @@ namespace Irrational.Core.Renderer.OpenGL
             // Update model view matrices
             foreach (SceneObject v in objects)
             {
-                v.ModelMesh.CalculateModelMatrix();
-                v.ModelMesh.ViewProjectionMatrix = cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
-                v.ModelMesh.ModelViewProjectionMatrix = v.ModelMesh.ModelMatrix * v.ModelMesh.ViewProjectionMatrix;
+                MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
+
+                meshComponent.ModelMesh.CalculateModelMatrix();
+                meshComponent.ModelMesh.ViewProjectionMatrix = cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
+                meshComponent.ModelMesh.ModelViewProjectionMatrix = meshComponent.ModelMesh.ModelMatrix * meshComponent.ModelMesh.ViewProjectionMatrix;
             }
 
             light.ModelMesh.CalculateModelMatrix();
