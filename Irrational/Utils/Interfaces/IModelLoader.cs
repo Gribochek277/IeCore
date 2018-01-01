@@ -1,4 +1,6 @@
-﻿namespace Irrational.Utils.Interfaces
+﻿using Irrational.Core.Entities;
+
+namespace Irrational.Utils.Interfaces
 {
     public interface IModelLoader
     {

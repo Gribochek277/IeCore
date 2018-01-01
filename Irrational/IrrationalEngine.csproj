@@ -100,6 +100,7 @@
     <Compile Include="Core\Abstractions\IRenderable.cs" />
     <Compile Include="Core\Abstractions\IResisable.cs" />
     <Compile Include="Core\Entities\Abstractions\ISceneObjectComponent.cs" />
+    <Compile Include="Core\Entities\Material.cs" />
     <Compile Include="Core\Entities\MaterialSceneObjectComponent.cs" />
     <Compile Include="Core\Entities\MeshSceneObjectComponent.cs" />
     <Compile Include="Core\Renderer\Abstractions\IRenderer.cs" />
@@ -113,7 +114,7 @@
     <Compile Include="Core\Entities\Scene.cs" />
     <Compile Include="Core\Entities\Primitives\TexturedCube.cs" />
     <Compile Include="Utils\Interfaces\IModelLoader.cs" />
-    <Compile Include="Utils\Material.cs" />
+    <Compile Include="Utils\MaterialLoader.cs" />
     <Compile Include="Utils\WavefrontModelLoader.cs" />
     <Compile Include="Core\Entities\Camera.cs" />
     <Compile Include="Core\Entities\SceneObject.cs" />

@@ -8,6 +8,7 @@ using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Irrational.Utils.Interfaces;
+using Irrational.Core.Entities;
 
 namespace Irrational
 {

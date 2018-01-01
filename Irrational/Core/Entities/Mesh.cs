@@ -3,7 +3,7 @@ using OpenTK;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Irrational
+namespace Irrational.Core.Entities
 {
     public class Mesh : Volume
     {

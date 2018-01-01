@@ -61,7 +61,7 @@ namespace Irrational.Core.Entities
 
         private void loadMaterials(String filename)
         {
-            foreach (var mat in Material.LoadFromFile(filename))
+            foreach (var mat in MaterialLoader.LoadFromFile(filename))
             {
                 if (!materials.ContainsKey(mat.Key))
                 {
