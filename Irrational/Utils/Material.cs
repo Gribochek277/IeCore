@@ -71,6 +71,8 @@ namespace Irrational.Utils
                                 Material newMat = new Material();
                                 String newMatName = "";
 
+                                string relativeLocation = Directory.GetDirectoryRoot(filename);
+
                                 newMat = LoadFromString(currentmat, out newMatName);
 
                                 mats.Add(newMatName, newMat);
@@ -86,8 +88,10 @@ namespace Irrational.Utils
                 {
                     Material newMat = new Material();
                     String newMatName = "";
-                    
-                    newMat = LoadFromString(currentmat, out newMatName);                   
+
+                    string relativeLocation = Directory.GetParent(filename).FullName;
+
+                    newMat = LoadFromString(currentmat, out newMatName, relativeLocation);                   
 
                     mats.Add(newMatName, newMat);
                 }
@@ -104,7 +108,7 @@ namespace Irrational.Utils
             return mats;
         }
 
-        public static Material LoadFromString(string mat, out string name)
+        public static Material LoadFromString(string mat, out string name, string relativeLocation = null)
         {
             Material output = new Material();
             name = "";
@@ -243,7 +247,7 @@ namespace Irrational.Utils
                     // Check that file name is present
                     if (line.Length > "map_Ka".Length + 6)
                     {
-                        output.AmbientMap = line.Substring("map_Ka".Length + 1);
+                        output.AmbientMap = relativeLocation + "\\" + line.Substring("map_Ka".Length + 1);
                     }
                 }
 
@@ -253,7 +257,7 @@ namespace Irrational.Utils
                     // Check that file name is present
                     if (line.Length > "map_Kd".Length + 6)
                     {
-                        output.DiffuseMap = line.Substring("map_Kd".Length + 1);
+                        output.DiffuseMap = relativeLocation + "\\" + line.Substring("map_Kd".Length + 1);
                     }
                 }
 
@@ -263,7 +267,7 @@ namespace Irrational.Utils
                     // Check that file name is present
                     if (line.Length > "map_Ks".Length + 6)
                     {
-                        output.SpecularMap = line.Substring("map_Ks".Length + 1);
+                        output.SpecularMap = relativeLocation + "\\" + line.Substring("map_Ks".Length + 1);
                     }
                 }
 
@@ -273,7 +277,7 @@ namespace Irrational.Utils
                     // Check that file name is present
                     if (line.Length > "map_normal".Length + 6)
                     {
-                        output.NormalMap = line.Substring("map_normal".Length + 1);
+                        output.NormalMap = relativeLocation + "\\" + line.Substring("map_normal".Length + 1);
                     }
                 }
 
@@ -283,7 +287,7 @@ namespace Irrational.Utils
                     // Check that file name is present
                     if (line.Length > "map_opacity".Length + 6)
                     {
-                        output.OpacityMap = line.Substring("map_opacity".Length + 1);
+                        output.OpacityMap = relativeLocation + "\\" + line.Substring("map_opacity".Length + 1);
                     }
                 }
 
