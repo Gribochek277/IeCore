@@ -162,8 +162,9 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
-             
-			int indiceat = 0;
+            GL.Disable(EnableCap.FramebufferSrgb);
+
+            int indiceat = 0;
            
             // Draw all our objects
             foreach(SceneObject v in objects)
@@ -189,7 +190,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(cam.Position, "cameraPosition", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(new Vector3(0f,0f,3f), "lightPos", materialComponent.Shader);
-
+                GL.Enable(EnableCap.FramebufferSrgb);
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
 

@@ -74,39 +74,39 @@ namespace Irrational.Core.Entities
             {
                 if (File.Exists(mat.DiffuseMap) && !textures.ContainsKey(mat.DiffuseMap))
                 {
-                    textures.Add(mat.DiffuseMap, loadImage(mat.DiffuseMap));
+                    textures.Add(mat.DiffuseMap, loadImage(mat.DiffuseMap, PixelInternalFormat.Srgb8Alpha8));
                 }
 
                 if (File.Exists(mat.NormalMap) && !textures.ContainsKey(mat.NormalMap))
                 {
-                    textures.Add(mat.NormalMap, loadImage(mat.NormalMap));
+                    textures.Add(mat.NormalMap, loadImage(mat.NormalMap, PixelInternalFormat.Rgba));
                 }
 
                 if (File.Exists(mat.OpacityMap) && !textures.ContainsKey(mat.OpacityMap))
                 {
-                    textures.Add(mat.OpacityMap, loadImage(mat.OpacityMap));
+                    textures.Add(mat.OpacityMap, loadImage(mat.OpacityMap,PixelInternalFormat.Rgba));
                 }
 
                 if (File.Exists(mat.AmbientMap) && !textures.ContainsKey(mat.AmbientMap))
                 {
-                    textures.Add(mat.AmbientMap, loadImage(mat.AmbientMap));
+                    textures.Add(mat.AmbientMap, loadImage(mat.AmbientMap,PixelInternalFormat.Rgba));
                 }
 
                 if (File.Exists(mat.SpecularMap) && !textures.ContainsKey(mat.SpecularMap))
                 {
-                    textures.Add(mat.SpecularMap, loadImage(mat.SpecularMap));
+                    textures.Add(mat.SpecularMap, loadImage(mat.SpecularMap,PixelInternalFormat.Rgba));
                 }
             }
         }
 
-        int loadImage(Bitmap image)
+        int loadImage(Bitmap image, PixelInternalFormat textureColorspace)
         {
             int texID = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, texID);
             BitmapData data = image.LockBits(new System.Drawing.Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
+            GL.TexImage2D(TextureTarget.Texture2D, 0, textureColorspace, data.Width, data.Height, 0,
                 OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 
             image.UnlockBits(data);
@@ -116,12 +116,12 @@ namespace Irrational.Core.Entities
             return texID;
         }
 
-        int loadImage(string filename)
+        int loadImage(string filename, PixelInternalFormat textureColorspace)
         {
             try
             {
                 Bitmap file = new Bitmap(filename);
-                return loadImage(file);
+                return loadImage(file, textureColorspace);
             }
             catch (FileNotFoundException)
             {
