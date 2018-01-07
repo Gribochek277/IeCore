@@ -76,7 +76,7 @@ namespace Irrational.Core.Renderer.OpenGL
            }
 
             cam.Position += new Vector3(0f, 0f, 3f);
-            GL.ClearColor(Color.Black);
+            GL.ClearColor(OpenTK.Color.Black);
             GL.PointSize(5f);
             
             // Assemble vertex and indice data for all volumes

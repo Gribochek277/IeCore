@@ -1,35 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IrrationalEngine", "Irrational\IrrationalEngine.csproj", "{B85D84DB-46F7-4518-8CDB-3B1523E1223C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IrrationalEngine", "IrrationalEngine\IrrationalEngine.csproj", "{827DBC4D-693D-4F05-986E-145E91F50245}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Debug|x64.ActiveCfg = Debug|x64
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Debug|x64.Build.0 = Debug|x64
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Debug|x86.ActiveCfg = Debug|x86
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Debug|x86.Build.0 = Debug|x86
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Release|x64.ActiveCfg = Release|x64
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Release|x64.Build.0 = Release|x64
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Release|x86.ActiveCfg = Release|x86
-		{B85D84DB-46F7-4518-8CDB-3B1523E1223C}.Release|x86.Build.0 = Release|x86
+		{827DBC4D-693D-4F05-986E-145E91F50245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{827DBC4D-693D-4F05-986E-145E91F50245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{827DBC4D-693D-4F05-986E-145E91F50245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{827DBC4D-693D-4F05-986E-145E91F50245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9D54742E-B013-47CA-B9C2-19D511A8C323}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		BaseDirectory = Irrational
