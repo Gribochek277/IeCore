@@ -28,6 +28,7 @@ namespace Irrational.Core.Renderer.OpenGL
         int ibo_elements;
         Camera cam = new Camera();
         Vector2 lastMousePos = new Vector2();
+        
 
         List<SceneObject> objects = new List<SceneObject>();
 
@@ -47,7 +48,7 @@ namespace Irrational.Core.Renderer.OpenGL
             {
                 ModelMesh = new Mesh()
                 {
-                    Position = new Vector3(0, 3, 3)
+                    Position = new Vector3(0, 0, 1)
                 }
             };
             
@@ -56,7 +57,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 MaterialSceneObjectComponent material = new MaterialSceneObjectComponent()
                 {
                     MaterialSource = "Resources/Lion/Lion-snake.mtl",
-                    Shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true)
+                    Shader = new ShaderProg("vs_norm.glsl", "fs_PBR.glsl", true)
                 };
                 
                 MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
@@ -64,11 +65,11 @@ namespace Irrational.Core.Renderer.OpenGL
                     "Resources/Lion/Lion-snake.obj"
                     );
 
-                SceneObject sceneObject = new SceneObject();
+                SceneObject sceneObject = new SceneObject();                
                 sceneObject.AddComponent(material);
                 sceneObject.AddComponent(meshComponent);
                 sceneObject.OnLoad();
-                //sceneObject.ModelMesh.CalculateNormals();
+                //meshComponent.ModelMesh.CalculateNormals();
                 sceneObject.Position += new Vector3(0+(i*3), 0.0f-100, -10);
                 sceneObject.Scale = new Vector3(1f, 1f, 1f)*0.2f;
                 objects.Add(sceneObject);
@@ -185,11 +186,14 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
-                _uniformHelper.TryAddUniform1(new Vector3(1f, 1f, 1f), "lightColor", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(new Vector3(0.3f, 0.3f, 0.3f), "lightColor[0]", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(0.1f, "ambientStr", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(cam.Position, "cameraPosition", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(new Vector3(0f,0f,3f), "lightPos", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(light.ModelMesh.Position, "lightPos[0]", materialComponent.Shader);
+                //PBR uniforms
+                _uniformHelper.TryAddUniform1(0.1f, "metallic", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.3f, "roughness", materialComponent.Shader);
                 GL.Enable(EnableCap.FramebufferSrgb);
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
