@@ -86,7 +86,7 @@ namespace Irrational.Utils
             Material output = new Material();
             name = "";
 
-            List<String> lines = mat.Split('\n').ToList();
+            List<string> lines = mat.Split('\n').ToList();
 
             // Skip until the material definition starts
             lines = lines.SkipWhile(s => !s.StartsWith("newmtl ")).ToList();
@@ -103,7 +103,7 @@ namespace Irrational.Utils
             lines = lines.Select((string s) => s.Trim()).ToList();
 
             // Read material properties
-            foreach (String line in lines)
+            foreach (string line in lines)
             {
                 // Skip comments and blank lines
                 if (line.Length < 3 || line.StartsWith("//") || line.StartsWith("#"))
@@ -114,7 +114,7 @@ namespace Irrational.Utils
                 // Parse ambient color
                 if (line.StartsWith("Ka"))
                 {
-                    String[] colorparts = line.Substring(3).Split(' ');
+                    string[] colorparts = line.Substring(3).Split(' ');
 
                     // Check that all vector fields are present
                     if (colorparts.Length < 3)

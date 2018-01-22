@@ -41,7 +41,7 @@ namespace Irrational
         public Mesh LoadFromString(string objModel)
         {
             // Seperate lines from the file
-            List<String> lines = new List<string>(objModel.Split('\n'));
+            List<string> lines = new List<string>(objModel.Split('\n'));
 
             // Lists to hold model data
             List<Vector3> verts = new List<Vector3>();

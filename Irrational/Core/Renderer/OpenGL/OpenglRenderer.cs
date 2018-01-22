@@ -7,18 +7,21 @@ using Irrational.Core.Entities;
 using System.Linq;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
+using Irrational.Core.Entities.Abstractions;
 
 namespace Irrational.Core.Renderer.OpenGL
 {
     public class OpenglRenderer : IRenderer
     {
         private UniformHelper _uniformHelper;
+        private GameWindow _gameWindow;
+        private List<ISceneObject> _objects;
 
-        public OpenglRenderer() {
+        public OpenglRenderer(GameWindow gameWindow) {
+            _gameWindow = gameWindow;
             _uniformHelper = new UniformHelper();
         }
-
-        public GameWindow _gameWindow { get; set; }
+                
         Vector3[] vertdata;
         Vector3[] coldata;
         Vector2[] texcoorddata;
@@ -29,17 +32,13 @@ namespace Irrational.Core.Renderer.OpenGL
         Camera cam = new Camera();
         Vector2 lastMousePos = new Vector2();
         
-
-        List<SceneObject> objects = new List<SceneObject>();
-
         MeshSceneObjectComponent light = null;
-
-       // string activeShader = "default";
 
         float time = 0.0f;
 
-        public void OnLoad()
+        public void OnLoad(List<ISceneObject> sceneObjects)
         {
+            _objects = sceneObjects;
             lastMousePos = new Vector2(_gameWindow.Mouse.X, _gameWindow.Mouse.Y);
 
             GL.GenBuffers(1, out ibo_elements);
@@ -53,28 +52,7 @@ namespace Irrational.Core.Renderer.OpenGL
             };
             
 
-            for (int i = 0; i < 1; i++) {
-                MaterialSceneObjectComponent material = new MaterialSceneObjectComponent()
-                {
-                    MaterialSource = "Resources/Lion/Lion-snake.mtl",
-                    Shader = new ShaderProg("vs_norm.glsl", "fs_PBR.glsl", true)
-                };
-                
-                MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
-                    new WavefrontModelLoader(),
-                    "Resources/Lion/Lion-snake.obj"
-                    );
-
-                SceneObject sceneObject = new SceneObject();                
-                sceneObject.AddComponent(material);
-                sceneObject.AddComponent(meshComponent);
-                sceneObject.OnLoad();
-                //meshComponent.ModelMesh.CalculateNormals();
-                sceneObject.Position += new Vector3(0+(i*3), 0.0f-100, -10);
-                sceneObject.Scale = new Vector3(1f, 1f, 1f)*0.2f;
-                objects.Add(sceneObject);
-
-           }
+            
 
             cam.Position += new Vector3(0f, 0f, 3f);
             GL.ClearColor(Color.Black);
@@ -89,7 +67,7 @@ namespace Irrational.Core.Renderer.OpenGL
             List <Vector2> texcoords = new List<Vector2>();
             List <Vector3> normals = new List<Vector3>();
 
-            foreach (SceneObject v in objects)
+            foreach (SceneObject v in _objects)
             {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
                 verts.AddRange(meshComponent.ModelMesh.GetVerts().ToList());
@@ -110,7 +88,7 @@ namespace Irrational.Core.Renderer.OpenGL
             Console.WriteLine("Triangles: " + vertdata.Length/3);
 
             int indiceat = 0;
-            foreach (SceneObject v in objects)
+            foreach (SceneObject v in _objects)
             {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
                 MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
@@ -153,7 +131,9 @@ namespace Irrational.Core.Renderer.OpenGL
           
             // Update object positions
             time += (float)this._gameWindow.RenderPeriod;
-           
+
+            this._gameWindow.Title = "FPS: " + (1f / this._gameWindow.RenderPeriod).ToString("0.");
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
             // Buffer index data
@@ -168,7 +148,7 @@ namespace Irrational.Core.Renderer.OpenGL
             int indiceat = 0;
            
             // Draw all our objects
-            foreach(SceneObject v in objects)
+            foreach(SceneObject v in _objects)
             {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
                 MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
@@ -215,16 +195,16 @@ namespace Irrational.Core.Renderer.OpenGL
             throw new NotImplementedException();
         }
 
-        public void OnUpdated(double deltatime)
+        public void OnUpdated()
         {
-            for(int i=0;i<objects.Count;i++)
+            for(int i=0;i<_objects.Count;i++)
             {
-				objects[i].Position = new Vector3(-(objects.Count) + i*3.5f, 0-2.5f, -5.0f);
-                objects[i].Rotation = new Vector3(0, 0.25f * time, 0);
+				_objects[i].Position = new Vector3(-(_objects.Count) + i*3.5f, 0-2.5f, -5.0f);
+                _objects[i].Rotation = new Vector3(0, 0.25f * time, 0);
             }
 
             // Update model view matrices
-            foreach (SceneObject v in objects)
+            foreach (SceneObject v in _objects)
             {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
 
@@ -244,14 +224,14 @@ namespace Irrational.Core.Renderer.OpenGL
                 lastMousePos += delta;
 
               //  cam.AddRotation(delta.X, delta.Y);
-                ResetCursor((float)deltatime);
+                ResetCursor();
             }
         }
 
         /// <summary>
         /// Moves the mouse cursor to the center of the screen
         /// </summary>
-        void ResetCursor(float deltatime)
+        void ResetCursor()
         {
             // OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
             lastMousePos = new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
