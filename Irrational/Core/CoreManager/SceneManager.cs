@@ -19,28 +19,32 @@ namespace Irrational.Core.CoreManager
         public void OnLoad()
         {
             _scene.OnLoad();
-            foreach (SceneObject sceneObject in _scene.Objects)
+            foreach (SceneObject sceneObject in _scene.Objects)// TODO: i don't like this part of code
                 _sceneObjects.Add(sceneObject);
-            _renderer.OnLoad(_sceneObjects);
+            _renderer.OnLoad(_sceneObjects,(Camera)_scene.Camera.components["Camera"]);
         }
 
         public void OnRendered()
         {
+            //_scene.OnRendered(); TODO: implement
             _renderer.OnRendered();
         }
 
         public void OnResized()
         {
+           // _scene.OnResized(); TODO: implement
             _renderer.OnResized();
         }
 
         public void OnUnload()
         {
+           // _scene.OnUnload(); TODO: implement
             _renderer.OnUnload();
         }
 
         public void OnUpdated()
         {
+            _scene.OnUpdated();
             _renderer.OnUpdated();
         }
     }

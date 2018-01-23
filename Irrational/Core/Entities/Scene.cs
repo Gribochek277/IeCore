@@ -1,5 +1,6 @@
 ﻿using Irrational.Core.Entities;
 using Irrational.Core.Entities.Abstractions;
+using Irrational.Logic;
 using Irrational.Shaders;
 using OpenTK;
 using System.Collections.Generic;
@@ -9,10 +10,15 @@ namespace Irrational
     public class Scene : IScene
     {
         private List<SceneObject> _sceneObjects = new List<SceneObject>();
+        private PlayerCamera _camera; 
         public List<SceneObject> Objects { get { return _sceneObjects; } }
+        public SceneObject Camera { get { return _camera; } }
 
         public void OnLoad()
         {
+            _camera = new PlayerCamera();
+            _camera.AddComponent(new Camera());
+
             for (int i = 0; i < 1; i++)
             {
                 MaterialSceneObjectComponent material = new MaterialSceneObjectComponent()
@@ -55,7 +61,7 @@ namespace Irrational
 
         public void OnUpdated()
         {
-            throw new System.NotImplementedException();
+            _camera.OnUpdated();
         }
     }
 }

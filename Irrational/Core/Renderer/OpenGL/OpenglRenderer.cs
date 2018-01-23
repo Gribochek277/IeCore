@@ -2,7 +2,6 @@
 using Irrational.Core.Renderer.Abstractions;
 using OpenTK;
 using System.Collections.Generic;
-using Irrational.Shaders;
 using Irrational.Core.Entities;
 using System.Linq;
 using System.Drawing;
@@ -16,6 +15,7 @@ namespace Irrational.Core.Renderer.OpenGL
         private UniformHelper _uniformHelper;
         private GameWindow _gameWindow;
         private List<ISceneObject> _objects;
+        private Camera _cam;
 
         public OpenglRenderer(GameWindow gameWindow) {
             _gameWindow = gameWindow;
@@ -29,17 +29,16 @@ namespace Irrational.Core.Renderer.OpenGL
 
         int[] indicedata;
         int ibo_elements;
-        Camera cam = new Camera();
-        Vector2 lastMousePos = new Vector2();
+        
         
         MeshSceneObjectComponent light = null;
 
         float time = 0.0f;
 
-        public void OnLoad(List<ISceneObject> sceneObjects)
+        public void OnLoad(List<ISceneObject> sceneObjects, Camera camera)
         {
             _objects = sceneObjects;
-            lastMousePos = new Vector2(_gameWindow.Mouse.X, _gameWindow.Mouse.Y);
+            _cam = camera;            
 
             GL.GenBuffers(1, out ibo_elements);
 
@@ -54,7 +53,7 @@ namespace Irrational.Core.Renderer.OpenGL
 
             
 
-            cam.Position += new Vector3(0f, 0f, 3f);
+            _cam.Position += new Vector3(0f, 0f, 3f);
             GL.ClearColor(Color.Black);
             GL.PointSize(5f);
             
@@ -161,7 +160,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 GL.UniformMatrix4(materialComponent.Shader.GetUniform("model"), false, ref meshComponent.ModelMesh.ModelMatrix);
                 Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
                 GL.UniformMatrix4(materialComponent.Shader.GetUniform("projection"), false, ref projection);
-                Matrix4 view = cam.GetViewMatrix();
+                Matrix4 view = _cam.GetViewMatrix();
                 GL.UniformMatrix4(materialComponent.Shader.GetUniform("view"), false, ref view);//think about adding to uniformhelper Matrix4 type, but for now it's not required.
 
                 _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
@@ -169,7 +168,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniform1(new Vector3(0.3f, 0.3f, 0.3f), "lightColor[0]", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(0.1f, "ambientStr", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
-                _uniformHelper.TryAddUniform1(cam.Position, "cameraPosition", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(light.ModelMesh.Position, "lightPos[0]", materialComponent.Shader);
                 //PBR uniforms
                 _uniformHelper.TryAddUniform1(0.1f, "metallic", materialComponent.Shader);
@@ -200,7 +199,6 @@ namespace Irrational.Core.Renderer.OpenGL
             for(int i=0;i<_objects.Count;i++)
             {
 				_objects[i].Position = new Vector3(-(_objects.Count) + i*3.5f, 0-2.5f, -5.0f);
-                _objects[i].Rotation = new Vector3(0, 0.25f * time, 0);
             }
 
             // Update model view matrices
@@ -209,33 +207,14 @@ namespace Irrational.Core.Renderer.OpenGL
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
 
                 meshComponent.ModelMesh.CalculateModelMatrix();
-                meshComponent.ModelMesh.ViewProjectionMatrix = cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
+                meshComponent.ModelMesh.ViewProjectionMatrix = _cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
                 meshComponent.ModelMesh.ModelViewProjectionMatrix = meshComponent.ModelMesh.ModelMatrix * meshComponent.ModelMesh.ViewProjectionMatrix;
             }
 
             light.ModelMesh.CalculateModelMatrix();
-            light.ModelMesh.ViewProjectionMatrix = cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
+            light.ModelMesh.ViewProjectionMatrix = _cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
             light.ModelMesh.ModelViewProjectionMatrix = light.ModelMesh.ModelMatrix * light.ModelMesh.ViewProjectionMatrix;
-
-            // Reset mouse position
-            if (_gameWindow.Focused)
-            {
-                Vector2 delta = lastMousePos - new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
-                lastMousePos += delta;
-
-              //  cam.AddRotation(delta.X, delta.Y);
-                ResetCursor();
-            }
-        }
-
-        /// <summary>
-        /// Moves the mouse cursor to the center of the screen
-        /// </summary>
-        void ResetCursor()
-        {
-            // OpenTK.Input.Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
-            lastMousePos = new Vector2(OpenTK.Input.Mouse.GetState().X, OpenTK.Input.Mouse.GetState().Y);
-        }
+        }        
     }
 }
     

@@ -1,12 +1,7 @@
 using Irrational.Core.Entities.Abstractions;
-using Irrational.Utils;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 
 namespace Irrational.Core.Entities
 {
@@ -60,18 +55,18 @@ namespace Irrational.Core.Entities
             _components.Add(component.GetType().Name,component);
         }
 
-        public void OnLoad()
+        public virtual void OnLoad()
         {
             foreach (var component in _components.Values)
                 component.OnLoad();
         }
        
-        public void OnUnload()
+        public virtual void OnUnload()
         {
             throw new NotImplementedException();
         }
 
-        public void OnTransform()
+        public virtual void OnTransform()
         {
             MeshSceneObjectComponent meshCompnent = (MeshSceneObjectComponent)_components["MeshSceneObjectComponent"];
             meshCompnent.ModelMesh.Position = _position;

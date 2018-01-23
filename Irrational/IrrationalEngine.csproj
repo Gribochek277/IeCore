@@ -113,6 +113,7 @@
     <Compile Include="Core\Windows\Abstractions\IWindow.cs" />
     <Compile Include="Core\Entities\Primitives\Cube.cs" />
     <Compile Include="Core\Windows\OpenTKWindow.cs" />
+    <Compile Include="Logic\PlayerCamera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Entities\Scene.cs" />
     <Compile Include="Core\Entities\Primitives\TexturedCube.cs" />

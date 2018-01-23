@@ -1,9 +1,11 @@
 ﻿using System;
+using Irrational.Core.Abstractions;
+using Irrational.Core.Entities.Abstractions;
 using OpenTK;
 
 namespace Irrational
 {
-    public class Camera
+    public class Camera: ISceneObjectComponent, IUpdatable
     {
         public Vector3 Position = Vector3.Zero;
         public Vector3 Orientation = new Vector3((float)Math.PI, 0f, 0f);
@@ -52,6 +54,21 @@ namespace Irrational
             Orientation.X = (Orientation.X + x) % ((float)Math.PI * 2.0f);
             Orientation.Y = Math.Max(Math.Min(Orientation.Y + y, (float)Math.PI / 2.0f - 0.1f), (float)-Math.PI / 2.0f + 0.1f);
            
+        }
+
+        public void OnLoad()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnUnload()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnUpdated()
+        {
+            throw new NotImplementedException();
         }
     }
 }
