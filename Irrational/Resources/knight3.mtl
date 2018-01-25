@@ -10,5 +10,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Ka Resources/NightText.png
-map_Kd Resources/NightText.png
+map_Ka NightText.png
+map_Kd NightText.png
+map_normal knight3_None_Normal.jpg

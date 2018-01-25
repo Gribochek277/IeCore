@@ -10,7 +10,7 @@ uniform vec3 cameraPosition;
 
 uniform float specStr;
 
-uniform vec3 lightPos;
+uniform vec3 lightPos[1];
 
 uniform float ambientStr;
 uniform vec3 lightColor;
@@ -28,7 +28,7 @@ main()
 
 	vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
 
-	vec3 lightDir = normalize(lightPos - f_pos);
+	vec3 lightDir = normalize(lightPos[0] - f_pos);
 
 	float diff = max(dot(lightDir,texture(normaltexture, flipped_texcoord).rgb), 0.0);
 

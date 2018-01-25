@@ -113,7 +113,9 @@
     <Compile Include="Core\Windows\Abstractions\IWindow.cs" />
     <Compile Include="Core\Entities\Primitives\Cube.cs" />
     <Compile Include="Core\Windows\OpenTKWindow.cs" />
+    <Compile Include="Logic\Knight.cs" />
     <Compile Include="Logic\PlayerCamera.cs" />
+    <Compile Include="Logic\Lion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Entities\Scene.cs" />
     <Compile Include="Core\Entities\Primitives\TexturedCube.cs" />
@@ -183,6 +185,21 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\knight3_None_BaseColor.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\knight3_None_Height.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\knight3_None_Metallic.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\knight3_None_Normal.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\knight3_None_Roughness.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Lion\_LiondefaultMat_Base_Color.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -194,12 +211,6 @@
     </Content>
     <Content Include="Resources\Lion\_LiondefaultMat_Roughness.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\opentksquare.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\opentksquare2.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup />

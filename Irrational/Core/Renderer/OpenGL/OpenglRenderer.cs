@@ -38,7 +38,12 @@ namespace Irrational.Core.Renderer.OpenGL
         public void OnLoad(List<ISceneObject> sceneObjects, Camera camera)
         {
             _objects = sceneObjects;
-            _cam = camera;            
+            _cam = camera;
+
+            foreach (SceneObject v in _objects)
+            {
+                v.OnLoad();
+            }
 
             GL.GenBuffers(1, out ibo_elements);
 
@@ -171,8 +176,8 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(light.ModelMesh.Position, "lightPos[0]", materialComponent.Shader);
                 //PBR uniforms
-                _uniformHelper.TryAddUniform1(0.1f, "metallic", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(0.3f, "roughness", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.9f, "metallic", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.5f, "roughness", materialComponent.Shader);
                 GL.Enable(EnableCap.FramebufferSrgb);
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
@@ -196,11 +201,6 @@ namespace Irrational.Core.Renderer.OpenGL
 
         public void OnUpdated()
         {
-            for(int i=0;i<_objects.Count;i++)
-            {
-				_objects[i].Position = new Vector3(-(_objects.Count) + i*3.5f, 0-2.5f, -5.0f);
-            }
-
             // Update model view matrices
             foreach (SceneObject v in _objects)
             {
