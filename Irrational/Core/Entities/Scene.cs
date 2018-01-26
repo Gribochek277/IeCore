@@ -20,7 +20,7 @@ namespace Irrational
             Lion gameObject = new Lion();
             Knight knight = new Knight();
             _sceneObjects.Add(knight);
-           // _sceneObjects.Add(gameObject);
+            _sceneObjects.Add(gameObject);
             
         }
 

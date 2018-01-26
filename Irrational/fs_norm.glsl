@@ -18,15 +18,32 @@ uniform sampler2D maintexture;
 uniform sampler2D normaltexture;
 
 
+vec3 getNormalFromMap(vec2 _flipped_texcoord)
+{
+    vec3 tangentNormal = texture(normaltexture, _flipped_texcoord).xyz * 2.0 - 1.0;
+
+    vec3 Q1  = dFdx(f_pos);
+    vec3 Q2  = dFdy(f_pos);
+    vec2 st1 = dFdx(_flipped_texcoord);
+    vec2 st2 = dFdy(_flipped_texcoord);
+
+    vec3 N   = normalize(v_norm);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
+
 //TODO: split one shader into two 
 //one for normal map and one for normal from model or calculated
 void
 main()
 {
 
-	vec3 n = normalize(v_norm);
-
 	vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
+
+	vec3 n = getNormalFromMap(flipped_texcoord);
 
 	vec3 lightDir = normalize(lightPos[0] - f_pos);
 

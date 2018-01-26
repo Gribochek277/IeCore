@@ -132,7 +132,7 @@ namespace Irrational.Core.Renderer.OpenGL
 
         public void OnRendered()
         {
-          
+            light.ModelMesh.Position = _cam.Position; 
             // Update object positions
             time += (float)this._gameWindow.RenderPeriod;
 
@@ -170,11 +170,13 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
+
                 _uniformHelper.TryAddUniform1(new Vector3(0.3f, 0.3f, 0.3f), "lightColor[0]", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(0.1f, "ambientStr", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(light.ModelMesh.Position, "lightPos[0]", materialComponent.Shader);
+
+                _uniformHelper.TryAddUniform1(1f, "ambientStr", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(light.ModelMesh.Position, "lightPos[0]", materialComponent.Shader);
                 //PBR uniforms
                 _uniformHelper.TryAddUniform1(0.9f, "metallic", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(0.5f, "roughness", materialComponent.Shader);

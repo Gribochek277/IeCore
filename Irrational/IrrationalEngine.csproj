@@ -126,9 +126,9 @@
     <Compile Include="Core\Entities\SceneObject.cs" />
     <Compile Include="Core\Entities\Abstractions\ISceneObject.cs" />
     <Compile Include="Core\Entities\Mesh.cs" />
-    <Compile Include="Shaders\ShaderProg.cs" />
-    <Compile Include="Shaders\AttributeInfo.cs" />
-    <Compile Include="Shaders\UniformInfo.cs" />
+    <Compile Include="Core\Shaders\ShaderProg.cs" />
+    <Compile Include="Core\Shaders\AttributeInfo.cs" />
+    <Compile Include="Core\Shaders\UniformInfo.cs" />
     <Compile Include="Core\Entities\Abstractions\Volume.cs" />
   </ItemGroup>
   <ItemGroup>

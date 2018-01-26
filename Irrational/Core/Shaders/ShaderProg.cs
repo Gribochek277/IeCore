@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
 using OpenTK.Graphics.OpenGL;
-using OpenTK;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace Irrational.Shaders
+namespace Irrational.Core.Shaders
 {
     public class ShaderProg
     {

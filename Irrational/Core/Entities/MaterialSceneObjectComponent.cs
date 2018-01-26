@@ -1,5 +1,5 @@
 ﻿using Irrational.Core.Entities.Abstractions;
-using Irrational.Shaders;
+using Irrational.Core.Shaders;
 using Irrational.Utils;
 using OpenTK.Graphics.OpenGL;
 using System;
