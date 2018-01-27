@@ -2,6 +2,7 @@
 using Irrational.Core.Entities;
 using Irrational.Core.Entities.Abstractions;
 using Irrational.Core.Renderer.Abstractions;
+using Irrational.Logic.Scenes;
 using System.Collections.Generic;
 
 namespace Irrational.Core.CoreManager
@@ -10,7 +11,7 @@ namespace Irrational.Core.CoreManager
     {
         private IRenderer _renderer;
         private List<ISceneObject> _sceneObjects = new List<ISceneObject>();
-        private Scene _scene = new Scene();
+        private Scene _scene = new TestScene();
         public SceneManager(IRenderer renderer)
         {
             _renderer = renderer;

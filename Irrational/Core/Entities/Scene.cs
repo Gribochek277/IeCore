@@ -7,34 +7,28 @@ namespace Irrational
 {
     public class Scene : IScene
     {
-        private List<SceneObject> _sceneObjects = new List<SceneObject>();
+        protected List<SceneObject> _sceneObjects = new List<SceneObject>();
         private PlayerCamera _camera; 
         public List<SceneObject> Objects { get { return _sceneObjects; } }
         public SceneObject Camera { get { return _camera; } }
 
-        public void OnLoad()
+        public virtual void OnLoad()
         {
             _camera = new PlayerCamera();
-            _camera.AddComponent(new Camera());
-
-            Lion gameObject = new Lion();
-            Knight knight = new Knight();
-            _sceneObjects.Add(knight);
-            _sceneObjects.Add(gameObject);
-            
+            _camera.AddComponent(new Camera());            
         }
 
-        public void OnRendered()
+        public virtual void OnRendered()
         {
             throw new System.NotImplementedException();
         }
 
-        public void OnResized()
+        public virtual void OnResized()
         {
             throw new System.NotImplementedException();
         }
 
-        public void OnUnload()
+        public virtual void OnUnload()
         {
             throw new System.NotImplementedException();
         }
