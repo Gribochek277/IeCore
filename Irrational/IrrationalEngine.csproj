@@ -184,7 +184,7 @@
     <None Include="Resources\TestBox\Gltf\boxgltf.gltf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\TestBox\Obj\box.obj1">
+    <None Include="Resources\TestBox\ObjFormat\box.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Utils\App.config" />
