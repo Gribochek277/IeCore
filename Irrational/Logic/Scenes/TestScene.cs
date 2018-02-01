@@ -7,8 +7,8 @@
             base.OnLoad();
 
             Lion gameObject = new Lion();
-            Knight knight = new Knight();
-            _sceneObjects.Add(knight);
+            //Knight knight = new Knight();
+           // _sceneObjects.Add(knight);
             _sceneObjects.Add(gameObject);
         }
     }

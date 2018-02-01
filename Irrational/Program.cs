@@ -7,8 +7,8 @@ namespace Irrational
     {
 		static void Main(string[] args)
         {
-            Gltf2ModelLoader loader = new Gltf2ModelLoader();
-            loader.LoadFromFile("Resources/Gltf/Damagedhelmet/glTF/DamagedHelmet.gltf");
+            //Gltf2ModelLoader loader = new Gltf2ModelLoader();
+            //loader.LoadFromFile("Resources/Gltf/Damagedhelmet/glTF/DamagedHelmet.gltf");
             OpenTKWindow window = new OpenTKWindow();
             window.Run();
         }

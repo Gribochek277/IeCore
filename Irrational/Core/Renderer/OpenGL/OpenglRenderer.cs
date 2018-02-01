@@ -87,6 +87,10 @@ namespace Irrational.Core.Renderer.OpenGL
             coldata = colors.ToArray();
             texcoorddata = texcoords.ToArray();
             normdata = normals.ToArray();
+            for (int i = 0; i < vertdata.Count(); i++)
+            {
+                Console.WriteLine(verts[i]);
+            }
 
             Console.WriteLine("Vertexies: " + vertdata.Length);
             Console.WriteLine("Triangles: " + vertdata.Length/3);

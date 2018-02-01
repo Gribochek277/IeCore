@@ -9,9 +9,17 @@ namespace Irrational.Core.Entities
     {
         public List<Tuple<FaceVertex, FaceVertex, FaceVertex>> faces = new List<Tuple<FaceVertex, FaceVertex, FaceVertex>>();
 
+        public int[] indeces;
+
+        public Vector3[] vertices;
+
+        public Vector3[] normals;
+
+        public Vector2[] uvCoords;
+
         public override int VertCount { get { return faces.Count * 3; } }
 
-        public override int IndiceCount { get { return faces.Count * 3; } }
+        public override int IndiceCount { get { return indeces == null ? faces.Count * 3 : indeces.Length; } }
 
         public override int ColorDataCount { get { return faces.Count * 3; } }
 
@@ -25,16 +33,23 @@ namespace Irrational.Core.Entities
         /// <returns>Vertecies forobject</returns>
         public override Vector3[] GetVerts()
         {
-            List<Vector3> verts = new List<Vector3>();
-
-            foreach (var face in faces)
+            if (vertices == null)
             {
-                verts.Add(face.Item1.Position);
-                verts.Add(face.Item2.Position);
-                verts.Add(face.Item3.Position);
-            }
+                List<Vector3> verts = new List<Vector3>();
 
-            return verts.ToArray();
+                foreach (var face in faces)
+                {
+                    verts.Add(face.Item1.Position);
+                    verts.Add(face.Item2.Position);
+                    verts.Add(face.Item3.Position);
+                }
+
+                return verts.ToArray();
+            }
+            else
+            {
+                return vertices.ToArray();
+            }
         }
 
         /// <summary>
@@ -48,16 +63,23 @@ namespace Irrational.Core.Entities
                 return base.GetNormals();
             }
 
-            List<Vector3> normals = new List<Vector3>();
-
-            foreach (var face in faces)
+            if (normals == null)
             {
-                normals.Add(face.Item1.Normal);
-                normals.Add(face.Item2.Normal);
-                normals.Add(face.Item3.Normal);
-            }
+                List<Vector3> normals = new List<Vector3>();
 
-            return normals.ToArray();
+                foreach (var face in faces)
+                {
+                    normals.Add(face.Item1.Normal);
+                    normals.Add(face.Item2.Normal);
+                    normals.Add(face.Item3.Normal);
+                }
+
+                return normals.ToArray();
+            }
+            else
+            {
+                return normals.ToArray();
+            }
         }
 
         /// <summary>
@@ -85,16 +107,23 @@ namespace Irrational.Core.Entities
         /// <returns></returns>
         public override Vector2[] GetTextureCoords()
         {
-            List<Vector2> coords = new List<Vector2>();
-
-            foreach (var face in faces)
+            if (uvCoords == null)
             {
-                coords.Add(face.Item1.TextureCoord);
-                coords.Add(face.Item2.TextureCoord);
-                coords.Add(face.Item3.TextureCoord);
-            }
+                List<Vector2> coords = new List<Vector2>();
 
-            return coords.ToArray();
+                foreach (var face in faces)
+                {
+                    coords.Add(face.Item1.TextureCoord);
+                    coords.Add(face.Item2.TextureCoord);
+                    coords.Add(face.Item3.TextureCoord);
+                }
+
+                return coords.ToArray();
+            }
+            else
+            {
+                return uvCoords.ToArray();
+            }
         }
 
 
