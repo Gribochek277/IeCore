@@ -20,8 +20,8 @@ namespace Irrational.Utils
                 {
                     Material mat = new Material();
                     mat.MaterialName = material.Name;
-                    mat.DiffuseMap = relativeLocation +"//"+ deserializedFile.Images[0].Uri;
-                    mat.NormalMap = relativeLocation + "//" + deserializedFile.Images[material.NormalTexture.Index].Uri;
+                    mat.DiffuseMap = Path.Combine(relativeLocation,deserializedFile.Images[0].Uri);
+                    mat.NormalMap =  Path.Combine(relativeLocation,deserializedFile.Images[material.NormalTexture.Index].Uri);
                     mats.Add(material.Name, mat);
                 }
             }            

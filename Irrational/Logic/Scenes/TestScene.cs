@@ -11,12 +11,12 @@ namespace Irrational.Logic.Scenes
         {
             base.OnLoad();
 
-            Lion gameObject = new Lion();
+           // Lion gameObject = new Lion();
             Knight knight = new Knight();
-            GLtf2Helm gltf2helm = new GLtf2Helm();
-            _sceneObjects.Add(gltf2helm);
-            // _sceneObjects.Add(knight);
-            _sceneObjects.Add(gameObject);      
+          //  GLtf2Helm gltf2helm = new GLtf2Helm();
+            //_sceneObjects.Add(gltf2helm);
+            _sceneObjects.Add(knight);
+            //_sceneObjects.Add(gameObject);      
         }
 
         public override void OnUpdated()

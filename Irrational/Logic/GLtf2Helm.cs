@@ -14,7 +14,7 @@ namespace Irrational.Logic
         public GLtf2Helm()
         {
             MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
-                new ShaderProg("vs_norm.glsl", "fs_PBR.glsl", true),
+                new ShaderProg("vs_norm.glsl", "fs_normal.glsl", true),
                 "Resources/Gltf/DamagedHelmet/glTF/DamagedHelmet.gltf",
                 new Gltf2MaterialLoader());
 
