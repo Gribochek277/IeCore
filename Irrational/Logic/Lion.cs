@@ -1,5 +1,6 @@
 ﻿using Irrational.Core.Entities;
 using Irrational.Core.Shaders;
+using Irrational.Utils;
 using OpenTK;
 
 namespace Irrational.Logic

@@ -5,28 +5,27 @@ using OpenTK;
 
 namespace Irrational.Logic
 {
-    public class Knight : SceneObject
+    public class GLtf2Helm : SceneObject
     {
-        public Knight()
+        public GLtf2Helm()
         {
             MaterialSceneObjectComponent material = new MaterialSceneObjectComponent()
             {
-                MaterialSource = "Resources/knight3.mtl",
-                Shader = new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true)
+                MaterialSource = "Resources/Lion/Lion-snake.mtl",
+                Shader = new ShaderProg("vs.glsl", "fs.glsl", true)
             };
 
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
-                new WavefrontModelLoader(),
-                "Resources/knight3.obj1"
+                new Gltf2ModelLoader(),
+                "Resources/Gltf/DamagedHelmet/glTF-Binary/DamagedHelmet.glb"
                 );
             AddComponent(material);
             AddComponent(meshComponent);
         }
-
         public override void OnLoad()
         {
             base.OnLoad();
-            Position = new Vector3(0f, 0f, 0f);
+            Position = new Vector3(0f, -2.5f, -5.0f);
             Scale = new Vector3(1f, 1f, 1f);
         }
     }

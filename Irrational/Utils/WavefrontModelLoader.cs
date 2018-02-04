@@ -7,7 +7,7 @@ using System.Globalization;
 using Irrational.Utils.Interfaces;
 using Irrational.Core.Entities;
 
-namespace Irrational
+namespace Irrational.Utils
 {
     class WavefrontModelLoader : IModelLoader
     {
