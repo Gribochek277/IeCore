@@ -20,6 +20,9 @@ namespace Irrational.Utils
             {
                 var deserializedFile = Interface.LoadModel(path);
                 byte[] bufferBytes = null;
+                //Only one mesh currently supported.
+                Mesh[] meshes = deserializedFile.Meshes;
+                
 
                 // read all buffers
                 for (int i = 0; i < deserializedFile.Buffers?.Length; ++i)
@@ -28,9 +31,40 @@ namespace Irrational.Utils
 
                     bufferBytes = deserializedFile.LoadBinaryBuffer(i, path);
                     int[] indeces = ParseBufferViews(bufferBytes, deserializedFile.Accessors[0], deserializedFile.BufferViews[0]);
-                    Vector3[] vertexCoords = ParseBufferViews(bufferBytes, deserializedFile.Accessors[1], deserializedFile.BufferViews[1]);
-                    Vector3[] normalCoords = ParseBufferViews(bufferBytes, deserializedFile.Accessors[2], deserializedFile.BufferViews[2]);
-                    // var uvCoords = ParseBufferViews(bufferBytes, deserializedFile.Accessors[3], deserializedFile.BufferViews[3]);
+                    List<Vector3> vertexCoords = new List<Vector3>();
+                    List<Vector3> normalCoords = new List<Vector3>();
+                    List<Vector2> uvCoords = new List<Vector2>();
+                    if (meshes[0].Primitives[0].Attributes.ContainsKey("POSITION"))
+                    {
+                        int attributeValue = meshes[0].Primitives[0].Attributes["POSITION"];
+                        vertexCoords = ParseBufferViews(bufferBytes, 
+                            deserializedFile.Accessors[attributeValue],
+                            deserializedFile.BufferViews[attributeValue]);
+                    }
+
+                    if (meshes[0].Primitives[0].Attributes.ContainsKey("NORMAL"))
+                    {
+                        int attributeValue = meshes[0].Primitives[0].Attributes["NORMAL"];
+                        normalCoords = ParseBufferViews(bufferBytes,
+                            deserializedFile.Accessors[attributeValue],
+                            deserializedFile.BufferViews[attributeValue]);
+                    }
+
+                    if (meshes[0].Primitives[0].Attributes.ContainsKey("NORMAL"))
+                    {
+                        int attributeValue = meshes[0].Primitives[0].Attributes["NORMAL"];
+                        normalCoords = ParseBufferViews(bufferBytes,
+                            deserializedFile.Accessors[attributeValue],
+                            deserializedFile.BufferViews[attributeValue]);
+                    }
+
+                    if (meshes[0].Primitives[0].Attributes.ContainsKey("TEXCOORD_0"))
+                    {
+                        int attributeValue = meshes[0].Primitives[0].Attributes["TEXCOORD_0"];
+                        uvCoords = ParseBufferViews(bufferBytes,
+                            deserializedFile.Accessors[attributeValue],
+                            deserializedFile.BufferViews[attributeValue]);
+                    }
 
                     Core.Entities.Mesh loadedModel = new Core.Entities.Mesh();
                     // loadedModel.normals = normalCoords;
@@ -38,18 +72,21 @@ namespace Irrational.Utils
 
                     List<Vector3> decodedVertices = new List<Vector3>();
                     List<Vector3> decodedNormals = new List<Vector3>();
+                    List<Vector2> decodedUvCoords = new List<Vector2>();
 
-                    
+
 
                     for (int j = 0; j < indeces.Length; j++)
                     {
-                        decodedVertices.Add(vertexCoords[indeces[j]]);
-                        decodedNormals.Add(vertexCoords[indeces[j]]);
+                        decodedVertices.Add(vertexCoords.Count() == 0 ? Vector3.Zero : vertexCoords[indeces[j]]);
+                        decodedNormals.Add(normalCoords.Count() == 0 ? Vector3.Zero : normalCoords[indeces[j]]);
+                        decodedUvCoords.Add(uvCoords.Count() == 0 ? Vector2.Zero : uvCoords[indeces[j]]);
                     }
 
-                    loadedModel.vertices = decodedVertices.ToArray();
-                    loadedModel.normals = decodedVertices.ToArray();
-                    loadedModel.indeces = indeces;
+                    loadedModel.Vertices = decodedVertices.ToArray();
+                    loadedModel.Normals = decodedVertices.ToArray();
+                    loadedModel.UvCoords = decodedUvCoords.ToArray();
+                    loadedModel.Indeces = indeces;
 
                     return loadedModel;
                 }
@@ -77,27 +114,21 @@ namespace Irrational.Utils
             }            
         }
 
-        public Core.Entities.Mesh LoadFromString(string objModel)
-        {
-            throw new System.NotImplementedException();
-        }
-
         private dynamic ParseBufferViews(byte[] bufferBytes, Accessor accessors, BufferView bufferViews)
-        {
-           
-                if (accessors.ComponentType == Accessor.ComponentTypeEnum.UNSIGNED_SHORT && accessors.Type == Accessor.TypeEnum.SCALAR)
-                {
-                    byte[] subarray = SubArray(bufferBytes, bufferViews.ByteOffset, bufferViews.ByteLength);
-                    ushort[] ushortBuffer = subarray.Select(x => (ushort)x).ToArray();
+        {           
+            if (accessors.ComponentType == Accessor.ComponentTypeEnum.UNSIGNED_SHORT && accessors.Type == Accessor.TypeEnum.SCALAR)
+            {
+                byte[] subarray = SubArray(bufferBytes, bufferViews.ByteOffset, bufferViews.ByteLength);
+                ushort[] ushortBuffer = subarray.Select(x => (ushort)x).ToArray();
 
-                    var size = subarray.Count() / sizeof(ushort);
-                    int[] ints = new int[size];
-                        for (var index = 0; index < size; index++)
-                        {
-                            ints[index] = (int)BitConverter.ToUInt16(subarray, index * sizeof(ushort));
-                        }
-                    return ints;
-                }
+                var size = subarray.Count() / sizeof(ushort);
+                int[] ints = new int[size];
+                    for (var index = 0; index < size; index++)
+                    {
+                        ints[index] = (int)BitConverter.ToUInt16(subarray, index * sizeof(ushort));
+                    }
+                return ints;
+            }
 
             if (accessors.ComponentType == Accessor.ComponentTypeEnum.UNSIGNED_BYTE && accessors.Type == Accessor.TypeEnum.SCALAR)
             {
@@ -128,7 +159,7 @@ namespace Irrational.Utils
                     {
                         vectors[f / 3] = new Vector3(floats[f],floats[f + 1], floats[f + 2]);
                     }
-                    return vectors;
+                    return vectors.ToList();
                 }
 
             if (accessors.ComponentType == Accessor.ComponentTypeEnum.FLOAT && accessors.Type == Accessor.TypeEnum.VEC2)
@@ -147,7 +178,7 @@ namespace Irrational.Utils
                 {
                     vectors[f / 2] = new Vector2(floats[f], floats[f + 1]);
                 }
-                return vectors;
+                return vectors.ToList();
             }
             return null;
         }

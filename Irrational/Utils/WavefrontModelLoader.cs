@@ -45,6 +45,10 @@ namespace Irrational.Utils
             List<Vector3> normals = new List<Vector3>();
             List<Vector2> texs = new List<Vector2>();
 
+            List<Vector3> decodedVertices = new List<Vector3>();
+            List<Vector3> decodedNormals = new List<Vector3>();
+            List<Vector2> decodedUvCoords = new List<Vector2>();
+
             List<Tuple<TempVertex, TempVertex, TempVertex>> faces = new List<Tuple<TempVertex, TempVertex, TempVertex>>();
 
             // Base values
@@ -147,7 +151,7 @@ namespace Irrational.Utils
                     String temp = line.Substring(2);
 
                     Tuple<TempVertex, TempVertex, TempVertex> face = new Tuple<TempVertex, TempVertex, TempVertex>(new TempVertex(), new TempVertex(), new TempVertex());
-
+                    
                     if (temp.Trim().Count((char c) => c == ' ') == 2) // Check if there's enough elements for a face
                     {
                         String[] faceparts = temp.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -231,8 +235,15 @@ namespace Irrational.Utils
                 FaceVertex v2 = new FaceVertex(verts[face.Item2.Vertex], normals[face.Item2.Normal], texs[face.Item2.Texcoord]);
                 FaceVertex v3 = new FaceVertex(verts[face.Item3.Vertex], normals[face.Item3.Normal], texs[face.Item3.Texcoord]);
 
-                loadedModel.faces.Add(new Tuple<FaceVertex, FaceVertex, FaceVertex>(v1, v2, v3));
+                decodedVertices.AddRange(new Vector3[] { verts[face.Item1.Vertex], verts[face.Item2.Vertex], verts[face.Item3.Vertex] });
+                decodedNormals.AddRange(new Vector3[] { normals[face.Item1.Normal] , normals[face.Item2.Normal] , normals[face.Item3.Normal] });
+                decodedUvCoords.AddRange(new Vector2[] { texs[face.Item1.Texcoord], texs[face.Item2.Texcoord], texs[face.Item3.Texcoord] });                
             }
+
+            loadedModel.Indeces = Enumerable.Range(0, decodedVertices.Count).ToArray();
+            loadedModel.Vertices = decodedVertices.ToArray();
+            loadedModel.Normals = decodedNormals.ToArray();
+            loadedModel.UvCoords = decodedUvCoords.ToArray();
 
             return loadedModel;
         }

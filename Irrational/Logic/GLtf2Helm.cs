@@ -12,7 +12,7 @@ namespace Irrational.Logic
             MaterialSceneObjectComponent material = new MaterialSceneObjectComponent()
             {
                 MaterialSource = "Resources/Lion/Lion-snake.mtl",
-                Shader = new ShaderProg("vs.glsl", "fs.glsl", true)
+                Shader = new ShaderProg("vs_norm.glsl", "fs_PBR.glsl", true)
             };
 
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
@@ -25,7 +25,7 @@ namespace Irrational.Logic
         public override void OnLoad()
         {
             base.OnLoad();
-            Position = new Vector3(0f, -2.5f, -5.0f);
+            Position = Vector3.Zero;
             Scale = new Vector3(1f, 1f, 1f);
         }
     }
