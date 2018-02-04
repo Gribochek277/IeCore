@@ -60,14 +60,14 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-vec3 getNormalFromMap(vec2 _flipped_texcoord)
+vec3 getNormalFromMap(vec2 texcoord)
 {
-    vec3 tangentNormal = texture(normaltexture, _flipped_texcoord).xyz * 2.0 - 1.0;
+    vec3 tangentNormal = texture(normaltexture, texcoord).xyz * 2.0 - 1.0;
 
     vec3 Q1  = dFdx(f_pos);
     vec3 Q2  = dFdy(f_pos);
-    vec2 st1 = dFdx(_flipped_texcoord);
-    vec2 st2 = dFdy(_flipped_texcoord);
+    vec2 st1 = dFdx(texcoord);
+    vec2 st2 = dFdy(texcoord);
 
     vec3 N   = normalize(v_norm);
     vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
@@ -79,15 +79,13 @@ vec3 getNormalFromMap(vec2 _flipped_texcoord)
 
 void main()
 {		
-	vec2 flipped_texcoord = vec2(f_texcoord.x, 1.0 - f_texcoord.y);
-
-	vec3 N = getNormalFromMap(flipped_texcoord);
+	vec3 N = getNormalFromMap(f_texcoord);
     vec3 V = normalize(cameraPosition - f_pos);
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
     vec3 F0 = vec3(0.04); 
-    F0 = mix(F0, texture(maintexture, flipped_texcoord).rgb, metallic);
+    F0 = mix(F0, texture(maintexture, f_texcoord).rgb, metallic);
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
@@ -124,12 +122,12 @@ void main()
         float NdotL = max(dot(N, L), 0.0);        
 
         // add to outgoing radiance Lo
-        Lo += (kD * texture(maintexture, flipped_texcoord).rgb / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+        Lo += (kD * texture(maintexture, f_texcoord).rgb / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }   
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * texture(maintexture, flipped_texcoord).rgb * ambientStr;
+    vec3 ambient = vec3(0.03) * texture(maintexture, f_texcoord).rgb * ambientStr;
 
     vec3 color = ambient + Lo;
 

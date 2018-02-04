@@ -235,9 +235,13 @@ namespace Irrational.Utils
                 FaceVertex v2 = new FaceVertex(verts[face.Item2.Vertex], normals[face.Item2.Normal], texs[face.Item2.Texcoord]);
                 FaceVertex v3 = new FaceVertex(verts[face.Item3.Vertex], normals[face.Item3.Normal], texs[face.Item3.Texcoord]);
 
+                Vector2 calculatedUV = new Vector2(texs[face.Item1.Texcoord].X, 1.0f - texs[face.Item1.Texcoord].Y);
+                Vector2 calculatedUV2 = new Vector2(texs[face.Item2.Texcoord].X, 1.0f - texs[face.Item2.Texcoord].Y);
+                Vector2 calculatedUV3= new Vector2(texs[face.Item3.Texcoord].X, 1.0f - texs[face.Item3.Texcoord].Y);
+
                 decodedVertices.AddRange(new Vector3[] { verts[face.Item1.Vertex], verts[face.Item2.Vertex], verts[face.Item3.Vertex] });
                 decodedNormals.AddRange(new Vector3[] { normals[face.Item1.Normal] , normals[face.Item2.Normal] , normals[face.Item3.Normal] });
-                decodedUvCoords.AddRange(new Vector2[] { texs[face.Item1.Texcoord], texs[face.Item2.Texcoord], texs[face.Item3.Texcoord] });                
+                decodedUvCoords.AddRange(new Vector2[] { calculatedUV, calculatedUV2, calculatedUV3});                
             }
 
             loadedModel.Indeces = Enumerable.Range(0, decodedVertices.Count).ToArray();

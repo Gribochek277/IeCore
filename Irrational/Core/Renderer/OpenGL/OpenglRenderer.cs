@@ -7,6 +7,7 @@ using System.Linq;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using Irrational.Core.Entities.Abstractions;
+using Irrational.Core.Entities.SceneObjectComponents;
 
 namespace Irrational.Core.Renderer.OpenGL
 {
@@ -87,10 +88,6 @@ namespace Irrational.Core.Renderer.OpenGL
             coldata = colors.ToArray();
             texcoorddata = texcoords.ToArray();
             normdata = normals.ToArray();
-            for (int i = 0; i < vertdata.Count(); i++)
-            {
-                Console.WriteLine(verts[i]);
-            }
 
             Console.WriteLine("Vertexies: " + vertdata.Length);
             Console.WriteLine("Triangles: " + vertdata.Length/3);
@@ -136,7 +133,6 @@ namespace Irrational.Core.Renderer.OpenGL
 
         public void OnRendered()
         {
-            light.ModelMesh.Position = _cam.Position; 
             // Update object positions
             time += (float)this._gameWindow.RenderPeriod;
 
@@ -161,8 +157,8 @@ namespace Irrational.Core.Renderer.OpenGL
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
                 MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
 
-                int texId = materialComponent.textures[materialComponent.materials.FirstOrDefault().Value.DiffuseMap];
-                int normId = materialComponent.textures[materialComponent.materials.FirstOrDefault().Value.NormalMap];
+                int texId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.DiffuseMap];
+                int normId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.NormalMap];
                 GL.UseProgram(materialComponent.Shader.ProgramID);
                 materialComponent.Shader.EnableVertexAttribArrays();
                
@@ -182,8 +178,8 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 //PBR uniforms
-                _uniformHelper.TryAddUniform1(0.9f, "metallic", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(0.5f, "roughness", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.4f, "metallic", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.9f, "roughness", materialComponent.Shader);
                 GL.Enable(EnableCap.FramebufferSrgb);
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;

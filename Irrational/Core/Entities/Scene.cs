@@ -33,7 +33,7 @@ namespace Irrational
             throw new System.NotImplementedException();
         }
 
-        public void OnUpdated()
+        public virtual void OnUpdated()
         {
             _camera.OnUpdated();
         }

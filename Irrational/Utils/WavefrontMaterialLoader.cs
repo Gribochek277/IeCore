@@ -3,21 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Globalization;
 using Irrational.Core.Entities;
+using Irrational.Utils.Interfaces;
 
 namespace Irrational.Utils
 {
     /// <summary>
     /// Loads info about materials
     /// </summary>
-   public static class MaterialLoader
+    public class WavefrontMaterialLoader : IMaterialLoader
     {
-        public static Dictionary<String, Material> LoadFromFile(string filename)
+        public Dictionary<string, Material> LoadFromFile(string filename)
         {
-            Dictionary<String, Material> mats = new Dictionary<String, Material>();
+            Dictionary<string, Material> mats = new Dictionary<string, Material>();
 
             try
             {

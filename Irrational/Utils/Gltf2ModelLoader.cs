@@ -67,8 +67,6 @@ namespace Irrational.Utils
                     }
 
                     Core.Entities.Mesh loadedModel = new Core.Entities.Mesh();
-                    // loadedModel.normals = normalCoords;
-                    //  loadedModel.uvCoords = uvCoords;
 
                     List<Vector3> decodedVertices = new List<Vector3>();
                     List<Vector3> decodedNormals = new List<Vector3>();
@@ -90,28 +88,12 @@ namespace Irrational.Utils
 
                     return loadedModel;
                 }
-
-                // open all images
-                for (int i = 0; i < deserializedFile.Images?.Length; ++i)
-                {
-                    using (var s = deserializedFile.OpenImageFile(i, path))
-                    {
-                        using (var rb = new BinaryReader(s))
-                        {
-                            uint header = rb.ReadUInt32();
-
-                            if (header == 0x474e5089) continue; // PNG
-                            if ((header & 0xffff) == 0xd8ff) continue; // JPEG  
-                        }
-                    }
-                }
-
-                return null;
             }
             catch (Exception e)
             {
                 throw new Exception(path, e);
-            }            
+            }
+            return null;
         }
 
         private dynamic ParseBufferViews(byte[] bufferBytes, Accessor accessors, BufferView bufferViews)

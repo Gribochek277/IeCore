@@ -2,7 +2,7 @@
 using Irrational.Utils.Interfaces;
 using System;
 
-namespace Irrational.Core.Entities
+namespace Irrational.Core.Entities.SceneObjectComponents
 {
     public class MeshSceneObjectComponent : ISceneObjectComponent
     {
