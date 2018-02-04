@@ -153,6 +153,7 @@
     <Compile Include="Logic\Knight.cs" />
     <Compile Include="Logic\PlayerCamera.cs" />
     <Compile Include="Logic\Lion.cs" />
+    <Compile Include="Logic\PointLight.cs" />
     <Compile Include="Logic\Scenes\TestScene.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Entities\Scene.cs" />

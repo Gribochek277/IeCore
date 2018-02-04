@@ -13,8 +13,10 @@ uniform float roughness;
 uniform float ambientStr;
 
 // lights
-uniform vec3 lightPos[1];
-uniform vec3 lightColor[1];
+#define MAX_LIGHTS 128
+uniform int numverOfLights;
+uniform vec3 lightPos[MAX_LIGHTS];
+uniform vec3 lightColor[MAX_LIGHTS];
 
 uniform vec3 cameraPosition;
 
@@ -89,7 +91,7 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < 1; ++i) 
+    for(int i = 0; i < numverOfLights; ++i) 
     {
         // calculate per-light radiance
         vec3 L = normalize(lightPos[i] - f_pos);

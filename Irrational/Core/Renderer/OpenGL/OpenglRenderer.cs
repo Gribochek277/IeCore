@@ -30,9 +30,8 @@ namespace Irrational.Core.Renderer.OpenGL
 
         int[] indicedata;
         int ibo_elements;
-        
-        
-        MeshSceneObjectComponent light = null;
+           
+        List<SceneObject> lights = new List<SceneObject>();
 
         float time = 0.0f;
 
@@ -41,23 +40,26 @@ namespace Irrational.Core.Renderer.OpenGL
             _objects = sceneObjects;
             _cam = camera;
 
+            //gatherLights
+            foreach (SceneObject sceneObject in sceneObjects)
+            {
+                if (sceneObject.components.ContainsKey("PointLightSceneObjectComponent"))
+                {
+                    lights.Add(sceneObject);
+                }
+            }
+
+            foreach (SceneObject sceneObject in lights)
+            {
+                _objects.Remove(sceneObject);
+            }
+
             foreach (SceneObject v in _objects)
             {
                 v.OnLoad();
             }
 
             GL.GenBuffers(1, out ibo_elements);
-
-            light = new MeshSceneObjectComponent()
-            {
-                ModelMesh = new Mesh()
-                {
-                    Position = new Vector3(0, 0, 1)
-                }
-            };
-            
-
-            
 
             _cam.Position += new Vector3(0f, 0f, 3f);
             GL.ClearColor(Color.Black);
@@ -171,15 +173,20 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
 
-                _uniformHelper.TryAddUniform1(new Vector3(0.3f, 0.3f, 0.3f), "lightColor[0]", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(light.ModelMesh.Position, "lightPos[0]", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(lights.Count(), "numverOfLights", materialComponent.Shader);
+                for(int i = 0; i < lights.Count; i++) {
+                     var lightComponent =  (PointLightSceneObjectComponent)lights[i].components["PointLightSceneObjectComponent"];
+                    _uniformHelper.TryAddUniform1(lightComponent.Color*lightComponent.LightStrenght, String.Format("lightColor[{0}]", i), materialComponent.Shader);
+                    string s = String.Format("lightPos[{0}]", i);
+                    _uniformHelper.TryAddUniform1(lights[i].Position, s, materialComponent.Shader);
+                }
 
                 _uniformHelper.TryAddUniform1(1f, "ambientStr", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 //PBR uniforms
-                _uniformHelper.TryAddUniform1(0.4f, "metallic", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(0.9f, "roughness", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.9f, "metallic", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.5f, "roughness", materialComponent.Shader);
                 GL.Enable(EnableCap.FramebufferSrgb);
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
@@ -212,10 +219,6 @@ namespace Irrational.Core.Renderer.OpenGL
                 meshComponent.ModelMesh.ViewProjectionMatrix = _cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
                 meshComponent.ModelMesh.ModelViewProjectionMatrix = meshComponent.ModelMesh.ModelMatrix * meshComponent.ModelMesh.ViewProjectionMatrix;
             }
-
-            light.ModelMesh.CalculateModelMatrix();
-            light.ModelMesh.ViewProjectionMatrix = _cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
-            light.ModelMesh.ModelViewProjectionMatrix = light.ModelMesh.ModelMatrix * light.ModelMesh.ViewProjectionMatrix;
         }        
     }
 }

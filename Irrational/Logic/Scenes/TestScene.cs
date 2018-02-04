@@ -1,4 +1,5 @@
 ﻿using Irrational.Core.Entities.SceneObjectComponents;
+using OpenTK;
 using OpenTK.Input;
 using System;
 
@@ -6,15 +7,26 @@ namespace Irrational.Logic.Scenes
 {
     public class TestScene : Scene
     {
-        private int pickedObject = 0;
+        private int pickedObject = 2;
         public override void OnLoad()
         {
             base.OnLoad();
-
-           // Lion gameObject = new Lion();
+            PointLight light1 = new PointLight(new Vector3(1,0,0),1);
+            light1.Position = new Vector3(.3f, 0, 0);
+            PointLight light2 = new PointLight(new Vector3(1, 0, 1),1 );
+            light2.Position = new Vector3(.5f, 0,0);
+            //PointLight light3 = new PointLight(new Vector3(0, 0, .3f), 10);
+            //light3.Position = new Vector3(1, 0, 0);
+            //PointLight light4 = new PointLight(new Vector3(.3f, 0, 0), 10);
+            //light4.Position = new Vector3(0, 0, -1);
+            _sceneObjects.Add(light1);
+            _sceneObjects.Add(light2);
+            //_sceneObjects.Add(light3);
+            //_sceneObjects.Add(light4);
+            // Lion gameObject = new Lion();
             //Knight knight = new Knight();
             GLtf2Helm gltf2helm = new GLtf2Helm();
-           _sceneObjects.Add(gltf2helm);
+            _sceneObjects.Add(gltf2helm);
             //_sceneObjects.Add(knight);
             //_sceneObjects.Add(gameObject);      
         }
@@ -23,7 +35,7 @@ namespace Irrational.Logic.Scenes
         {
             if (Keyboard.GetState().IsKeyDown(Key.Tab))
             {
-                pickedObject = pickedObject < _sceneObjects.Count ? pickedObject+=1 : 0;
+                pickedObject = 2;// pickedObject < _sceneObjects.Count ? pickedObject+=1 : 0;
                 
                 Console.WriteLine("Picked object is " + pickedObject);
             }

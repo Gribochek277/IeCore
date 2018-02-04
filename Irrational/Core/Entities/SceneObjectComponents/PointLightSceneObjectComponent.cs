@@ -1,20 +1,21 @@
 ﻿using Irrational.Core.Entities.Abstractions;
+using OpenTK;
 
 namespace Irrational.Core.Entities.SceneObjectComponents
 {
     class PointLightSceneObjectComponent : ISceneObjectComponent
     {
-
-        public int lightStrenght { get; set; }
+        public float LightStrenght { get; set; }
+        public Vector3 Color { get; set; }
 
         public void OnLoad()
         {
-            throw new System.NotImplementedException();
+           
         }
 
         public void OnUnload()
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 }
