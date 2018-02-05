@@ -5,7 +5,6 @@ in vec3 f_pos;
 in vec3 v_norm;
 
 // material parameters
-uniform vec3  albedo;
 uniform sampler2D maintexture;
 uniform sampler2D normaltexture;
 uniform float metallic;
@@ -13,10 +12,9 @@ uniform float roughness;
 uniform float ambientStr;
 
 // lights
-#define MAX_LIGHTS 128
-uniform int numverOfLights;
-uniform vec3 lightPos[MAX_LIGHTS];
-uniform vec3 lightColor[MAX_LIGHTS];
+uniform int numberOfLights;
+uniform vec3 lightPos[2];
+uniform vec3 lightColor[2];
 
 uniform vec3 cameraPosition;
 
@@ -91,7 +89,7 @@ void main()
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    for(int i = 0; i < numverOfLights; ++i) 
+    for(int i = 0; i < numberOfLights; ++i) 
     {
         // calculate per-light radiance
         vec3 L = normalize(lightPos[i] - f_pos);

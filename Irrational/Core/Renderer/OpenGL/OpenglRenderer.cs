@@ -173,15 +173,20 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
 
-                _uniformHelper.TryAddUniform1(lights.Count(), "numverOfLights", materialComponent.Shader);
-                for(int i = 0; i < lights.Count; i++) {
-                     var lightComponent =  (PointLightSceneObjectComponent)lights[i].components["PointLightSceneObjectComponent"];
-                    _uniformHelper.TryAddUniform1(lightComponent.Color*lightComponent.LightStrenght, String.Format("lightColor[{0}]", i), materialComponent.Shader);
-                    string s = String.Format("lightPos[{0}]", i);
-                    _uniformHelper.TryAddUniform1(lights[i].Position, s, materialComponent.Shader);
+                
+                _uniformHelper.TryAddUniform1(lights.Count(), "numberOfLights", materialComponent.Shader);
+                Vector3[] lightpositions = new Vector3[lights.Count()];
+                Vector3[] lightcolors = new Vector3[lights.Count()];
+                for (int i = 0; i < lights.Count; ++i) {
+                    var lightComponent =  (PointLightSceneObjectComponent)lights[i].components["PointLightSceneObjectComponent"];
+                    lightcolors[i] = lightComponent.Color * lightComponent.LightStrenght;
+                    lightpositions[i] = lights[i].Position;
                 }
 
-                _uniformHelper.TryAddUniform1(1f, "ambientStr", materialComponent.Shader);
+                bool suc = _uniformHelper.TryAddUniform1(lightcolors, "lightColor[0]", materialComponent.Shader);
+                bool suc2 = _uniformHelper.TryAddUniform1(lightpositions, "lightPos[0]", materialComponent.Shader);
+
+                _uniformHelper.TryAddUniform1(0.1f, "ambientStr", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 //PBR uniforms
