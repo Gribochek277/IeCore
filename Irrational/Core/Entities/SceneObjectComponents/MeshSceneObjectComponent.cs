@@ -27,6 +27,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents
 
         public void OnLoad()
         {
+            if(_modelLoader!=null)
             _modelMesh = _modelLoader.LoadFromFile(_mdlSource);
         }
 

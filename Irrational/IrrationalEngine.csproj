@@ -38,7 +38,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>anycpu</PlatformTarget>
@@ -103,8 +104,9 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.1-beta3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OpenTK, Version=3.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenTK.3.0.0-pre\lib\net20\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK, Version=2.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.2.0.0\lib\net20\OpenTK.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -140,6 +142,7 @@
     <Compile Include="Core\Entities\SceneObjectComponents\MaterialSceneObjectComponent.cs" />
     <Compile Include="Core\Entities\SceneObjectComponents\MeshSceneObjectComponent.cs" />
     <Compile Include="Core\Entities\SceneObjectComponents\PointLightSceneObjectComponent.cs" />
+    <Compile Include="Core\Entities\SceneObjectComponents\SkyboxSceneObjectComponent.cs" />
     <Compile Include="Core\Renderer\Abstractions\IRenderer.cs" />
     <Compile Include="Core\Renderer\OpenGL\IUniformHelper.cs" />
     <Compile Include="Core\Renderer\OpenGL\OpenglRenderer.cs" />
@@ -155,6 +158,7 @@
     <Compile Include="Logic\Lion.cs" />
     <Compile Include="Logic\PointLight.cs" />
     <Compile Include="Logic\Scenes\TestScene.cs" />
+    <Compile Include="Logic\Skybox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Entities\Scene.cs" />
     <Compile Include="Core\Entities\Primitives\TexturedCube.cs" />
@@ -175,6 +179,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="vs_skybox.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fs_skybox.glsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="fs_PBR.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -223,7 +233,6 @@
     <None Include="Resources\TestBox\ObjFormat\box.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Utils\App.config" />
     <Compile Include="Program.cs" />
     <None Include="fs.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -272,6 +281,24 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Cubemaps\bloody-heresy_bk.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Cubemaps\bloody-heresy_dn.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Cubemaps\bloody-heresy_ft.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Cubemaps\bloody-heresy_lf.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Cubemaps\bloody-heresy_rt.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Cubemaps\bloody-heresy_up.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Gltf\BoomBox\glTF-pbrSpecularGlossiness\BoomBox_baseColor.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -362,6 +389,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

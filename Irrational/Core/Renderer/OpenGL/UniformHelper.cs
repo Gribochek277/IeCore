@@ -103,5 +103,20 @@ namespace Irrational.Core.Renderer.OpenGL
                 return false;
             }
         }
+
+        public bool TryAddUniformTextureCubemap(int textureID, string uniformName, ShaderProg shader, TextureUnit unit)
+        {
+            if (shader.GetUniform(uniformName) != -1)
+            {
+                GL.ActiveTexture(unit);
+                GL.BindTexture(TextureTarget.TextureCubeMap, textureID);
+                GL.Uniform1(shader.GetUniform(uniformName), (int)unit - 33984);//convertation of enum to int texture layer
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

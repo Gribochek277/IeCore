@@ -8,14 +8,18 @@ namespace Irrational
     public class Scene : IScene
     {
         protected List<SceneObject> _sceneObjects = new List<SceneObject>();
-        private PlayerCamera _camera; 
+        private PlayerCamera _camera;
+        private Skybox _skybox;
         public List<SceneObject> Objects { get { return _sceneObjects; } }
         public SceneObject Camera { get { return _camera; } }
 
         public virtual void OnLoad()
         {
             _camera = new PlayerCamera();
-            _camera.AddComponent(new Camera());            
+            _skybox = new Skybox();
+            _camera.AddComponent(new Camera());
+            _sceneObjects.Add(_camera);
+            _sceneObjects.Add(_skybox);
         }
 
         public virtual void OnRendered()

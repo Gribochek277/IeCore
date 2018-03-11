@@ -37,7 +37,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents
 
         public ShaderProg Shader
         {
-            get { return _shader != null ? _shader : null; }
+            get { return _shader ?? null; }
             set {_shader = value; }
         }
 
@@ -90,12 +90,12 @@ namespace Irrational.Core.Entities.SceneObjectComponents
                 }
             }
         }
-
+        // Similiar realisation exists in SkyboxComponent maybe need to be merged in future
         int LoadImage(Bitmap image, PixelInternalFormat textureColorspace)
         {
             int texID = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, texID);
-            BitmapData data = image.LockBits(new System.Drawing.Rectangle(0, 0, image.Width, image.Height),
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, textureColorspace, data.Width, data.Height, 0,

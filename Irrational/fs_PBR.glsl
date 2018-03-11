@@ -13,8 +13,8 @@ uniform float ambientStr;
 
 // lights
 uniform int numberOfLights;
-uniform vec3 lightPos[2];
-uniform vec3 lightColor[2];
+uniform vec3 lightPos[64];
+uniform vec3 lightColor[64];
 
 uniform vec3 cameraPosition;
 

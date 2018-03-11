@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using System.Linq;
 
 namespace Irrational
 {
@@ -10,84 +11,56 @@ namespace Irrational
         public TexturedCube()
             : base()
         {
-            VertCount = 24;
+            VertCount = 18;
             IndiceCount = 36;
-            TextureCoordsCount = 24;
+            TextureCoordsCount = 18;
         }
 
         public override Vector3[] GetVerts()
         {
             return new Vector3[] {
                 //left
-                new Vector3(-0.5f, -0.5f,  -0.5f),
-                new Vector3(0.5f, 0.5f,  -0.5f),
-                new Vector3(0.5f, -0.5f,  -0.5f),
-                new Vector3(-0.5f, 0.5f,  -0.5f),
+                new Vector3(-1f, -1f,  -1f),
+                new Vector3(1f, 1f,  -1f),
+                new Vector3(1f, -1f,  -1f),
+                new Vector3(-1f, 1f,  -1f),
 
                 //back
-                new Vector3(0.5f, -0.5f,  -0.5f),
-                new Vector3(0.5f, 0.5f,  -0.5f),
-                new Vector3(0.5f, 0.5f,  0.5f),
-                new Vector3(0.5f, -0.5f,  0.5f),
+                new Vector3(1f, -1f,  -1f),
+                new Vector3(1f, 1f,  -1f),
+                new Vector3(1f, 1f,  1f),
+                new Vector3(1f, -1f,  1f),
 
                 //right
-                new Vector3(-0.5f, -0.5f,  0.5f),
-                new Vector3(0.5f, -0.5f,  0.5f),
-                new Vector3(0.5f, 0.5f,  0.5f),
-                new Vector3(-0.5f, 0.5f,  0.5f),
+                new Vector3(-1f, -1f,  1f),
+                new Vector3(1f, -1f,  1f),
+                new Vector3(1f, 1f,  1f),
+                new Vector3(-1f, 1f,  1f),
 
                 //top
-                new Vector3(0.5f, 0.5f,  -0.5f),
-                new Vector3(-0.5f, 0.5f,  -0.5f),
-                new Vector3(0.5f, 0.5f,  0.5f),
-                new Vector3(-0.5f, 0.5f,  0.5f),
+                new Vector3(1f, 1f,  -1f),
+                new Vector3(-1f, 1f,  -1f),
+                new Vector3(1f, 1f,  1f),
+                new Vector3(-1f, 1f,  1f),
 
                 //front
-                new Vector3(-0.5f, -0.5f,  -0.5f),
-                new Vector3(-0.5f, 0.5f,  0.5f),
-                new Vector3(-0.5f, 0.5f,  -0.5f),
-                new Vector3(-0.5f, -0.5f,  0.5f),
+                new Vector3(-1f, -1f,  -1f),
+                new Vector3(-1f, 1f,  1f),
+                new Vector3(-1f, 1f,  -1f),
+                new Vector3(-1f, -1f,  1f),
 
                 //bottom
-                new Vector3(-0.5f, -0.5f,  -0.5f),
-                new Vector3(0.5f, -0.5f,  -0.5f),
-                new Vector3(0.5f, -0.5f,  0.5f),
-                new Vector3(-0.5f, -0.5f,  0.5f)
+                new Vector3(-1f, -1f,  -1f),
+                new Vector3(1f, -1f,  -1f),
+                new Vector3(1f, -1f,  1f),
+                new Vector3(-1f, -1f,  1f)
 
             };
         }
 
         public override int[] GetIndices(int offset = 0)
         {
-            int[] inds = new int[] {
-                //left
-                0,1,2,0,3,1,
-
-                //back
-                4,5,6,4,6,7,
-
-                //right
-                8,9,10,8,10,11,
-
-                //top
-                13,14,12,13,15,14,
-
-                //front
-                16,17,18,16,19,17,
-
-                //bottom 
-                20,21,22,20,22,23
-            };
-
-            if (offset != 0)
-            {
-                for (int i = 0; i < inds.Length; i++)
-                {
-                    inds[i] += offset;
-                }
-            }
-
-            return inds;
+           return Enumerable.Range(offset, IndiceCount).ToArray();
         }
 
         public override Vector2[] GetTextureCoords()

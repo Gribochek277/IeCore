@@ -22,7 +22,7 @@ namespace Irrational.Core.CoreManager
             _scene.OnLoad();
             foreach (SceneObject sceneObject in _scene.Objects)// TODO: i don't like this part of code
                 _sceneObjects.Add(sceneObject);
-            _renderer.OnLoad(_sceneObjects,(Camera)_scene.Camera.components["Camera"]);
+            _renderer.OnLoad(_sceneObjects);
         }
 
         public void OnRendered()

@@ -17,6 +17,7 @@ namespace Irrational.Core.Renderer.OpenGL
         private GameWindow _gameWindow;
         private List<ISceneObject> _objects;
         private Camera _cam;
+        private SceneObject skybox = null;
 
         public OpenglRenderer(GameWindow gameWindow) {
             _gameWindow = gameWindow;
@@ -35,18 +36,38 @@ namespace Irrational.Core.Renderer.OpenGL
 
         float time = 0.0f;
 
-        public void OnLoad(List<ISceneObject> sceneObjects, Camera camera)
+        public void OnLoad(List<ISceneObject> sceneObjects)
         {
             _objects = sceneObjects;
-            _cam = camera;
 
-            //gatherLights
+            //sceneObjects which required for default render pipeline camera etc.
+            List<SceneObject> specificSceneObjects = new List<SceneObject>();
+            //gather specific objects
             foreach (SceneObject sceneObject in sceneObjects)
             {
+                //gather all light sources
                 if (sceneObject.components.ContainsKey("PointLightSceneObjectComponent"))
                 {
                     lights.Add(sceneObject);
                 }
+                //gather cemeras
+                if (sceneObject.GetType().Name == "PlayerCamera")
+                {
+                    _cam = (Camera)sceneObject.components["Camera"];
+                    specificSceneObjects.Add(sceneObject);
+                }
+                //gather skybox
+                if (sceneObject.GetType().Name == "Skybox")
+                {
+                    skybox = sceneObject;                
+                }
+            }
+
+            //remove specific objects from main collection of sceneObjects 
+            foreach (SceneObject sceneObject in specificSceneObjects)
+            {
+                sceneObject.OnLoad();
+                _objects.Remove(sceneObject);
             }
 
             foreach (SceneObject sceneObject in lights)
@@ -62,7 +83,7 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.GenBuffers(1, out ibo_elements);
 
             _cam.Position += new Vector3(0f, 0f, 3f);
-            GL.ClearColor(Color.Black);
+            GL.ClearColor(Color.Blue);
             GL.PointSize(5f);
             
             // Assemble vertex and indice data for all volumes
@@ -83,58 +104,71 @@ namespace Irrational.Core.Renderer.OpenGL
                 texcoords.AddRange(meshComponent.ModelMesh.GetTextureCoords());
                 normals.AddRange(meshComponent.ModelMesh.GetNormals().ToList());
                 vertcount += meshComponent.ModelMesh.VertCount;
-            }
+            }           
 
             vertdata = verts.ToArray();
             indicedata = inds.ToArray();
             coldata = colors.ToArray();
             texcoorddata = texcoords.ToArray();
             normdata = normals.ToArray();
+            
 
             Console.WriteLine("Vertexies: " + vertdata.Length);
             Console.WriteLine("Triangles: " + vertdata.Length/3);
 
             int indiceat = 0;
-            foreach (SceneObject v in _objects)
-            {
+            foreach (SceneObject v in _objects) {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
-                MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
+                try {                    
+                    MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
+                                    
 
-                GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vPosition"));
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vPosition"));
 
-                GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
-                GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
+                    GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
+                    GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
 
-                // Buffer vertex color if shader supports it
-                if (materialComponent.Shader.GetAttribute("vColor") != -1)
-                {
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vColor"));
-                    GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(coldata.Length * Vector3.SizeInBytes), coldata, BufferUsageHint.StaticDraw);
-                    GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
+                    // Buffer vertex color if shader supports it
+                    if (materialComponent.Shader.GetAttribute("vColor") != -1)
+                    {
+                        GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vColor"));
+                        GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(coldata.Length * Vector3.SizeInBytes), coldata, BufferUsageHint.StaticDraw);
+                        GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
+                    }
+
+
+                    // Buffer texture coordinates if shader supports it
+                    if (materialComponent.Shader.GetAttribute("texcoord") != -1)
+                    {
+                        GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("texcoord"));
+                        GL.BufferData<Vector2>(BufferTarget.ArrayBuffer, (IntPtr)(texcoorddata.Length * Vector2.SizeInBytes), texcoorddata, BufferUsageHint.StaticDraw);
+                        GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("texcoord"), 2, VertexAttribPointerType.Float, true, 0, 0);
+                    }
+
+                    if (materialComponent.Shader.GetAttribute("vNormal") != -1)
+                    {
+                        GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vNormal"));
+                        GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(normdata.Length * Vector3.SizeInBytes), normdata, BufferUsageHint.StaticDraw);
+                        GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vNormal"), 3, VertexAttribPointerType.Float, true, 0, 0);
+                    }
+
+                    indiceat += meshComponent.ModelMesh.IndiceCount;
+                } catch {
+                    SkyboxSceneObjectComponent skyboxComponent = (SkyboxSceneObjectComponent)skybox.components["SkyboxSceneObjectComponent"];
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, skyboxComponent.Shader.GetBuffer("aPos"));
+                    GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
+                    GL.VertexAttribPointer(skyboxComponent.Shader.GetAttribute("aPos"), 3, VertexAttribPointerType.Float, false, 0, 0);
+                    indiceat += meshComponent.ModelMesh.IndiceCount;
+                    Console.WriteLine("Not a generic scene objet");
                 }
-
-
-                // Buffer texture coordinates if shader supports it
-                if (materialComponent.Shader.GetAttribute("texcoord") != -1)
-                {
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("texcoord"));
-                    GL.BufferData<Vector2>(BufferTarget.ArrayBuffer, (IntPtr)(texcoorddata.Length * Vector2.SizeInBytes), texcoorddata, BufferUsageHint.StaticDraw);
-                    GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("texcoord"), 2, VertexAttribPointerType.Float, true, 0, 0);
-                }
-
-                if (materialComponent.Shader.GetAttribute("vNormal") != -1)
-                {
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vNormal"));
-                    GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(normdata.Length * Vector3.SizeInBytes), normdata, BufferUsageHint.StaticDraw);
-                    GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vNormal"), 3, VertexAttribPointerType.Float, true, 0, 0);
-                }
-
-                indiceat += meshComponent.ModelMesh.IndiceCount;
             }
         }
 
         public void OnRendered()
         {
+
+            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
+            Matrix4 view = _cam.GetViewMatrix();
             // Update object positions
             time += (float)this._gameWindow.RenderPeriod;
 
@@ -146,18 +180,23 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
 
+            int indiceat = 36; //start rendering after skybox
+
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+           
+
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Back);
             GL.Disable(EnableCap.FramebufferSrgb);
 
-            int indiceat = 0;
+           
            
             // Draw all our objects
-            foreach(SceneObject v in _objects)
+            for(int i=1; i<_objects.Count;i++)
             {
-                MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
-                MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
+                MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)_objects[i].components["MeshSceneObjectComponent"];
+                MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)_objects[i].components["MaterialSceneObjectComponent"];
 
                 int texId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.DiffuseMap];
                 int normId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.NormalMap];
@@ -165,9 +204,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 materialComponent.Shader.EnableVertexAttribArrays();
                
                 GL.UniformMatrix4(materialComponent.Shader.GetUniform("model"), false, ref meshComponent.ModelMesh.ModelMatrix);
-                Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
                 GL.UniformMatrix4(materialComponent.Shader.GetUniform("projection"), false, ref projection);
-                Matrix4 view = _cam.GetViewMatrix();
                 GL.UniformMatrix4(materialComponent.Shader.GetUniform("view"), false, ref view);//think about adding to uniformhelper Matrix4 type, but for now it's not required.
 
                 _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
@@ -177,10 +214,10 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniform1(lights.Count(), "numberOfLights", materialComponent.Shader);
                 Vector3[] lightpositions = new Vector3[lights.Count()];
                 Vector3[] lightcolors = new Vector3[lights.Count()];
-                for (int i = 0; i < lights.Count; ++i) {
-                    var lightComponent =  (PointLightSceneObjectComponent)lights[i].components["PointLightSceneObjectComponent"];
-                    lightcolors[i] = lightComponent.Color * lightComponent.LightStrenght;
-                    lightpositions[i] = lights[i].Position;
+                for (int j = 0; j < lights.Count; ++j) {
+                    var lightComponent =  (PointLightSceneObjectComponent)lights[j].components["PointLightSceneObjectComponent"];
+                    lightcolors[j] = lightComponent.Color * lightComponent.LightStrenght;
+                    lightpositions[j] = lights[j].Position;
                 }
 
                 bool suc = _uniformHelper.TryAddUniform1(lightcolors, "lightColor[0]", materialComponent.Shader);
@@ -198,6 +235,23 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 materialComponent.Shader.DisableVertexAttribArrays();
             }
+
+            //Render skybox
+            GL.CullFace(CullFaceMode.Front);
+            GL.DepthFunc(DepthFunction.Lequal);
+            SkyboxSceneObjectComponent skyboxComponent = (SkyboxSceneObjectComponent)skybox.components["SkyboxSceneObjectComponent"];
+            MeshSceneObjectComponent skyboxMeshComponent = (MeshSceneObjectComponent)skybox.components["MeshSceneObjectComponent"];
+            GL.UseProgram(skyboxComponent.Shader.ProgramID);
+            skyboxComponent.Shader.EnableVertexAttribArrays();
+            GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("projection"), false, ref projection);
+            Matrix4 clearTraslationViewMatrix = view.ClearTranslation();
+            GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("view"), false, ref clearTraslationViewMatrix);
+            GL.BindTexture(TextureTarget.TextureCubeMap, skyboxComponent.TexId);
+            GL.Enable(EnableCap.FramebufferSrgb);
+            GL.DrawElements(BeginMode.Triangles, skyboxMeshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, 0 * sizeof(uint));
+            indiceat += skyboxMeshComponent.ModelMesh.IndiceCount;
+            GL.DepthFunc(DepthFunction.Less);
+            skyboxComponent.Shader.DisableVertexAttribArrays();
 
             GL.Flush();
             _gameWindow.SwapBuffers();
