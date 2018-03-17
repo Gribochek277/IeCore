@@ -127,10 +127,11 @@ namespace Irrational.Utils
                     {
                         String[] vertparts = temp.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
+                        
                         // Attempt to parse each part of the vertice
-                        bool success = float.TryParse(vertparts[0], out vec.X);
-                        success |= float.TryParse(vertparts[1], out vec.Y);
-                        success |= float.TryParse(vertparts[2], out vec.Z);
+                        bool success = float.TryParse(vertparts[0],NumberStyles.Any,CultureInfo.InvariantCulture, out vec.X);
+                        success |= float.TryParse(vertparts[1], NumberStyles.Any, CultureInfo.InvariantCulture, out vec.Y);
+                        success |= float.TryParse(vertparts[2], NumberStyles.Any, CultureInfo.InvariantCulture, out vec.Z);
 
                         // If any of the parses failed, report the error
                         if (!success)
