@@ -16,6 +16,9 @@ uniform int numberOfLights;
 uniform vec3 lightPos[64];
 uniform vec3 lightColor[64];
 
+// IBL
+uniform samplerCube irradianceMap;
+
 uniform vec3 cameraPosition;
 
 const float PI = 3.14159265359;
@@ -125,9 +128,12 @@ void main()
         Lo += (kD * texture(maintexture, f_texcoord).rgb / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }   
     
-    // ambient lighting (note that the next IBL tutorial will replace 
-    // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * texture(maintexture, f_texcoord).rgb * ambientStr;
+    vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - metallic;	  
+    vec3 irradiance =  texture(irradianceMap, N).rgb;
+    vec3 diffuse      = irradiance * texture(maintexture, f_texcoord).rgb;
+    vec3 ambient = (kD * diffuse) * ambientStr;
 
     vec3 color = ambient + Lo;
 

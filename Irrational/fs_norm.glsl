@@ -13,7 +13,7 @@ uniform float specStr;
 uniform vec3 lightPos[1];
 
 uniform float ambientStr;
-uniform vec3 lightColor;
+uniform vec3 lightColor[1];
 uniform sampler2D maintexture;
 uniform sampler2D normaltexture;
 
@@ -52,9 +52,9 @@ main()
 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128);
 
-	vec3 specular = specStr * spec * lightColor;  
+	vec3 specular = specStr * spec * lightColor[0];  
 
-	vec3 diffuse = (diff * (lightColor + ambientStr + specular));
+	vec3 diffuse = (diff * (lightColor[0] + ambientStr + specular));
    
     outputColor = vec4(texture(maintexture, f_texcoord)*vec4(diffuse,1.0));
 

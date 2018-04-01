@@ -8,6 +8,7 @@ using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using Irrational.Core.Entities.Abstractions;
 using Irrational.Core.Entities.SceneObjectComponents;
+using Irrational.Core.Renderer.OpenGL.Helpers;
 
 namespace Irrational.Core.Renderer.OpenGL
 {
@@ -116,10 +117,10 @@ namespace Irrational.Core.Renderer.OpenGL
             Console.WriteLine("Vertexies: " + vertdata.Length);
             Console.WriteLine("Triangles: " + vertdata.Length/3);
 
-            int indiceat = 0;
+            
             foreach (SceneObject v in _objects) {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
-                try {                    
+                try {     //this code is bullshit. need to do something with it.                
                     MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
                                     
 
@@ -152,20 +153,20 @@ namespace Irrational.Core.Renderer.OpenGL
                         GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vNormal"), 3, VertexAttribPointerType.Float, true, 0, 0);
                     }
 
-                    indiceat += meshComponent.ModelMesh.IndiceCount;
+                  
+
                 } catch {
-                    SkyboxSceneObjectComponent skyboxComponent = (SkyboxSceneObjectComponent)skybox.components["SkyboxSceneObjectComponent"];
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, skyboxComponent.Shader.GetBuffer("aPos"));
-                    GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
-                    GL.VertexAttribPointer(skyboxComponent.Shader.GetAttribute("aPos"), 3, VertexAttribPointerType.Float, false, 0, 0);
-                    indiceat += meshComponent.ModelMesh.IndiceCount;
-                    Console.WriteLine("Not a generic scene objet");
                 }
             }
         }
 
         public void OnRendered()
         {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+
+            // Buffer index data
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
 
             Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
             Matrix4 view = _cam.GetViewMatrix();
@@ -174,11 +175,7 @@ namespace Irrational.Core.Renderer.OpenGL
 
             this._gameWindow.Title = "FPS: " + (1f / this._gameWindow.RenderPeriod).ToString("0.");
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
-            // Buffer index data
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
+            
 
             int indiceat = 36; //start rendering after skybox
 
@@ -210,7 +207,9 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
 
-                
+                //Skybox texture
+                _uniformHelper.TryAddUniformTextureCubemap(1, "irradianceMap", materialComponent.Shader, TextureUnit.Texture2);
+
                 _uniformHelper.TryAddUniform1(lights.Count(), "numberOfLights", materialComponent.Shader);
                 Vector3[] lightpositions = new Vector3[lights.Count()];
                 Vector3[] lightcolors = new Vector3[lights.Count()];
@@ -227,31 +226,19 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 //PBR uniforms
-                _uniformHelper.TryAddUniform1(0.9f, "metallic", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(0.5f, "roughness", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.6f, "metallic", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.65f, "roughness", materialComponent.Shader);
                 GL.Enable(EnableCap.FramebufferSrgb);
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
 
                 materialComponent.Shader.DisableVertexAttribArrays();
             }
-
+            
             //Render skybox
-            GL.CullFace(CullFaceMode.Front);
-            GL.DepthFunc(DepthFunction.Lequal);
-            SkyboxSceneObjectComponent skyboxComponent = (SkyboxSceneObjectComponent)skybox.components["SkyboxSceneObjectComponent"];
-            MeshSceneObjectComponent skyboxMeshComponent = (MeshSceneObjectComponent)skybox.components["MeshSceneObjectComponent"];
-            GL.UseProgram(skyboxComponent.Shader.ProgramID);
-            skyboxComponent.Shader.EnableVertexAttribArrays();
-            GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("projection"), false, ref projection);
-            Matrix4 clearTraslationViewMatrix = view.ClearTranslation();
-            GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("view"), false, ref clearTraslationViewMatrix);
-            GL.BindTexture(TextureTarget.TextureCubeMap, skyboxComponent.TexId);
-            GL.Enable(EnableCap.FramebufferSrgb);
-            GL.DrawElements(BeginMode.Triangles, skyboxMeshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, 0 * sizeof(uint));
-            indiceat += skyboxMeshComponent.ModelMesh.IndiceCount;
-            GL.DepthFunc(DepthFunction.Less);
-            skyboxComponent.Shader.DisableVertexAttribArrays();
+            GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
+           
+            indiceat += SkyboxRenderHelper.RenderCubemapSkybox(view, projection, skybox);
 
             GL.Flush();
             _gameWindow.SwapBuffers();
@@ -275,7 +262,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
 
                 meshComponent.ModelMesh.CalculateModelMatrix();
-                meshComponent.ModelMesh.ViewProjectionMatrix = _cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
+                meshComponent.ModelMesh.ViewProjectionMatrix = _cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40);
                 meshComponent.ModelMesh.ModelViewProjectionMatrix = meshComponent.ModelMesh.ModelMatrix * meshComponent.ModelMesh.ViewProjectionMatrix;
             }
         }        

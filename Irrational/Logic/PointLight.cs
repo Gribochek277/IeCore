@@ -4,7 +4,7 @@ using OpenTK;
 
 namespace Irrational.Logic
 {
-    class PointLight : SceneObject
+    public class PointLight : SceneObject
     {
         public PointLight(Vector3 color, float lightStr)
         {

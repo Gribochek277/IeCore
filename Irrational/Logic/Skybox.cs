@@ -9,7 +9,7 @@ namespace Irrational.Logic
     {
         public Skybox(ShaderProg shader, string skyboxLocation = "Resources\\Cubemaps")
         {
-            SkyboxSceneObjectComponent skyboxComponent = new SkyboxSceneObjectComponent(skyboxLocation, shader);
+            SkyboxSceneObjectComponent skyboxComponent = new SkyboxSceneObjectComponent(skyboxLocation, shader, SkyboxSceneObjectComponent.SkyboxType.cubemap);
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
                new WavefrontModelLoader(),
                "Resources/testBox/ObjFormat/box.obj"
@@ -20,8 +20,7 @@ namespace Irrational.Logic
 
         public Skybox(string skyboxLocation = "Resources\\Cubemaps")
         {
-            ShaderProg shader = new ShaderProg("vs_skybox.glsl", "fs_skybox.glsl", true);
-            SkyboxSceneObjectComponent skyboxComponent = new SkyboxSceneObjectComponent(skyboxLocation, shader);
+            SkyboxSceneObjectComponent skyboxComponent = new SkyboxSceneObjectComponent(skyboxLocation, SkyboxSceneObjectComponent.SkyboxType.cubemap);
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
               new WavefrontModelLoader(),
               "Resources/testBox/ObjFormat/box.obj"
