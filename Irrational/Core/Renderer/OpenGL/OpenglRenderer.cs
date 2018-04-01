@@ -188,9 +188,9 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.Disable(EnableCap.FramebufferSrgb);
 
            
-           
+
             // Draw all our objects
-            for(int i=1; i<_objects.Count;i++)
+            for (int i=1; i<_objects.Count;i++)
             {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)_objects[i].components["MeshSceneObjectComponent"];
                 MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)_objects[i].components["MaterialSceneObjectComponent"];
@@ -208,7 +208,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
 
                 //Skybox texture
-                _uniformHelper.TryAddUniformTextureCubemap(1, "irradianceMap", materialComponent.Shader, TextureUnit.Texture2);
+                _uniformHelper.TryAddUniformTextureCubemap(6, "irradianceMap", materialComponent.Shader, TextureUnit.Texture2);
 
                 _uniformHelper.TryAddUniform1(lights.Count(), "numberOfLights", materialComponent.Shader);
                 Vector3[] lightpositions = new Vector3[lights.Count()];
@@ -222,23 +222,23 @@ namespace Irrational.Core.Renderer.OpenGL
                 bool suc = _uniformHelper.TryAddUniform1(lightcolors, "lightColor[0]", materialComponent.Shader);
                 bool suc2 = _uniformHelper.TryAddUniform1(lightpositions, "lightPos[0]", materialComponent.Shader);
 
-                _uniformHelper.TryAddUniform1(0.1f, "ambientStr", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(1f, "ambientStr", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 //PBR uniforms
-                _uniformHelper.TryAddUniform1(0.6f, "metallic", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(0.65f, "roughness", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.9f, "metallic", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.9f, "roughness", materialComponent.Shader);
                 GL.Enable(EnableCap.FramebufferSrgb);
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
 
                 materialComponent.Shader.DisableVertexAttribArrays();
             }
-            
+            SkyboxRenderHelper.GenerateCubemapFromHdr(skybox);
             //Render skybox
             GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
            
-            indiceat += SkyboxRenderHelper.RenderCubemapSkybox(view, projection, skybox);
+            indiceat += SkyboxRenderHelper.RenderHrdToCubemapSkybox(view, projection, skybox);
 
             GL.Flush();
             _gameWindow.SwapBuffers();
