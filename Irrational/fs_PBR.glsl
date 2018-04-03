@@ -128,12 +128,14 @@ void main()
         Lo += (kD * texture(maintexture, f_texcoord).rgb / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }   
     
-    vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
-    vec3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;	  
-    vec3 irradiance =  texture(irradianceMap, N).rgb;
-    vec3 diffuse      = irradiance * texture(maintexture, f_texcoord).rgb;
-    vec3 ambient = (kD * diffuse) * ambientStr;
+
+	vec3 ambient = vec3(0.03) * texture(maintexture, f_texcoord).rgb * ambientStr;
+    //vec3 kS = fresnelSchlick(max(dot(N, V), 0.0), F0);
+    //vec3 kD = 1.0 - kS;
+    //kD *= 1.0 - metallic;	  
+    //vec3 irradiance =  texture(irradianceMap, N).rgb;
+    //vec3 diffuse      = irradiance * texture(maintexture, f_texcoord).rgb;
+    //vec3 ambient = (kD * diffuse) * ambientStr;
 
     vec3 color = ambient + Lo;
 

@@ -162,6 +162,14 @@ namespace Irrational.Core.Renderer.OpenGL
 
         public void OnRendered()
         {
+            GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Back);
+            GL.Disable(EnableCap.FramebufferSrgb);
+            SkyboxRenderHelper.GenerateCubemapFromHdr(skybox);
+            //Render skybox
+            GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
             // Buffer index data
@@ -182,10 +190,7 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
            
 
-            GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.CullFace);
-            GL.CullFace(CullFaceMode.Back);
-            GL.Disable(EnableCap.FramebufferSrgb);
+            
 
            
 
@@ -234,9 +239,7 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 materialComponent.Shader.DisableVertexAttribArrays();
             }
-            SkyboxRenderHelper.GenerateCubemapFromHdr(skybox);
-            //Render skybox
-            GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
+           
            
             indiceat += SkyboxRenderHelper.RenderHrdToCubemapSkybox(view, projection, skybox);
 

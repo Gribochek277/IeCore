@@ -25,12 +25,13 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
             Bitmap bitmap = null;
             using (MagickImage image = new MagickImage(pathToFile))
             {
+                image.Flip();
                 bitmap = image.ToBitmap();
             }
 
             int texID = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, texID);
-           BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+            BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
                     ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
                 GL.TexImage2D(TextureTarget.Texture2D, 0, textureColorspace, data.Width, data.Height, 0,
@@ -43,9 +44,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMagFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
-            GL.GenerateMipmap(GenerateMipmapTarget.TextureCubeMap);
-
-           
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);           
 
             return texID;
         }

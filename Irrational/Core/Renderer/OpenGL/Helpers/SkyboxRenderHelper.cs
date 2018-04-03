@@ -5,6 +5,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Irrational.Core.Renderer.OpenGL.Helpers
 {
@@ -35,7 +36,6 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
 
         public static int RenderHrdToCubemapSkybox(Matrix4 view, Matrix4 projection, SceneObject skybox)
         {
-
             GL.CullFace(CullFaceMode.Front);
             GL.DepthFunc(DepthFunction.Lequal);
             SkyboxSceneObjectComponent skyboxComponent = (SkyboxSceneObjectComponent)skybox.components["SkyboxSceneObjectComponent"];
@@ -45,7 +45,7 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
             GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("projection"), false, ref projection);
             Matrix4 clearTraslationViewMatrix = view.ClearTranslation();
             GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("view"), false, ref clearTraslationViewMatrix);
-            new UniformHelper().TryAddUniformTextureCubemap(envCubemap, "environmentMap", skyboxComponent.Shader, TextureUnit.Texture0);
+            bool isSetted =  new UniformHelper().TryAddUniformTextureCubemap(envCubemap, "equirectangularMap", skyboxComponent.Shader, TextureUnit.Texture1);
             GL.Enable(EnableCap.FramebufferSrgb);
             GL.DrawElements(BeginMode.Triangles, skyboxMeshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, 0 * sizeof(uint));
             GL.DepthFunc(DepthFunction.Less);
@@ -56,49 +56,51 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
 
         public static void GenerateCubemapFromHdr(SceneObject skybox)
         {
-            if (!skyboxLoaded) { 
-            SkyboxSceneObjectComponent skyboxComponent = (SkyboxSceneObjectComponent)skybox.components["SkyboxSceneObjectComponent"];
-            UniformHelper uniformHelper = new UniformHelper();
-            int captureFBO, captureRBO;
-            GL.GenBuffers(1, out captureFBO);
-            GL.GenRenderbuffers(1, out captureRBO);
+            if (!skyboxLoaded) {
+                SkyboxSceneObjectComponent skyboxComponent = (SkyboxSceneObjectComponent)skybox.components["SkyboxSceneObjectComponent"];
+                UniformHelper uniformHelper = new UniformHelper();
+                int captureFBO, captureRBO;
+                GL.GenBuffers(1, out captureFBO);
+                GL.GenRenderbuffers(1, out captureRBO);
 
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, captureFBO);
-            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, captureRBO);
-            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, 512, 512);
-            GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, captureRBO);
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, captureFBO);
+                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, captureRBO);
+                GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Srgb8, 512, 512);
+                GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, RenderbufferTarget.Renderbuffer, captureRBO);
 
-                envCubemap = GenerateEmptyCubemap(PixelInternalFormat.Rgb);
+                envCubemap = GenerateEmptyCubemap(PixelInternalFormat.Srgb8);
 
-            Matrix4 captureProjection = Matrix4.CreatePerspectiveFieldOfView(1.5708f, 1.0f, 0.1f, 10f);
-            Matrix4[] captureViews = {
-                Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(1.0f,  0.0f,  0.0f),new Vector3(0.0f, -1.0f,  0.0f)),
-                Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(-1.0f,  0.0f,  0.0f),new Vector3(0.0f, -1.0f,  0.0f)),
-                Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(0.0f,  1.0f,  0.0f),new Vector3(0.0f,  0.0f,  1.0f)),
-                Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(0.0f, -1.0f,  0.0f),new Vector3(0.0f,  0.0f, -1.0f)),
-                Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(0.0f,  0.0f,  1.0f),new Vector3(0.0f, -1.0f,  0.0f)),
-                Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(0.0f,  0.0f, -1.0f),new Vector3(0.0f, -1.0f,  0.0f))
-            };
+                Matrix4 captureProjection = Matrix4.CreatePerspectiveFieldOfView(1.3f, 1.0f, 0.1f, 40.0f);
+                Matrix4[] captureViews = {
+                    Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(1.0f,  0.0f,  0.0f),new Vector3(0.0f, -1.0f,  0.0f)),
+                    Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(-1.0f,  0.0f,  0.0f),new Vector3(0.0f, -1.0f,  0.0f)),
+                    Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(0.0f,  1.0f,  0.0f),new Vector3(0.0f,  0.0f,  1.0f)),
+                    Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(0.0f, -1.0f,  0.0f),new Vector3(0.0f,  0.0f, -1.0f)),
+                    Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(0.0f,  0.0f,  1.0f),new Vector3(0.0f, -1.0f,  0.0f)),
+                    Matrix4.LookAt(new Vector3(0.0f, 0.0f, 0.0f),new Vector3(0.0f,  0.0f, -1.0f),new Vector3(0.0f, -1.0f,  0.0f))
+                };
 
-            ShaderProg equirectangularToCubemapShader = new ShaderProg("vs_equirectangular_to_cubemap.glsl", "fs_equirectangular_to_cubemap.glsl", true);
-            GL.UseProgram(equirectangularToCubemapShader.ProgramID);
-            equirectangularToCubemapShader.EnableVertexAttribArrays();
-            uniformHelper.TryAddUniformTexture2D(skyboxComponent.TexId, "equirectangularMap", equirectangularToCubemapShader, TextureUnit.Texture0);
-            GL.UniformMatrix4(equirectangularToCubemapShader.GetUniform("projection"), false, ref captureProjection);
-            GL.Viewport(0, 0, 512, 512);
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, captureFBO);
-            for (int i = 0; i < 6; ++i)
-            {
+                ShaderProg equirectangularToCubemapShader = new ShaderProg("vs_equirectangular_to_cubemap.glsl", "fs_equirectangular_to_cubemap.glsl", true);
+                GL.UseProgram(equirectangularToCubemapShader.ProgramID);
+                equirectangularToCubemapShader.EnableVertexAttribArrays();
+                GL.UniformMatrix4(equirectangularToCubemapShader.GetUniform("projection"), false, ref captureProjection);
+                uniformHelper.TryAddUniformTexture2D(skyboxComponent.TexId, "equirectangularMap", equirectangularToCubemapShader, TextureUnit.Texture0);
+
+                GL.Viewport(0, 0, 512, 512);
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, captureFBO);
+                for (int i = 0; i < 6; ++i)
+                {
                     GL.ClearColor(Color.Violet);
-                GL.UniformMatrix4(equirectangularToCubemapShader.GetUniform("view"), false, ref captureViews[i]);
-                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0,
-                                     TextureTarget.TextureCubeMapPositiveX + i, envCubemap, 0);
-                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-                RenderCube(); // renders a 1x1 cube
-            }
+                    GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            equirectangularToCubemapShader.DisableVertexAttribArrays();
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+                    GL.UniformMatrix4(equirectangularToCubemapShader.GetUniform("view"), false, ref captureViews[i]);
+                    GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0,
+                                         TextureTarget.TextureCubeMapPositiveX + i, envCubemap, 0);
+                     RenderCube(); // renders a 1x1 cube
+                }
+
+                equirectangularToCubemapShader.DisableVertexAttribArrays();
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
                 skyboxLoaded = true;
             }
         }
@@ -107,10 +109,10 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
         {
             int envCubemap = GL.GenTexture();
             GL.BindTexture(TextureTarget.TextureCubeMap, envCubemap);
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 6; ++i)
             {
-                GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, textureColorspace, sizeX, sizeY, 0,
-                    PixelFormat.Rgb, PixelType.Float, IntPtr.Zero);
+               GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i, 0, textureColorspace, sizeX, sizeY, 0,
+                    OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
             }
 
             GL.TexParameter(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
@@ -126,7 +128,7 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
 
         static int cubeVAO = 0;
         static int cubeVBO = 0;
-        private static void RenderCube()
+        public static void RenderCube()
         {
             // initialize (if necessary)
             if (cubeVAO == 0)
@@ -193,6 +195,7 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
             }
             // render Cube
             GL.BindVertexArray(cubeVAO);
+            //GL.DrawElements(BeginMode.Triangles, 36, DrawElementsType.UnsignedInt, 0 * sizeof(uint));
             GL.DrawArrays(BeginMode.Triangles, 0, 36);
             GL.BindVertexArray(0);
         }
