@@ -18,9 +18,9 @@ namespace Irrational.Logic
             AddComponent(skyboxComponent);
         }
 
-        public Skybox(string skyboxLocation = "Resources\\Cubemaps")
+        public Skybox(string skyboxLocation = "Resources\\HDR\\MonValley_DirtRoad\\MonValley_G_DirtRoad_3k.hdr")
         {
-            SkyboxSceneObjectComponent skyboxComponent = new SkyboxSceneObjectComponent(skyboxLocation, SkyboxSceneObjectComponent.SkyboxType.cubemap);
+            SkyboxSceneObjectComponent skyboxComponent = new SkyboxSceneObjectComponent(skyboxLocation, SkyboxSceneObjectComponent.SkyboxType.hdr);
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
               new WavefrontModelLoader(),
               "Resources/testBox/ObjFormat/box.obj"
