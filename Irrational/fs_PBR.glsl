@@ -89,11 +89,12 @@ void main()
 {		
 	vec3 N = getNormalFromMap(f_texcoord);
     vec3 V = normalize(cameraPosition - f_pos);
+	vec3 albedo = texture(maintexture, f_texcoord).rgb;
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
     vec3 F0 = vec3(0.04); 
-    F0 = mix(F0, texture(maintexture, f_texcoord).rgb, metallic);
+    F0 = mix(F0, albedo, metallic);
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
@@ -130,15 +131,15 @@ void main()
         float NdotL = max(dot(N, L), 0.0);        
 
         // add to outgoing radiance Lo
-        Lo += (kD * texture(maintexture, f_texcoord).rgb / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
     }   
     
 
-	//vec3 ambient = vec3(0.03) * texture(maintexture, f_texcoord).rgb * ambientStr;
+	//vec3 ambient = vec3(0.03) * albedo * ambientStr;
     vec3 kS = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
 	vec3 kD = 1.0 - kS;
 	vec3 irradiance = texture(irradianceMap, N).rgb;
-	vec3 diffuse    = irradiance * texture(maintexture, f_texcoord).rgb;
+	vec3 diffuse    = irradiance * albedo;
 	vec3 ambient    = (kD * diffuse) * ambientStr; 
 
     vec3 color = ambient + Lo;
