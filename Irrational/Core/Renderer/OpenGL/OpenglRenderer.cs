@@ -116,9 +116,7 @@ namespace Irrational.Core.Renderer.OpenGL
 
             Console.WriteLine("Vertexies: " + vertdata.Length);
             Console.WriteLine("Triangles: " + vertdata.Length/3);
-
-            SkyboxRenderHelper.GenerateCubemapFromHdr(skybox);
-
+            
             foreach (SceneObject v in _objects) {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
                 try {     //this code is bullshit. need to do something with it.                
@@ -153,8 +151,7 @@ namespace Irrational.Core.Renderer.OpenGL
                         GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(normdata.Length * Vector3.SizeInBytes), normdata, BufferUsageHint.StaticDraw);
                         GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vNormal"), 3, VertexAttribPointerType.Float, true, 0, 0);
                     }
-
-                  
+                    
 
                 } catch {
                 }
@@ -167,7 +164,6 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
             GL.Disable(EnableCap.FramebufferSrgb);
-            //Render skybox
             GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -183,17 +179,9 @@ namespace Irrational.Core.Renderer.OpenGL
 
             this._gameWindow.Title = "FPS: " + (1f / this._gameWindow.RenderPeriod).ToString("0.");
 
-            
-
             int indiceat = 36; //start rendering after skybox
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-           
-
-            
-
-           
-
             // Draw all our objects
             for (int i=1; i<_objects.Count;i++)
             {
@@ -212,8 +200,8 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
 
-                //Skybox texture
-                _uniformHelper.TryAddUniformTextureCubemap(6, "irradianceMap", materialComponent.Shader, TextureUnit.Texture2);
+                //TODO retrieve it properly skybox texture
+                _uniformHelper.TryAddUniformTextureCubemap(3, "irradianceMap", materialComponent.Shader, TextureUnit.Texture2);
 
                 _uniformHelper.TryAddUniform1(lights.Count(), "numberOfLights", materialComponent.Shader);
                 Vector3[] lightpositions = new Vector3[lights.Count()];
@@ -231,8 +219,8 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 //PBR uniforms
-                _uniformHelper.TryAddUniform1(0.9f, "metallic", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(0.9f, "roughness", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(0.4f, "metallic", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(1.0f, "roughness", materialComponent.Shader);
                 GL.Enable(EnableCap.FramebufferSrgb);
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;

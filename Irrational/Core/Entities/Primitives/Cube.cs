@@ -1,60 +1,81 @@
-﻿using OpenTK;
-using System.Linq;
+﻿using OpenTK.Graphics.OpenGL;
 
-namespace Irrational
+namespace Irrational.Core.Entities.Primitives
 {
-    /// <summary>
-    /// Cube
-    /// </summary>
-    public class Cube : Volume
+    public class Cube
     {
-        public Cube()
+        private int cubeVAO = 0;
+        private int cubeVBO = 0;
+        public void RenderCube()
         {
-            VertCount = 8;
-            IndiceCount = 36;
-            ColorDataCount = 8;
-        }
+            // initialize (if necessary)
+            if (cubeVAO == 0)
+            {
+                float[] vertices = {
+                    // back face
+                    -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+                     1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+                     1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+                     1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+                    -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+                    -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+                    // front face
+                    -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+                     1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+                     1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+                     1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+                    -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+                    -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+                    // left face
+                    -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+                    -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+                    -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+                    -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+                    -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+                    -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+                    // right face
+                     1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+                     1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+                     1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+                     1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+                     1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+                     1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+                    // bottom face
+                    -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+                     1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+                     1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+                     1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+                    -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+                    -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+                    // top face
+                    -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+                     1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+                     1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+                     1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+                    -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+                    -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+                };
 
-        public override Vector3[] GetVerts()
-        {
-            return new Vector3[] {new Vector3(-1f, -1f,  -1f),
-                new Vector3(1f, -1f, -1f),
-                new Vector3(1f, 1f, -1f),
-                new Vector3(-1f, 1f, -1f),
-                new Vector3(-1f, -1f, 1f),
-                new Vector3(1f, -1f, 1f),
-                new Vector3(1f, 1f, 1f),
-                new Vector3(-1f, 1f, 1f),
-            };
-        }
-
-        public override int[] GetIndices(int offset = 0)
-        {
-           return Enumerable.Range(offset, IndiceCount).ToArray();
-        }
-
-        public override Vector3[] GetColorData()
-        {
-            return new Vector3[] {
-                new Vector3(1f, 0f, 0f),
-                new Vector3( 0f, 0f, 1f),
-                new Vector3( 0f, 1f, 0f),
-                new Vector3( 1f, 0f, 0f),
-                new Vector3( 0f, 0f, 1f),
-                new Vector3( 0f, 1f, 0f),
-                new Vector3( 1f, 0f, 0f),
-                new Vector3( 0f, 0f, 1f)
-            };
-        }
-
-        public override void CalculateModelMatrix()
-        {
-            ModelMatrix = Matrix4.CreateScale(Scale) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y) * Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateTranslation(Position);
-        }
-
-        public override Vector2[] GetTextureCoords()
-        {
-            return new Vector2[] { };
+                GL.GenVertexArrays(1, out cubeVAO);
+                GL.GenBuffers(1, out cubeVBO);
+                // fill buffer
+                GL.BindBuffer(BufferTarget.ArrayBuffer, cubeVBO);
+                GL.BufferData(BufferTarget.ArrayBuffer, 288 * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+                // link vertex attributes
+                GL.BindVertexArray(cubeVAO);
+                GL.EnableVertexAttribArray(0);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+                GL.EnableVertexAttribArray(1);
+                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), (3 * sizeof(float)));
+                GL.EnableVertexAttribArray(2);
+                GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), (6 * sizeof(float)));
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                GL.BindVertexArray(0);
+            }
+            // render Cube
+            GL.BindVertexArray(cubeVAO);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+            GL.BindVertexArray(0);
         }
     }
 }

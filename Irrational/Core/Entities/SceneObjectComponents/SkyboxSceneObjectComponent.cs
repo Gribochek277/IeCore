@@ -1,6 +1,5 @@
 ﻿using Irrational.Core.Entities.Abstractions;
 using System;
-using System.IO;
 using Irrational.Core.Shaders;
 using Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers;
 
@@ -10,12 +9,14 @@ namespace Irrational.Core.Entities.SceneObjectComponents
     {
         public enum SkyboxType { cubemap, hdr };
         private string _skyboxLocation;
-        private int _texId = -1;
+        private int _environmentMapId = -1;
+        private int _irradianceMapId = -1;
         private ShaderProg _shader;
         private SkyboxType skyboxType = SkyboxType.cubemap;
 
         public string SkyboxLocation { get { return _skyboxLocation; } }
-        public int TexId { get { return _texId; } }
+        public int EnvironmentMap { get { return _environmentMapId; } }
+        public int IrradianceMap { get { return _irradianceMapId; } }
         public ShaderProg Shader { get { return _shader ?? null; } }
 
         public SkyboxSceneObjectComponent(string location, ShaderProg Shader, SkyboxType type)
@@ -52,13 +53,15 @@ namespace Irrational.Core.Entities.SceneObjectComponents
             switch (skyboxType) {
                 case SkyboxType.cubemap:
                     {
-                        _texId = new CubemapLoader().LoadCubemap(_skyboxLocation);
+                        _environmentMapId = new CubemapLoader().LoadCubemap(_skyboxLocation);
                         break;
                     }
                 case SkyboxType.hdr:
                     {
                         HdrLoader loader = new HdrLoader();
-                        _texId = loader.LoadHdr(_skyboxLocation);
+                        int[] result = loader.LoadHdr(_skyboxLocation);
+                        _environmentMapId = result[1];
+                        _irradianceMapId = result[2];
                         break;
                     }
                 default: break;
