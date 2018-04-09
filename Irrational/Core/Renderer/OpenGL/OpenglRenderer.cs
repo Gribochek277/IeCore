@@ -117,7 +117,8 @@ namespace Irrational.Core.Renderer.OpenGL
             Console.WriteLine("Vertexies: " + vertdata.Length);
             Console.WriteLine("Triangles: " + vertdata.Length/3);
 
-            
+            SkyboxRenderHelper.GenerateCubemapFromHdr(skybox);
+
             foreach (SceneObject v in _objects) {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
                 try {     //this code is bullshit. need to do something with it.                
@@ -166,7 +167,6 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
             GL.Disable(EnableCap.FramebufferSrgb);
-            SkyboxRenderHelper.GenerateCubemapFromHdr(skybox);
             //Render skybox
             GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
 
@@ -239,10 +239,9 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 materialComponent.Shader.DisableVertexAttribArrays();
             }
-           
-           
-            indiceat += SkyboxRenderHelper.RenderHrdToCubemapSkybox(view, projection, skybox);
 
+            indiceat += SkyboxRenderHelper.RenderHdrToCubemapSkybox(view, projection, skybox);
+            GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
             GL.Flush();
             _gameWindow.SwapBuffers();
         }
