@@ -219,7 +219,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 //PBR uniforms
-                Console.WriteLine(Math.Abs(Math.Sin(time)));
+                //Console.WriteLine(Math.Abs(Math.Sin(time)));
                 _uniformHelper.TryAddUniform1(0.9f, "metallic", materialComponent.Shader);
                 _uniformHelper.TryAddUniform1(0.9f, "roughness", materialComponent.Shader);
                 GL.Enable(EnableCap.FramebufferSrgb);
