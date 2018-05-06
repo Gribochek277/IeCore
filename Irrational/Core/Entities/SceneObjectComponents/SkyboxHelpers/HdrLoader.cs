@@ -111,7 +111,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                 GL.Enable(EnableCap.FramebufferSrgb);
                 cube.RenderCube(); // renders a 1x1 cube
-                Console.WriteLine(GL.CheckNamedFramebufferStatus(framebuffer, FramebufferTarget.Framebuffer));
+               // Console.WriteLine(GL.CheckNamedFramebufferStatus(framebuffer, FramebufferTarget.Framebuffer));
             }
 
            
