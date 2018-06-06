@@ -102,9 +102,6 @@
       <Private>True</Private>
       <IncludeInPackage>true</IncludeInPackage>
     </Reference>
-    <Reference Include="Magick.NET-Q16-HDRI-AnyCPU, Version=7.4.3.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
-      <HintPath>..\packages\Magick.NET-Q16-HDRI-AnyCPU.7.4.3\lib\net40\Magick.NET-Q16-HDRI-AnyCPU.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -129,6 +126,10 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
+      <Package>monodevelop</Package>
+    </Reference>
+    <Reference Include="Magick.NET-Q16-HDRI-AnyCPU">
+      <HintPath>packages\Magick.NET-Q16-HDRI-AnyCPU.7.4.6\lib\net40\Magick.NET-Q16-HDRI-AnyCPU.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +183,7 @@
     <Compile Include="Core\Shaders\AttributeInfo.cs" />
     <Compile Include="Core\Shaders\UniformInfo.cs" />
     <Compile Include="Core\Entities\Abstractions\Volume.cs" />
+    <Compile Include="Logic\Scenes\TestLinuxScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

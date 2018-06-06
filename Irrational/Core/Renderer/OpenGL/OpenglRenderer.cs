@@ -229,7 +229,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 materialComponent.Shader.DisableVertexAttribArrays();
             }
 
-            indiceat += SkyboxRenderHelper.RenderHdrToCubemapSkybox(view, projection, skybox);
+            indiceat += SkyboxRenderHelper.RenderCubemapSkybox(view, projection, skybox);
             GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
             GL.Flush();
             _gameWindow.SwapBuffers();

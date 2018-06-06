@@ -10,9 +10,6 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
 {
     public class SkyboxRenderHelper
     {
-        static bool skyboxLoaded = false;
-
-
         public static int RenderCubemapSkybox(Matrix4 view, Matrix4 projection, SceneObject skybox)
         {            
             GL.CullFace(CullFaceMode.Front);

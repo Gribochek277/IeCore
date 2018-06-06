@@ -9,10 +9,13 @@ namespace Irrational.Logic
     {
         public Skybox(ShaderProg shader, string skyboxLocation = "Resources\\Cubemaps")
         {
-            SkyboxSceneObjectComponent skyboxComponent = new SkyboxSceneObjectComponent(skyboxLocation, shader, SkyboxSceneObjectComponent.SkyboxType.cubemap);
+            SkyboxSceneObjectComponent skyboxComponent =
+                new SkyboxSceneObjectComponent(skyboxLocation, 
+                                               shader,
+                                               SkyboxSceneObjectComponent.SkyboxType.cubemap);
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
                new WavefrontModelLoader(),
-               "Resources/testBox/ObjFormat/box.obj"
+               "Resources/TestBox/ObjFormat/box.obj"
                );
             AddComponent(meshComponent);
             AddComponent(skyboxComponent);
@@ -20,10 +23,12 @@ namespace Irrational.Logic
 
         public Skybox(string skyboxLocation = "Resources\\HDR\\MonValley_DirtRoad\\MonValley_G_DirtRoad_3k.hdr")
         {
-            SkyboxSceneObjectComponent skyboxComponent = new SkyboxSceneObjectComponent(skyboxLocation, SkyboxSceneObjectComponent.SkyboxType.hdr);
+            SkyboxSceneObjectComponent skyboxComponent = 
+                new SkyboxSceneObjectComponent(skyboxLocation, 
+                                               SkyboxSceneObjectComponent.SkyboxType.hdr);
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
               new WavefrontModelLoader(),
-              "Resources/testBox/ObjFormat/box.obj"
+              "Resources/TestBox/ObjFormat/box.obj"
               );
             AddComponent(meshComponent);
             AddComponent(skyboxComponent);
