@@ -11,7 +11,7 @@
     <AssemblyName>Irrational</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -52,6 +52,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -94,13 +95,16 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>Irrational.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="glTFLoader, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\glTF2Loader.1.1.1-alpha\lib\net35\glTFLoader.dll</HintPath>
       <Private>True</Private>
       <IncludeInPackage>true</IncludeInPackage>
+    </Reference>
+    <Reference Include="Magick.NET-Q16-HDRI-AnyCPU, Version=7.4.6.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\Magick.NET-Q16-HDRI-AnyCPU.7.4.6\lib\net40\Magick.NET-Q16-HDRI-AnyCPU.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -127,9 +131,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
       <Package>monodevelop</Package>
-    </Reference>
-    <Reference Include="Magick.NET-Q16-HDRI-AnyCPU">
-      <HintPath>packages\Magick.NET-Q16-HDRI-AnyCPU.7.4.6\lib\net40\Magick.NET-Q16-HDRI-AnyCPU.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +191,7 @@
     <None Include="fs_environment_to_irradiance.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="OpenTK.dll.config" />
     <None Include="vs_environment_to_irradiance.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -223,7 +225,6 @@
     <None Include="fs_PBR.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="OpenTK.dll.config" />
     <None Include="Resources\Gltf\BoomBox\glTF-Binary\BoomBox.glb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
