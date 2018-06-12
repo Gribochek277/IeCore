@@ -27,12 +27,12 @@ namespace Irrational.Logic.Scenes
 
 
 
-            //Lion gameObject = new Lion();
-            //_sceneObjects.Add(gameObject);
-            Knight knight = new Knight();
-            _sceneObjects.Add(knight);
-            //GLtf2Helm gltf2helm = new GLtf2Helm();
-            //_sceneObjects.Add(gltf2helm);
+            Lion gameObject = new Lion();
+            _sceneObjects.Add(gameObject);
+            //Knight knight = new Knight();
+            //_sceneObjects.Add(knight);
+            GLtf2Helm gltf2helm = new GLtf2Helm();
+            _sceneObjects.Add(gltf2helm);
 
         }
 

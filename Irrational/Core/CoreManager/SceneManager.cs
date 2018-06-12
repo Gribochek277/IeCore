@@ -11,7 +11,7 @@ namespace Irrational.Core.CoreManager
     {
         private IRenderer _renderer;
         private List<ISceneObject> _sceneObjects = new List<ISceneObject>();
-        private Scene _scene = new TestLinuxScene();
+        private Scene _scene = new TestScene();
         public SceneManager(IRenderer renderer)
         {
             _renderer = renderer;
