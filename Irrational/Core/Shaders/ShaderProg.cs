@@ -2,7 +2,6 @@
 using System.IO;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace Irrational.Core.Shaders
@@ -75,13 +74,13 @@ namespace Irrational.Core.Shaders
                 AttributeInfo info = new AttributeInfo();
                 int length = 0;
 
-                StringBuilder name = new StringBuilder();
+                String name = string.Empty;
 
-                GL.GetActiveAttrib(ProgramID, i, 256, out length, out info.size, out info.type, name);
+                GL.GetActiveAttrib(ProgramID, i, 256, out length, out info.size, out info.type, out name);
 
-                info.name = name.ToString();
+                info.name = name;
                 info.address = GL.GetAttribLocation(ProgramID, info.name);
-                Attributes.Add(name.ToString(), info);
+                Attributes.Add(name, info);
             }
 
             for (int i = 0; i < UniformCount; i++)
@@ -89,12 +88,12 @@ namespace Irrational.Core.Shaders
                 UniformInfo info = new UniformInfo();
                 int length = 0;
 
-                StringBuilder name = new StringBuilder();
+                String name = string.Empty;
 
-                GL.GetActiveUniform(ProgramID, i, 256, out length, out info.size, out info.type, name);
+                GL.GetActiveUniform(ProgramID, i, 256, out length, out info.size, out info.type, out name);
 
-                info.name = name.ToString();
-                Uniforms.Add(name.ToString(), info);
+                info.name = name;
+                Uniforms.Add(name, info);
                 info.address = GL.GetUniformLocation(ProgramID, info.name);
             }
         }
