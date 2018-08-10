@@ -60,7 +60,7 @@ namespace Irrational.Core.Entities.Primitives
                 GL.GenBuffers(1, out cubeVBO);
                 // fill buffer
                 GL.BindBuffer(BufferTarget.ArrayBuffer, cubeVBO);
-                GL.BufferData(BufferTarget.ArrayBuffer, 288 * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
                 // link vertex attributes
                 GL.BindVertexArray(cubeVAO);
                 GL.EnableVertexAttribArray(0);

@@ -43,11 +43,12 @@ namespace Irrational.Logic.Scenes
             {                
                 if(flag)
                     {
-                    pickedObject = pickedObject < _sceneObjects.Count ? pickedObject+=1 : 0;
+                     pickedObject = pickedObject == 2 ? 3 : 2;
+                    }
                     
                     Console.WriteLine("Picked object is " + pickedObject);
                     flag = false;
-                }               
+                               
             }
             if (Keyboard.GetState().IsKeyUp(Key.Tab))
             {

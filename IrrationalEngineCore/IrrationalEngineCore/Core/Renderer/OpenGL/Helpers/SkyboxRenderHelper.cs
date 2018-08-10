@@ -40,7 +40,9 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
             GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("projection"), false, ref projection);
             Matrix4 clearTraslationViewMatrix = view.ClearTranslation();
             GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("view"), false, ref clearTraslationViewMatrix);
-            bool isSetted =  new UniformHelper().TryAddUniformTextureCubemap(skyboxComponent.PrefilteredMap, "environmentMap", skyboxComponent.Shader, TextureUnit.Texture0);
+            bool isSetted =  
+                new UniformHelper().
+            TryAddUniformTextureCubemap(skyboxComponent.EnvironmentMap, "environmentMap", skyboxComponent.Shader, TextureUnit.Texture0);
             if (!isSetted)
             {
                 Console.WriteLine("wrong uniform");

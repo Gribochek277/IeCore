@@ -202,6 +202,8 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 //TODO retrieve it properly skybox texture
                 _uniformHelper.TryAddUniformTextureCubemap(3, "irradianceMap", materialComponent.Shader, TextureUnit.Texture2);
+                _uniformHelper.TryAddUniformTextureCubemap(4, "prefilterMap", materialComponent.Shader, TextureUnit.Texture3);
+                _uniformHelper.TryAddUniformTexture2D(5,"brdfLUT", materialComponent.Shader, TextureUnit.Texture4);
 
                 _uniformHelper.TryAddUniform1(lights.Count(), "numberOfLights", materialComponent.Shader);
                 Vector3[] lightpositions = new Vector3[lights.Count()];
@@ -219,10 +221,9 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
                 //PBR uniforms
-                //Console.WriteLine(Math.Abs(Math.Sin(time)));
-                _uniformHelper.TryAddUniform1(0.9f, "metallic", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(0.9f, "roughness", materialComponent.Shader);
-                GL.Enable(EnableCap.FramebufferSrgb);
+                _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Sin(time*0.1f)), "metallic", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Cos(time*0.1f)), "roughness", materialComponent.Shader);
+               
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
 
@@ -230,6 +231,7 @@ namespace Irrational.Core.Renderer.OpenGL
             }
 
             indiceat += SkyboxRenderHelper.RenderHdrToCubemapSkybox(view, projection, skybox);
+             GL.Enable(EnableCap.FramebufferSrgb);
             GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
             GL.Flush();
             _gameWindow.SwapBuffers();

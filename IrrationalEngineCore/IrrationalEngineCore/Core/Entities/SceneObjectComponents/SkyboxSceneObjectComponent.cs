@@ -12,6 +12,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents
         private int _environmentMapId = -1;
         private int _irradianceMapId = -1;
         private int _prefilteredMapId = -1;
+        private int _brdfMapId = -1;
         private ShaderProg _shader;
         private SkyboxType skyboxType = SkyboxType.cubemap;
 
@@ -19,6 +20,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents
         public int EnvironmentMap { get { return _environmentMapId; } }
         public int IrradianceMap { get { return _irradianceMapId; } }
         public int PrefilteredMap { get { return _prefilteredMapId; }}
+        public int BrdfMap { get { return _brdfMapId; }}
         public ShaderProg Shader { get { return _shader ?? null; } }
 
         public SkyboxSceneObjectComponent(string location, ShaderProg Shader, SkyboxType type)
@@ -65,6 +67,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents
                         _environmentMapId = result[1];
                         _irradianceMapId = result[2];
                         _prefilteredMapId = result[3];
+                        _brdfMapId = result[4];
                         break;
                     }
                 default: break;

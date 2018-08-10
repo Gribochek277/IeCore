@@ -41,6 +41,8 @@ namespace Irrational.Logic
                     cam.Move(0.1f, 0f, 0f);
                     Console.WriteLine(Position);
                 }
+
+                
                 if (Keyboard.GetState().IsKeyDown(Key.Q))
                 {
                     isFPSmode = false;
@@ -58,7 +60,7 @@ namespace Irrational.Logic
             }
             Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             lastMousePos += delta;
-            if (isFPSmode)
+            if (isFPSmode && Keyboard.GetState().IsKeyDown(Key.X))
             { 
                 Rotation = new Vector3(delta.X, delta.Y, 0);
                 cam.AddRotation(delta.X, delta.Y);
@@ -68,7 +70,7 @@ namespace Irrational.Logic
 
             if (isFPSmode|| Mouse.GetState().IsButtonDown(MouseButton.Right))
             {                 
-              Mouse.SetPosition(OpenTKWindow.Bounds.Left + OpenTKWindow.Bounds.Width / 2, OpenTKWindow.Bounds.Top + OpenTKWindow.Bounds.Height / 2);
+           //  Mouse.SetPosition(OpenTKWindow.Bounds.Left + OpenTKWindow.Bounds.Width / 2, OpenTKWindow.Bounds.Top + OpenTKWindow.Bounds.Height / 2);
             }
             
         }

@@ -16,7 +16,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
     {
         public int[] LoadHdr(string _skyboxLocation)
         {
-            int[] result = new int[4];
+            int[] result = new int[5];
 
             if (_skyboxLocation == string.Empty)
             {
@@ -43,6 +43,8 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
             result[3] = TransformHdrToPrefilteredCubemap(result[2], new ShaderProg("vs_prefilter.glsl", "fs_prefilter.glsl", true),
             captureFBO,captureRBO, 128, 5);
 
+            result[4] = CalculateBRDF(new ShaderProg("vs_brdf.glsl","fs_brdf.glsl", true), captureFBO, captureRBO, 512);
+
             return result;
         }
 
@@ -55,12 +57,13 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
                 bitmap = image.ToBitmap();
             }
 
+           
             int texID = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, texID);
             BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
                     ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Srgb8, data.Width, data.Height, 0,
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Srgb8Alpha8, data.Width, data.Height, 0,
                     OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 
             bitmap.UnlockBits(data);            
@@ -83,7 +86,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
             GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderbuffer);
-            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Srgb8, size, size);
+            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, size, size);
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, RenderbufferTarget.Renderbuffer, renderbuffer);
 
             int cubemap = AllocateCubemap(size);
@@ -131,7 +134,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
             GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderbuffer);
-            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Srgb8, size, size);
+            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, size, size);
             GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, RenderbufferTarget.Renderbuffer, renderbuffer);
 
             int cubemap = AllocateCubemap(size);
@@ -177,6 +180,31 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
         }
 
 
+        private int CalculateBRDF( ShaderProg shader, int framebuffer, int renderbuffer, int size = 512)
+        {
+           int textureId = AllocateBrdf(size);
+            Quad quad = new Quad();
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderbuffer);
+            GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.DepthComponent24, size, size);
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer,
+             FramebufferAttachment.ColorAttachment0,
+             TextureTarget.Texture2D,
+             textureId, 0);
+
+            ShaderProg brdfShader = shader;
+            GL.UseProgram(brdfShader.ProgramID);
+            brdfShader.EnableVertexAttribArrays();
+            GL.Viewport(0, 0, (size), (size));
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            quad.RenderQuad();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+
+            return textureId;
+        }
+
+
         private void GenerateMatricesForMapHdrToCubemap(ref Matrix4 projection, ref Matrix4[] views)
         {
             projection = Matrix4.CreatePerspectiveFieldOfView(1.5708f, 1.0f, 0.1f, 10.0f);
@@ -211,6 +239,23 @@ namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
             GL.GenerateMipmap(GenerateMipmapTarget.TextureCubeMap);
 
             return envCubemap;
+        }
+
+        public int AllocateBrdf(int size = 512)
+        {
+            int brdfTexture = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D,brdfTexture);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rg16f, size, size,0,OpenTK.Graphics.OpenGL.PixelFormat.Rg,
+            PixelType.Float, IntPtr.Zero);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Linear);
+
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+            return brdfTexture;
         }
     }
 }
