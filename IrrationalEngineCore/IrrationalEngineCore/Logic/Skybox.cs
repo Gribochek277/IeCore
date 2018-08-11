@@ -21,7 +21,7 @@ namespace Irrational.Logic
             AddComponent(skyboxComponent);
         }
 
-        public Skybox(string skyboxLocation = "Resources//HDR//MonValley_DirtRoad//MonValley_G_DirtRoad_3k.hdr")
+        public Skybox(string skyboxLocation = "Resources//HDR//lythwood_room_1k.hdr")
         {
             SkyboxSceneObjectComponent skyboxComponent = 
                 new SkyboxSceneObjectComponent(skyboxLocation, 

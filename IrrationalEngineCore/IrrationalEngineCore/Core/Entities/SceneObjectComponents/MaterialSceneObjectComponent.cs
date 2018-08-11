@@ -88,6 +88,12 @@ namespace Irrational.Core.Entities.SceneObjectComponents
                 {
                     Textures.Add(mat.SpecularMap, LoadImage(mat.SpecularMap,PixelInternalFormat.Rgba));
                 }
+
+
+                if (File.Exists(mat.MetallicRoughness) && !Textures.ContainsKey(mat.MetallicRoughness))
+                {
+                    Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Rgb));
+                }
             }
         }
         // Similiar realisation exists in SkyboxComponent maybe need to be merged in future

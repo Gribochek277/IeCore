@@ -28,6 +28,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents
         {
             Vector2 delta = lastMousePos - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
             lastMousePos += delta;
+           
             if (Mouse.GetState().IsButtonDown(MouseButton.Right)&& Mouse.GetState().IsButtonUp(MouseButton.Left))
             {
                 delta = delta * 0.001f;

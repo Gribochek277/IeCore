@@ -17,6 +17,7 @@ namespace Irrational.Core.Entities
         public String SpecularMap = "";
         public String OpacityMap = "";
         public String NormalMap = "";
+        public String MetallicRoughness = "";
 
         public Material()
         {
