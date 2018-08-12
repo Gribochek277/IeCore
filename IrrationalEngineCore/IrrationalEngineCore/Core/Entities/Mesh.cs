@@ -3,8 +3,14 @@ using System.Linq;
 
 namespace Irrational.Core.Entities
 {
-    public class Mesh : Volume
+    public class Mesh
     {
+        public Vector3 Position = Vector3.Zero;
+        public Vector3 Rotation = Vector3.Zero;
+        public Vector3 Scale = Vector3.One;
+        public Matrix4 ModelMatrix = Matrix4.Identity;
+        public Matrix4 ViewProjectionMatrix = Matrix4.Identity;
+        public Matrix4 ModelViewProjectionMatrix = Matrix4.Identity;
         public int[] Indeces { get; set; }
 
         public Vector3[] Vertices { get; set; }
@@ -13,21 +19,19 @@ namespace Irrational.Core.Entities
 
         public Vector2[] UvCoords { get; set; }
         
-        public override int IndiceCount { get { return Indeces.Length; } }
+        public int IndiceCount { get { return Indeces.Length; } }
 
-        public override int ColorDataCount { get { return Indeces.Length; } }
+        public int ColorDataCount { get { return Indeces.Length; } }
 
-        public override int VertCount { get { return Vertices.Length; } }
+        public int VertCount { get { return Vertices.Length; } }
 
-        public override int TextureCoordsCount { get { return UvCoords.Length; } }
-
-        public override int NormalCount { get { return Normals.Length; } }
+        public int NormalCount { get { return Normals.Length; } }
 
         /// <summary>
         /// Get vertices for this object
         /// </summary>
         /// <returns>Vertecies forobject</returns>
-        public override Vector3[] GetVerts()
+        public Vector3[] GetVerts()
         {          
                 return Vertices.ToArray();
         }
@@ -36,12 +40,8 @@ namespace Irrational.Core.Entities
         /// Get normals for this object
         /// </summary>
         /// <returns>normals for object</returns>
-        public override Vector3[] GetNormals()
+        public Vector3[] GetNormals()
         {
-            if (base.GetNormals().Length > 0)
-            {
-                return base.GetNormals();
-            }
                 return Normals.ToArray();
         }
 
@@ -50,7 +50,7 @@ namespace Irrational.Core.Entities
         /// </summary>
         /// <param name="offset">Number of vertices buffered before this object</param>
         /// <returns>Array of indices with offset applied</returns>
-        public override int[] GetIndices(int offset = 0)
+        public int[] GetIndices(int offset = 0)
         {
             return Enumerable.Range(offset, IndiceCount).ToArray();
         }
@@ -59,7 +59,7 @@ namespace Irrational.Core.Entities
         /// Get color data.
         /// </summary>
         /// <returns></returns>
-        public override Vector3[] GetColorData()
+        public Vector3[] GetColorData()
         {
             return new Vector3[ColorDataCount];
         }
@@ -68,7 +68,7 @@ namespace Irrational.Core.Entities
         /// Get texture coordinates
         /// </summary>
         /// <returns></returns>
-        public override Vector2[] GetTextureCoords()
+        public Vector2[] GetTextureCoords()
         {           
                 return UvCoords.ToArray();
         }
@@ -77,9 +77,36 @@ namespace Irrational.Core.Entities
         /// <summary>
         /// Calculates the model matrix from transforms
         /// </summary>
-        public override void CalculateModelMatrix()
+        public void CalculateModelMatrix()
         {
             ModelMatrix = Matrix4.CreateScale(Scale) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y) * Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateTranslation(Position);
+        }
+
+        public void CalculateNormals()
+        {
+            Vector3[] normals = new Vector3[VertCount];
+            Vector3[] verts = GetVerts();
+            int[] inds = GetIndices();
+
+            // Compute normals for each face
+            for (int i = 0; i < IndiceCount; i += 3)
+            {
+                Vector3 v1 = verts[inds[i]];
+                Vector3 v2 = verts[inds[i + 1]];
+                Vector3 v3 = verts[inds[i + 2]];
+
+                // The normal is the cross product of two sides of the triangle
+                normals[inds[i]] += Vector3.Cross(v2 - v1, v3 - v1);
+                normals[inds[i + 1]] += Vector3.Cross(v2 - v1, v3 - v1);
+                normals[inds[i + 2]] += Vector3.Cross(v2 - v1, v3 - v1);
+            }
+
+            for (int i = 0; i < NormalCount; i++)
+            {
+                normals[i] = normals[i].Normalized();
+            }
+
+            Normals = normals;
         }
 
     }

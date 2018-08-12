@@ -7,7 +7,7 @@ using System.Linq;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using Irrational.Core.Entities.Abstractions;
-using Irrational.Core.Entities.SceneObjectComponents;
+using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Renderer.OpenGL.Helpers;
 
 namespace Irrational.Core.Renderer.OpenGL
@@ -190,8 +190,8 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 int texId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.DiffuseMap];
                 int normId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.NormalMap];
-                //int metRoughId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.MetallicRoughness];
-                //int ambientId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.AmbientMap];
+                int metRoughId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.MetallicRoughness];
+                int ambientId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.AmbientMap];
                 GL.UseProgram(materialComponent.Shader.ProgramID);
                 materialComponent.Shader.EnableVertexAttribArrays();
                
@@ -201,8 +201,8 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
-               // _uniformHelper.TryAddUniformTexture2D(metRoughId, "metallicroughness", materialComponent.Shader, TextureUnit.Texture2);
-               // _uniformHelper.TryAddUniformTexture2D(ambientId, "defaultAO", materialComponent.Shader, TextureUnit.Texture3);
+                _uniformHelper.TryAddUniformTexture2D(metRoughId, "metallicroughness", materialComponent.Shader, TextureUnit.Texture2);
+                _uniformHelper.TryAddUniformTexture2D(ambientId, "defaultAO", materialComponent.Shader, TextureUnit.Texture3);
 
 
                 //TODO retrieve it properly skybox texture

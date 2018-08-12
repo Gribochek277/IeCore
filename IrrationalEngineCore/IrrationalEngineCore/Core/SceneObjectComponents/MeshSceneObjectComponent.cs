@@ -1,13 +1,14 @@
-﻿using Irrational.Core.Entities.Abstractions;
+﻿using Irrational.Core.Entities;
+using Irrational.Core.Entities.Abstractions;
 using Irrational.Utils.Interfaces;
 using System;
 
-namespace Irrational.Core.Entities.SceneObjectComponents
+namespace Irrational.Core.SceneObjectComponents
 {
     public class MeshSceneObjectComponent : ISceneObjectComponent
     {
 
-        private Volume _modelMesh;
+        private Mesh _modelMesh;
         private string _mdlSource;
         private IModelLoader _modelLoader;
 
@@ -19,7 +20,7 @@ namespace Irrational.Core.Entities.SceneObjectComponents
             _mdlSource = modelSource;
         }
 
-        public Volume ModelMesh
+        public Mesh ModelMesh
         {
             get { return _modelMesh; }
             set { _modelMesh = value; }

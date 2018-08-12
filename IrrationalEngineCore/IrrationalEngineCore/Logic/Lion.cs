@@ -1,6 +1,6 @@
 ﻿using Irrational.Core.Abstractions;
 using Irrational.Core.Entities;
-using Irrational.Core.Entities.SceneObjectComponents;
+using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Shaders;
 using Irrational.Utils;
 using OpenTK;

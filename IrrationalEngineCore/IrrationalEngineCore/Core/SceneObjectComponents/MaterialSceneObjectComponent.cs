@@ -1,4 +1,5 @@
-﻿using Irrational.Core.Entities.Abstractions;
+﻿using Irrational.Core.Entities;
+using Irrational.Core.Entities.Abstractions;
 using Irrational.Core.Shaders;
 using Irrational.Utils.Interfaces;
 using OpenTK.Graphics.OpenGL;
@@ -8,7 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace Irrational.Core.Entities.SceneObjectComponents
+namespace Irrational.Core.SceneObjectComponents
 {
     public class MaterialSceneObjectComponent : ISceneObjectComponent
     {

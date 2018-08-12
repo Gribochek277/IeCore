@@ -1,7 +1,7 @@
 ﻿using Irrational.Core.Entities.Abstractions;
 using OpenTK;
 
-namespace Irrational.Core.Entities.SceneObjectComponents
+namespace Irrational.Core.SceneObjectComponents
 {
     class PointLightSceneObjectComponent : ISceneObjectComponent
     {

@@ -4,7 +4,7 @@ using OpenTK;
 using OpenTK.Input;
 using System;
 
-namespace Irrational.Core.Entities.SceneObjectComponents
+namespace Irrational.Core.SceneObjectComponents
 {
     class BasicManipulationsComponent : ISceneObjectComponent, IUpdatable
     {

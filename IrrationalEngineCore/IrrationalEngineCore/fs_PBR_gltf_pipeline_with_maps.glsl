@@ -8,7 +8,7 @@ in vec3 v_norm;
 uniform sampler2D maintexture;
 uniform sampler2D normaltexture;
 uniform sampler2D metallicroughness;
-//uniform sampler2D defaultAO;
+uniform sampler2D defaultAO;
 
 // lights
 uniform int numberOfLights;
@@ -19,7 +19,6 @@ uniform vec3 lightColor[64];
 uniform samplerCube irradianceMap;
 uniform samplerCube prefilterMap;
 uniform sampler2D brdfLUT;
-uniform float ambientStr;
 
 uniform vec3 cameraPosition;
 
@@ -96,7 +95,8 @@ void main()
 
     float metallic = texture(metallicroughness, f_texcoord).r;
     float roughness = texture(metallicroughness, f_texcoord).g;
-    //float ambientStr = ambientStr * texture(defaultAO, f_texcoord).r; 
+    float ambientStr =texture(defaultAO, f_texcoord).r; 
+
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    

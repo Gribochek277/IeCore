@@ -1,5 +1,5 @@
 ﻿using Irrational.Core.Entities;
-using Irrational.Core.Entities.SceneObjectComponents;
+using Irrational.Core.SceneObjectComponents;
 using OpenTK;
 
 namespace Irrational.Logic

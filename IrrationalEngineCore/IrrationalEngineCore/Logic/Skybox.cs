@@ -1,5 +1,5 @@
 ﻿using Irrational.Core.Entities;
-using Irrational.Core.Entities.SceneObjectComponents;
+using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Shaders;
 using Irrational.Utils;
 
@@ -21,7 +21,7 @@ namespace Irrational.Logic
             AddComponent(skyboxComponent);
         }
 
-        public Skybox(string skyboxLocation = "Resources//HDR//lythwood_room_1k.hdr")
+        public Skybox(string skyboxLocation = "Resources//HDR//MonValley_DirtRoad//MonValley_G_DirtRoad_3k.hdr")
         {
             SkyboxSceneObjectComponent skyboxComponent = 
                 new SkyboxSceneObjectComponent(skyboxLocation, 

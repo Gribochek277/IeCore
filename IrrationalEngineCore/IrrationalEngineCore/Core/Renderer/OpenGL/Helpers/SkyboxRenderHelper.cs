@@ -1,6 +1,6 @@
 ﻿using Irrational.Core.Entities;
 using Irrational.Core.Entities.Primitives;
-using Irrational.Core.Entities.SceneObjectComponents;
+using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;

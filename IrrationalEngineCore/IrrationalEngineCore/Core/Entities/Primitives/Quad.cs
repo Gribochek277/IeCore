@@ -4,19 +4,21 @@ namespace Irrational.Core.Entities.Primitives
 {
     public class Quad
     {
-         private int quadVAO = 0;
+        private int quadVAO = 0;
         private int quadVBO = 0;
-        public void RenderQuad()
-        {
-            // initialize (if necessary)
-            if (quadVAO == 0)
-            {
-                float[] vertices = {
+        private float[] vertices = {
                     -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
                     -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
                      1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
                      1.0f, -1.0f, 0.0f, 1.0f, 0.0f
                 };
+
+        public float[] Vertices { get {return vertices;} }
+        public void RenderQuad()
+        {
+            // initialize (if necessary)
+            if (quadVAO == 0)
+            {               
 
                 GL.GenVertexArrays(1, out quadVAO);
                 GL.GenBuffers(1, out quadVBO);

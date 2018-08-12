@@ -10,7 +10,7 @@ using Irrational.Core.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
+namespace Irrational.Core.SceneObjectComponents.SkyboxHelpers
 {
     public class HdrLoader
     {

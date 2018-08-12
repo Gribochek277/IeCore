@@ -1,9 +1,9 @@
 ﻿using Irrational.Core.Entities.Abstractions;
 using System;
 using Irrational.Core.Shaders;
-using Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers;
+using Irrational.Core.SceneObjectComponents.SkyboxHelpers;
 
-namespace Irrational.Core.Entities.SceneObjectComponents
+namespace Irrational.Core.SceneObjectComponents
 {
     public class SkyboxSceneObjectComponent : ISceneObjectComponent
     {

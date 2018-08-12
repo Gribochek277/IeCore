@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace Irrational.Core.Entities.SceneObjectComponents.SkyboxHelpers
+namespace Irrational.Core.SceneObjectComponents.SkyboxHelpers
 {
     public class CubemapLoader
     {
