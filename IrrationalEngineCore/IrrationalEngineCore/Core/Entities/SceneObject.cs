@@ -1,5 +1,5 @@
 using Irrational.Core.Entities.Abstractions;
-using Irrational.Core.SceneObjectComponents;
+using Irrational.Core .SceneObjectComponents;
 using OpenTK;
 using System;
 using System.Collections.Generic;

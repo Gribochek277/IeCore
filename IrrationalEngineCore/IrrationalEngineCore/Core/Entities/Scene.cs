@@ -3,14 +3,14 @@ using Irrational.Core.Entities.Abstractions;
 using Irrational.Logic;
 using System.Collections.Generic;
 
-namespace Irrational
+namespace Irrational.Core.Entities
 {
     public class Scene : IScene
     {
-        protected List<SceneObject> _sceneObjects = new List<SceneObject>();
-        PlayerCamera _camera;
+        protected List<ISceneObject> _sceneObjects = new List<ISceneObject>();
+        private PlayerCamera _camera;
         protected Skybox _skybox;
-        public List<SceneObject> Objects { get { return _sceneObjects; } }
+        public List<ISceneObject> GetObjects { get { return _sceneObjects; } }
         public SceneObject Camera { get { return _camera; } }
 
         public virtual void OnLoad()

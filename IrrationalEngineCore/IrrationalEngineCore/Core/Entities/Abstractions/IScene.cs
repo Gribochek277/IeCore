@@ -1,8 +1,10 @@
-﻿using Irrational.Core.Abstractions;
+﻿using System.Collections.Generic;
+using Irrational.Core.Abstractions;
 
 namespace Irrational.Core.Entities.Abstractions
 {
-    interface IScene: ILoadable, IUpdatable, IRenderable, IResisable
+    public interface IScene: ILoadable, IUpdatable, IRenderable, IResisable
     {
+        List<ISceneObject> GetObjects {get;}
     }
 }

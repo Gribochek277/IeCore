@@ -20,11 +20,7 @@ namespace Irrational.Core.SceneObjectComponents
             _mdlSource = modelSource;
         }
 
-        public Mesh ModelMesh
-        {
-            get { return _modelMesh; }
-            set { _modelMesh = value; }
-        }
+        public Mesh ModelMesh { get { return _modelMesh; } }
 
         public void OnLoad()
         {

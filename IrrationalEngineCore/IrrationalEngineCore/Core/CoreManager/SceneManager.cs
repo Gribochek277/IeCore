@@ -11,16 +11,17 @@ namespace Irrational.Core.CoreManager
     {
         private IRenderer _renderer;
         private List<ISceneObject> _sceneObjects = new List<ISceneObject>();
-        private Scene _scene = new TestScene();
-        public SceneManager(IRenderer renderer)
+        private IScene _scene;
+        public SceneManager(IRenderer renderer, IScene scene)
         {
             _renderer = renderer;
+            _scene = scene;
         }        
 
         public void OnLoad()
         {
             _scene.OnLoad();
-            foreach (SceneObject sceneObject in _scene.Objects)// TODO: i don't like this part of code
+            foreach (SceneObject sceneObject in _scene.GetObjects)// TODO: i don't like this part of code
                 _sceneObjects.Add(sceneObject);
             _renderer.OnLoad(_sceneObjects);
         }

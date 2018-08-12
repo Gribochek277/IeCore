@@ -1,4 +1,5 @@
-﻿using Irrational.Core.Entities.Primitives;
+﻿using Irrational.Core.Entities;
+using Irrational.Core.Entities.Primitives;
 using Irrational.Core.SceneObjectComponents;
 using OpenTK;
 using OpenTK.Input;

@@ -7,6 +7,7 @@ using Irrational.Core.Renderer.Abstractions;
 using Irrational.Core.Renderer.OpenGL;
 using Irrational.Core.CoreManager;
 using System.Drawing;
+using Irrational.Logic.Scenes;
 
 namespace Irrational.Core.Windows
 {
@@ -22,7 +23,7 @@ namespace Irrational.Core.Windows
         {
             _gameWindow = new GameWindow(800, 600, new GraphicsMode(32, 24, 0, 4), "Irrational");
             _renderer = new OpenglRenderer(_gameWindow);
-            _sceneManager = new SceneManager(_renderer);
+            _sceneManager = new SceneManager(_renderer, new TestScene());
             AddListeners();            
         }
 

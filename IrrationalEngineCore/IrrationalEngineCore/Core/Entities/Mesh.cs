@@ -82,6 +82,9 @@ namespace Irrational.Core.Entities
             ModelMatrix = Matrix4.CreateScale(Scale) * Matrix4.CreateRotationX(Rotation.X) * Matrix4.CreateRotationY(Rotation.Y) * Matrix4.CreateRotationZ(Rotation.Z) * Matrix4.CreateTranslation(Position);
         }
 
+        /// <summary>
+        /// Calculates the model normals
+        /// </summary>
         public void CalculateNormals()
         {
             Vector3[] normals = new Vector3[VertCount];
