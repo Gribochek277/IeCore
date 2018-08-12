@@ -118,10 +118,13 @@ namespace Irrational.Core.Renderer.OpenGL
             Console.WriteLine("Triangles: " + vertdata.Length/3);
             
             foreach (SceneObject v in _objects) {
-                MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
-                try {     //this code is bullshit. need to do something with it.                
-                    MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)v.components["MaterialSceneObjectComponent"];
-                                    
+                ISceneObjectComponent meshComponent;                
+                v.components.TryGetValue("MeshSceneObjectComponent", out meshComponent);
+                
+                ISceneObjectComponent extractedMaterialComponent;
+                if(v.components.TryGetValue("MaterialSceneObjectComponent", out extractedMaterialComponent)) {               
+                    
+                    MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)extractedMaterialComponent;            
 
                     GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vPosition"));
 
@@ -153,7 +156,6 @@ namespace Irrational.Core.Renderer.OpenGL
                     }
                     
 
-                } catch {
                 }
             }
         }
