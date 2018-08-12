@@ -195,7 +195,8 @@ namespace Irrational.Core.Renderer.OpenGL
                 GL.UseProgram(materialComponent.Shader.ProgramID);
                 materialComponent.Shader.EnableVertexAttribArrays();
                
-                GL.UniformMatrix4(materialComponent.Shader.GetUniform("model"), false, ref meshComponent.ModelMesh.ModelMatrix);
+                Matrix4 modelMatrix = meshComponent.ModelMesh.Transform.ModelMatrix;
+                GL.UniformMatrix4(materialComponent.Shader.GetUniform("model"), false, ref modelMatrix);
                 GL.UniformMatrix4(materialComponent.Shader.GetUniform("projection"), false, ref projection);
                 GL.UniformMatrix4(materialComponent.Shader.GetUniform("view"), false, ref view);//think about adding to uniformhelper Matrix4 type, but for now it's not required.
 
@@ -259,9 +260,13 @@ namespace Irrational.Core.Renderer.OpenGL
             {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
 
-                meshComponent.ModelMesh.CalculateModelMatrix();
-                meshComponent.ModelMesh.ViewProjectionMatrix = _cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40);
-                meshComponent.ModelMesh.ModelViewProjectionMatrix = meshComponent.ModelMesh.ModelMatrix * meshComponent.ModelMesh.ViewProjectionMatrix;
+                meshComponent.ModelMesh.Transform.CalculateModelMatrix();
+                meshComponent.ModelMesh.Transform.ViewProjectionMatrix = 
+                _cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width 
+                / (float)_gameWindow.ClientSize.Height, 1.0f, 40);
+
+                meshComponent.ModelMesh.Transform.ModelViewProjectionMatrix = 
+                meshComponent.ModelMesh.Transform.ModelMatrix * meshComponent.ModelMesh.Transform.ViewProjectionMatrix;
             }
         }        
     }

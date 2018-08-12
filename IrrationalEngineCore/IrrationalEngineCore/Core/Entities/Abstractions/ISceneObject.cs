@@ -1,11 +1,9 @@
-﻿using Irrational.Core.Abstractions;
 using System.Collections.Generic;
+using Irrational.Core.Abstractions;
 
-namespace Irrational.Core.Entities.Abstractions
-{
-    public interface ISceneObject : ILoadable, IScalable, IRotatable, ITransformable
-    {
+namespace Irrational.Core.Entities.Abstractions {
+    public interface ISceneObject : ILoadable, IScalable, IRotatable, ITransformable {
         Dictionary<string, ISceneObjectComponent> components { get; }
-        void AddComponent(ISceneObjectComponent component);
+        void AddComponent (ISceneObjectComponent component);
     }
 }

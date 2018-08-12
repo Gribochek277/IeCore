@@ -1,8 +1,5 @@
-﻿using Irrational.Core.Abstractions;
+using Irrational.Core.Abstractions;
 
-namespace Irrational.Core.Entities.Abstractions
-{
-    public interface ISceneObjectComponent : ILoadable
-    {
-    }
+namespace Irrational.Core.Entities.Abstractions {
+    public interface ISceneObjectComponent : ILoadable { }
 }
