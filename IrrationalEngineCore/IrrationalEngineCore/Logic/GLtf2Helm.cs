@@ -3,7 +3,9 @@ using Irrational.Core.Entities;
 using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Shaders;
 using Irrational.Utils;
+using IrrationalEngineCore.Core.Shaders;
 using OpenTK;
+using static IrrationalEngineCore.Core.Shaders.Pbr;
 
 namespace Irrational.Logic
 {
@@ -12,7 +14,7 @@ namespace Irrational.Logic
         public GLtf2Helm(string shaderVersion)
         {
             MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
-                new ShaderProg("vs_norm.glsl", shaderVersion, true),
+                new Pbr(ShaderType.GltfWithMaps),
                 "Resources/Gltf/DamagedHelmet/glTF/DamagedHelmet.gltf",
                 new Gltf2MaterialLoader());
 

@@ -3,7 +3,9 @@ using Irrational.Core.Entities;
 using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Shaders;
 using Irrational.Utils;
+using IrrationalEngineCore.Core.Shaders;
 using OpenTK;
+using static IrrationalEngineCore.Core.Shaders.Pbr;
 
 namespace Irrational.Logic
 {
@@ -13,7 +15,7 @@ namespace Irrational.Logic
         {
             MaterialSceneObjectComponent materialComponent =
                 new MaterialSceneObjectComponent(
-                    new ShaderProg("vs_norm.glsl", "fs_PBR.glsl", true),
+                    new Pbr(ShaderType.OnlyAlbedoAndNormalMap),
                     "Resources/Lion/Lion-snake.mtl",
                     new WavefrontMaterialLoader()
                     );

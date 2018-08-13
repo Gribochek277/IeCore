@@ -11,7 +11,7 @@ namespace Irrational.Logic
     {
         public Knight()
         {
-            MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
+         /*   MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
                 new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true),
                 "Resources/knight3.mtl",
                 new WavefrontMaterialLoader()
@@ -26,6 +26,7 @@ namespace Irrational.Logic
             AddComponent(manipulation);
             AddComponent(material);
             AddComponent(meshComponent);
+            */
         }
 
         public override void OnLoad()

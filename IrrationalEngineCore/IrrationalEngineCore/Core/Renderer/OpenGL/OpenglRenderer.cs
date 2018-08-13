@@ -126,33 +126,33 @@ namespace Irrational.Core.Renderer.OpenGL
                     
                     MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)extractedMaterialComponent;            
 
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vPosition"));
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.shaderImplementation.shaderProg.GetBuffer("vPosition"));
 
                     GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
-                    GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
+                    GL.VertexAttribPointer(materialComponent.shaderImplementation.shaderProg.GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
 
                     // Buffer vertex color if shader supports it
-                    if (materialComponent.Shader.GetAttribute("vColor") != -1)
+                    if (materialComponent.shaderImplementation.shaderProg.GetAttribute("vColor") != -1)
                     {
-                        GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vColor"));
+                        GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.shaderImplementation.shaderProg.GetBuffer("vColor"));
                         GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(coldata.Length * Vector3.SizeInBytes), coldata, BufferUsageHint.StaticDraw);
-                        GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
+                        GL.VertexAttribPointer(materialComponent.shaderImplementation.shaderProg.GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
                     }
 
 
                     // Buffer texture coordinates if shader supports it
-                    if (materialComponent.Shader.GetAttribute("texcoord") != -1)
+                    if (materialComponent.shaderImplementation.shaderProg.GetAttribute("texcoord") != -1)
                     {
-                        GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("texcoord"));
+                        GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.shaderImplementation.shaderProg.GetBuffer("texcoord"));
                         GL.BufferData<Vector2>(BufferTarget.ArrayBuffer, (IntPtr)(texcoorddata.Length * Vector2.SizeInBytes), texcoorddata, BufferUsageHint.StaticDraw);
-                        GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("texcoord"), 2, VertexAttribPointerType.Float, true, 0, 0);
+                        GL.VertexAttribPointer(materialComponent.shaderImplementation.shaderProg.GetAttribute("texcoord"), 2, VertexAttribPointerType.Float, true, 0, 0);
                     }
 
-                    if (materialComponent.Shader.GetAttribute("vNormal") != -1)
+                    if (materialComponent.shaderImplementation.shaderProg.GetAttribute("vNormal") != -1)
                     {
-                        GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.Shader.GetBuffer("vNormal"));
+                        GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.shaderImplementation.shaderProg.GetBuffer("vNormal"));
                         GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(normdata.Length * Vector3.SizeInBytes), normdata, BufferUsageHint.StaticDraw);
-                        GL.VertexAttribPointer(materialComponent.Shader.GetAttribute("vNormal"), 3, VertexAttribPointerType.Float, true, 0, 0);
+                        GL.VertexAttribPointer(materialComponent.shaderImplementation.shaderProg.GetAttribute("vNormal"), 3, VertexAttribPointerType.Float, true, 0, 0);
                     }
                     
 
@@ -190,19 +190,16 @@ namespace Irrational.Core.Renderer.OpenGL
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)_objects[i].components["MeshSceneObjectComponent"];
                 MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)_objects[i].components["MaterialSceneObjectComponent"];
 
-                int texId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.DiffuseMap];
-                int normId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.NormalMap];
-                int metRoughId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.MetallicRoughness];
-                int ambientId = materialComponent.Textures[materialComponent.Materials.FirstOrDefault().Value.AmbientMap];
-                GL.UseProgram(materialComponent.Shader.ProgramID);
-                materialComponent.Shader.EnableVertexAttribArrays();
+               
+                GL.UseProgram(materialComponent.shaderImplementation.shaderProg.ProgramID);
+                materialComponent.shaderImplementation.shaderProg.EnableVertexAttribArrays();
                
                 Matrix4 modelMatrix = meshComponent.ModelMesh.Transform.ModelMatrix;
-                GL.UniformMatrix4(materialComponent.Shader.GetUniform("model"), false, ref modelMatrix);
-                GL.UniformMatrix4(materialComponent.Shader.GetUniform("projection"), false, ref projection);
-                GL.UniformMatrix4(materialComponent.Shader.GetUniform("view"), false, ref view);//think about adding to uniformhelper Matrix4 type, but for now it's not required.
+                GL.UniformMatrix4(materialComponent.shaderImplementation.shaderProg.GetUniform("model"), false, ref modelMatrix);
+                GL.UniformMatrix4(materialComponent.shaderImplementation.shaderProg.GetUniform("projection"), false, ref projection);
+                GL.UniformMatrix4(materialComponent.shaderImplementation.shaderProg.GetUniform("view"), false, ref view);//think about adding to uniformhelper Matrix4 type, but for now it's not required.
 
-                _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
+               /* _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
                 _uniformHelper.TryAddUniformTexture2D(metRoughId, "metallicroughness", materialComponent.Shader, TextureUnit.Texture2);
                 _uniformHelper.TryAddUniformTexture2D(ambientId, "defaultAO", materialComponent.Shader, TextureUnit.Texture3);
@@ -212,8 +209,11 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTextureCubemap(3, "irradianceMap", materialComponent.Shader, TextureUnit.Texture4);
                 _uniformHelper.TryAddUniformTextureCubemap(4, "prefilterMap", materialComponent.Shader, TextureUnit.Texture5);
                 _uniformHelper.TryAddUniformTexture2D(5,"brdfLUT", materialComponent.Shader, TextureUnit.Texture6);
+                */
 
-                _uniformHelper.TryAddUniform1(lights.Count(), "numberOfLights", materialComponent.Shader);
+                materialComponent.shaderImplementation.SetSpecificUniforms();
+
+                _uniformHelper.TryAddUniform1(lights.Count(), "numberOfLights", materialComponent.shaderImplementation.shaderProg);
                 Vector3[] lightpositions = new Vector3[lights.Count()];
                 Vector3[] lightcolors = new Vector3[lights.Count()];
                 for (int j = 0; j < lights.Count; ++j) {
@@ -222,20 +222,20 @@ namespace Irrational.Core.Renderer.OpenGL
                     lightpositions[j] = lights[j].Position;
                 }
 
-                bool suc = _uniformHelper.TryAddUniform1(lightcolors, "lightColor[0]", materialComponent.Shader);
-                bool suc2 = _uniformHelper.TryAddUniform1(lightpositions, "lightPos[0]", materialComponent.Shader);
+                bool suc = _uniformHelper.TryAddUniform1(lightcolors, "lightColor[0]", materialComponent.shaderImplementation.shaderProg);
+                bool suc2 = _uniformHelper.TryAddUniform1(lightpositions, "lightPos[0]", materialComponent.shaderImplementation.shaderProg);
 
-                _uniformHelper.TryAddUniform1(1f, "ambientStr", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.Shader);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
-                _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1(1f, "ambientStr", materialComponent.shaderImplementation.shaderProg);
+                _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.shaderImplementation.shaderProg);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
+                _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.shaderImplementation.shaderProg);
                 //PBR uniforms
-                _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Sin(time*0.1f)), "metallic", materialComponent.Shader);
-                _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Cos(time*0.1f)), "roughness", materialComponent.Shader);
+                _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Sin(time*0.1f)), "metallic", materialComponent.shaderImplementation.shaderProg);
+                _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Cos(time*0.1f)), "roughness", materialComponent.shaderImplementation.shaderProg);
                
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
 
-                materialComponent.Shader.DisableVertexAttribArrays();
+                materialComponent.shaderImplementation.shaderProg.DisableVertexAttribArrays();
             }
 
             indiceat += SkyboxRenderHelper.RenderHdrToCubemapSkybox(view, projection, skybox);

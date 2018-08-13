@@ -2,6 +2,7 @@
 using Irrational.Core.Entities.Abstractions;
 using Irrational.Core.Shaders;
 using Irrational.Utils.Interfaces;
+using IrrationalEngineCore.Core.Shaders.Abstractions;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
@@ -14,19 +15,16 @@ namespace Irrational.Core.SceneObjectComponents
     public class MaterialSceneObjectComponent : ISceneObjectComponent
     {
         private string _matSource;
-        private ShaderProg _shader;
-        private Dictionary<string, int> _textures = new Dictionary<string, int>();
-        private Dictionary<string, Material> _materials = new Dictionary<string, Material>();
-
-        public Dictionary<string, int> Textures { get { return _textures; } set { _textures = value; } }
-        public Dictionary<string, Material> Materials { get { return _materials; } set { _materials = value; } }
+       
         private IMaterialLoader _materialLoader;
 
-        public MaterialSceneObjectComponent(ShaderProg Shader, string MaterialSource, IMaterialLoader materialLoader)
+        public IShaderImplementation shaderImplementation {get; private set;}
+
+        public MaterialSceneObjectComponent(IShaderImplementation ShaderImplementation, string MaterialSource, IMaterialLoader materialLoader)
         {
-            _shader = Shader;
             _matSource = MaterialSource;
             _materialLoader = materialLoader;
+            shaderImplementation = ShaderImplementation;
         }
 
         public string MaterialSource
@@ -34,12 +32,6 @@ namespace Irrational.Core.SceneObjectComponents
             //TODO: create default material
             get { return _matSource != null ? _matSource : throw new NullReferenceException(); }
             set { _matSource = value; }
-        }
-
-        public ShaderProg Shader
-        {
-            get { return _shader ?? null; }
-            set {_shader = value; }
         }
 
         public void OnLoad()
@@ -56,44 +48,44 @@ namespace Irrational.Core.SceneObjectComponents
         {
             foreach (var mat in _materialLoader.LoadFromFile(filename))
             {
-                if (!Materials.ContainsKey(mat.Key))
+                if (!shaderImplementation.Materials.ContainsKey(mat.Key))
                 {
-                    Materials.Add(mat.Key, mat.Value);
+                    shaderImplementation.Materials.Add(mat.Key, mat.Value);
                 }
             }
 
             // Load textures
-            foreach (Material mat in Materials.Values)
+            foreach (Material mat in shaderImplementation.Materials.Values) //TODO; probably required textures should be retrieved from shaderImplementation
             {
-                if (File.Exists(mat.DiffuseMap) && !Textures.ContainsKey(mat.DiffuseMap))
+                if (File.Exists(mat.DiffuseMap) && !shaderImplementation.Textures.ContainsKey(mat.DiffuseMap))
                 {
-                    Textures.Add(mat.DiffuseMap, LoadImage(mat.DiffuseMap, PixelInternalFormat.Srgb8Alpha8));
+                    shaderImplementation.Textures.Add(mat.DiffuseMap, LoadImage(mat.DiffuseMap, PixelInternalFormat.Srgb8Alpha8));
                 }
 
-                if (File.Exists(mat.NormalMap) && !Textures.ContainsKey(mat.NormalMap))
+                if (File.Exists(mat.NormalMap) && !shaderImplementation.Textures.ContainsKey(mat.NormalMap))
                 {
-                    Textures.Add(mat.NormalMap, LoadImage(mat.NormalMap, PixelInternalFormat.Rgba));
+                    shaderImplementation.Textures.Add(mat.NormalMap, LoadImage(mat.NormalMap, PixelInternalFormat.Rgba));
                 }
 
-                if (File.Exists(mat.OpacityMap) && !Textures.ContainsKey(mat.OpacityMap))
+                if (File.Exists(mat.OpacityMap) && !shaderImplementation.Textures.ContainsKey(mat.OpacityMap))
                 {
-                    Textures.Add(mat.OpacityMap, LoadImage(mat.OpacityMap,PixelInternalFormat.Rgba));
+                    shaderImplementation.Textures.Add(mat.OpacityMap, LoadImage(mat.OpacityMap,PixelInternalFormat.Rgba));
                 }
 
-                if (File.Exists(mat.AmbientMap) && !Textures.ContainsKey(mat.AmbientMap))
+                if (File.Exists(mat.AmbientMap) && !shaderImplementation.Textures.ContainsKey(mat.AmbientMap))
                 {
-                    Textures.Add(mat.AmbientMap, LoadImage(mat.AmbientMap,PixelInternalFormat.Rgba));
+                    shaderImplementation.Textures.Add(mat.AmbientMap, LoadImage(mat.AmbientMap,PixelInternalFormat.Rgba));
                 }
 
-                if (File.Exists(mat.SpecularMap) && !Textures.ContainsKey(mat.SpecularMap))
+                if (File.Exists(mat.SpecularMap) && !shaderImplementation.Textures.ContainsKey(mat.SpecularMap))
                 {
-                    Textures.Add(mat.SpecularMap, LoadImage(mat.SpecularMap,PixelInternalFormat.Rgba));
+                    shaderImplementation.Textures.Add(mat.SpecularMap, LoadImage(mat.SpecularMap,PixelInternalFormat.Rgba));
                 }
 
 
-                if (File.Exists(mat.MetallicRoughness) && !Textures.ContainsKey(mat.MetallicRoughness))
+                if (File.Exists(mat.MetallicRoughness) && !shaderImplementation.Textures.ContainsKey(mat.MetallicRoughness))
                 {
-                    Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Rgb));
+                    shaderImplementation.Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Rgb));
                 }
             }
         }
