@@ -31,7 +31,10 @@ namespace IrrationalEngineCore.Core.Shaders
         private const string irradianceMap = "irradianceMap";
         private const string prefilterMap = "prefilterMap";
         private const string brdf = "brdfLUT";
-
+        private const string numberOfLights = "numberOfLights";
+        private const string lightColor = "lightColor[0]";
+        private const string lightPosition = "lightPos[0]";
+        private const string cameraPosition = "cameraPosition";
 
         public Pbr()
         {
@@ -61,7 +64,7 @@ namespace IrrationalEngineCore.Core.Shaders
 
              _uniformHelper.TryAddUniformTexture2D(pipelineData.SkyboxComponent.BrdfMap, brdf, shaderProg, TextureUnit.Texture6);
 
-              _uniformHelper.TryAddUniform1(pipelineData.Lights.Count(), "numberOfLights", shaderProg);
+              _uniformHelper.TryAddUniform1(pipelineData.Lights.Count(), numberOfLights, shaderProg);
                 Vector3[] lightpositions = new Vector3[pipelineData.Lights.Count()];
                 Vector3[] lightcolors = new Vector3[pipelineData.Lights.Count()];
                 for (int j = 0; j < pipelineData.Lights.Count; ++j) {
@@ -70,11 +73,11 @@ namespace IrrationalEngineCore.Core.Shaders
                     lightpositions[j] = pipelineData.Lights[j].Position;
                 }
 
-                bool suc = _uniformHelper.TryAddUniform1(lightcolors, "lightColor[0]", shaderProg);
-                bool suc2 = _uniformHelper.TryAddUniform1(lightpositions, "lightPos[0]", shaderProg);
+                bool suc = _uniformHelper.TryAddUniform1(lightcolors, lightColor, shaderProg);
+                bool suc2 = _uniformHelper.TryAddUniform1(lightpositions, lightPosition, shaderProg);
 
-                _uniformHelper.TryAddUniform1(1f, "ambientStr", shaderProg);
-                _uniformHelper.TryAddUniform1(pipelineData.Cam.Position, "cameraPosition", shaderProg);
+                
+                _uniformHelper.TryAddUniform1(pipelineData.Cam.Position, cameraPosition, shaderProg);
         }
 
         public void OnLoad()

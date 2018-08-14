@@ -95,7 +95,7 @@ void main()
 
     float metallic = texture(metallicroughness, f_texcoord).r;
     float roughness = texture(metallicroughness, f_texcoord).g;
-    float ambientStr =texture(defaultAO, f_texcoord).r; 
+    float ambientStr = texture(defaultAO, f_texcoord).r; 
 
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 

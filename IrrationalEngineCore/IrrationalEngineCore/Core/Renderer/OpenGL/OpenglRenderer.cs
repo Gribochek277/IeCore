@@ -175,6 +175,7 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTextureCubemap(3, "irradianceMap", materialComponent.Shader, TextureUnit.Texture4);
                 _uniformHelper.TryAddUniformTextureCubemap(4, "prefilterMap", materialComponent.Shader, TextureUnit.Texture5);
                 _uniformHelper.TryAddUniformTexture2D(5,"brdfLUT", materialComponent.Shader, TextureUnit.Texture6);
+                _uniformHelper.TryAddUniform1(1f, "ambientStr", shaderProg);
                 */
 
                 materialComponent.shaderImplementation.SetSpecificUniforms(pipelineData);              
