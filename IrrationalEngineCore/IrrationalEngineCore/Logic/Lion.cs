@@ -15,7 +15,7 @@ namespace Irrational.Logic
         {
             MaterialSceneObjectComponent materialComponent =
                 new MaterialSceneObjectComponent(
-                    new Pbr(ShaderType.OnlyAlbedoAndNormalMap),
+                    new Pbr(),
                     "Resources/Lion/Lion-snake.mtl",
                     new WavefrontMaterialLoader()
                     );

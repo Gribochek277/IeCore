@@ -11,10 +11,10 @@ namespace Irrational.Logic
 {
     public class GLtf2Helm : SceneObject, IUpdatable
     {
-        public GLtf2Helm(string shaderVersion)
+        public GLtf2Helm()
         {
             MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
-                new Pbr(ShaderType.GltfWithMaps),
+                new Pbr(),
                 "Resources/Gltf/DamagedHelmet/glTF/DamagedHelmet.gltf",
                 new Gltf2MaterialLoader());
 

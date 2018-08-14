@@ -17,64 +17,31 @@ namespace Irrational.Core.Renderer.OpenGL
         private UniformHelper _uniformHelper;
         private GameWindow _gameWindow;
         private List<ISceneObject> _objects;
-        private Camera _cam;
-        private SceneObject skybox = null;
+                
+        private Vector3[] vertdata;
+        private Vector3[] coldata;
+        private Vector2[] texcoorddata;
+        private Vector3[] normdata;
+
+        private int[] indicedata;
+        private int ibo_elements;
+           
+
+        private float time = 0.0f;
+
+        private PipelineData pipelineData;
+
 
         public OpenglRenderer(GameWindow gameWindow) {
             _gameWindow = gameWindow;
             _uniformHelper = new UniformHelper();
         }
-                
-        Vector3[] vertdata;
-        Vector3[] coldata;
-        Vector2[] texcoorddata;
-        Vector3[] normdata;
-
-        int[] indicedata;
-        int ibo_elements;
-           
-        List<SceneObject> lights = new List<SceneObject>();
-
-        float time = 0.0f;
 
         public void OnLoad(List<ISceneObject> sceneObjects)
         {
-            _objects = sceneObjects;
-
-            //sceneObjects which required for default render pipeline camera etc.
-            List<SceneObject> specificSceneObjects = new List<SceneObject>();
-            //gather specific objects
-            foreach (SceneObject sceneObject in sceneObjects)
-            {
-                //gather all light sources
-                if (sceneObject.components.ContainsKey("PointLightSceneObjectComponent"))
-                {
-                    lights.Add(sceneObject);
-                }
-                //gather cemeras
-                if (sceneObject.GetType().Name == "PlayerCamera")
-                {
-                    _cam = (Camera)sceneObject.components["Camera"];
-                    specificSceneObjects.Add(sceneObject);
-                }
-                //gather skybox
-                if (sceneObject.GetType().Name == "Skybox")
-                {
-                    skybox = sceneObject;                
-                }
-            }
-
-            //remove specific objects from main collection of sceneObjects 
-            foreach (SceneObject sceneObject in specificSceneObjects)
-            {
-                sceneObject.OnLoad();
-                _objects.Remove(sceneObject);
-            }
-
-            foreach (SceneObject sceneObject in lights)
-            {
-                _objects.Remove(sceneObject);
-            }
+            pipelineData = new PipelineData(sceneObjects);
+            pipelineData.OnLoad();
+            _objects = pipelineData.Objects;
 
             foreach (SceneObject v in _objects)
             {
@@ -83,7 +50,7 @@ namespace Irrational.Core.Renderer.OpenGL
 
             GL.GenBuffers(1, out ibo_elements);
 
-            _cam.Position += new Vector3(0f, 0f, 3f);
+            pipelineData.Cam.Position += new Vector3(0f, 0f, 3f);
             GL.ClearColor(0,0,1,1);
             GL.PointSize(5f);
             
@@ -127,17 +94,16 @@ namespace Irrational.Core.Renderer.OpenGL
                     MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)extractedMaterialComponent;            
 
                     GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.shaderImplementation.shaderProg.GetBuffer("vPosition"));
-
                     GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
                     GL.VertexAttribPointer(materialComponent.shaderImplementation.shaderProg.GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
 
-                    // Buffer vertex color if shader supports it
-                    if (materialComponent.shaderImplementation.shaderProg.GetAttribute("vColor") != -1)
+                    // Buffer vertex color if shader supports it. Currently commented out vecause not used for first implementation.
+                  /*  if (materialComponent.shaderImplementation.shaderProg.GetAttribute("vColor") != -1)
                     {
                         GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.shaderImplementation.shaderProg.GetBuffer("vColor"));
                         GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(coldata.Length * Vector3.SizeInBytes), coldata, BufferUsageHint.StaticDraw);
                         GL.VertexAttribPointer(materialComponent.shaderImplementation.shaderProg.GetAttribute("vColor"), 3, VertexAttribPointerType.Float, true, 0, 0);
-                    }
+                    }*/
 
 
                     // Buffer texture coordinates if shader supports it
@@ -175,7 +141,7 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
 
             Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
-            Matrix4 view = _cam.GetViewMatrix();
+            Matrix4 view = pipelineData.Cam.GetViewMatrix();
             // Update object positions
             time += (float)this._gameWindow.RenderPeriod;
 
@@ -211,26 +177,12 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTexture2D(5,"brdfLUT", materialComponent.Shader, TextureUnit.Texture6);
                 */
 
-                materialComponent.shaderImplementation.SetSpecificUniforms();
+                materialComponent.shaderImplementation.SetSpecificUniforms(pipelineData);              
 
-                _uniformHelper.TryAddUniform1(lights.Count(), "numberOfLights", materialComponent.shaderImplementation.shaderProg);
-                Vector3[] lightpositions = new Vector3[lights.Count()];
-                Vector3[] lightcolors = new Vector3[lights.Count()];
-                for (int j = 0; j < lights.Count; ++j) {
-                    var lightComponent =  (PointLightSceneObjectComponent)lights[j].components["PointLightSceneObjectComponent"];
-                    lightcolors[j] = lightComponent.Color * lightComponent.LightStrenght;
-                    lightpositions[j] = lights[j].Position;
-                }
-
-                bool suc = _uniformHelper.TryAddUniform1(lightcolors, "lightColor[0]", materialComponent.shaderImplementation.shaderProg);
-                bool suc2 = _uniformHelper.TryAddUniform1(lightpositions, "lightPos[0]", materialComponent.shaderImplementation.shaderProg);
-
-                _uniformHelper.TryAddUniform1(1f, "ambientStr", materialComponent.shaderImplementation.shaderProg);
-                _uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.shaderImplementation.shaderProg);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
-                _uniformHelper.TryAddUniform1(_cam.Position, "cameraPosition", materialComponent.shaderImplementation.shaderProg);
+                //_uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.shaderImplementation.shaderProg);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 //PBR uniforms
-                _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Sin(time*0.1f)), "metallic", materialComponent.shaderImplementation.shaderProg);
-                _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Cos(time*0.1f)), "roughness", materialComponent.shaderImplementation.shaderProg);
+                /*_uniformHelper.TryAddUniform1((float)Math.Abs(Math.Sin(time*0.1f)), "metallic", materialComponent.shaderImplementation.shaderProg);
+                _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Cos(time*0.1f)), "roughness", materialComponent.shaderImplementation.shaderProg);*/
                
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
@@ -238,8 +190,8 @@ namespace Irrational.Core.Renderer.OpenGL
                 materialComponent.shaderImplementation.shaderProg.DisableVertexAttribArrays();
             }
 
-            indiceat += SkyboxRenderHelper.RenderHdrToCubemapSkybox(view, projection, skybox);
-             GL.Enable(EnableCap.FramebufferSrgb);
+            indiceat += SkyboxRenderHelper.RenderHdrToCubemapSkybox(view, projection, pipelineData.Skybox);
+            GL.Enable(EnableCap.FramebufferSrgb);
             GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
             GL.Flush();
             _gameWindow.SwapBuffers();
@@ -264,7 +216,7 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 meshComponent.ModelMesh.Transform.CalculateModelMatrix();
                 meshComponent.ModelMesh.Transform.ViewProjectionMatrix = 
-                _cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width 
+                pipelineData.Cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width 
                 / (float)_gameWindow.ClientSize.Height, 1.0f, 40);
 
                 meshComponent.ModelMesh.Transform.ModelViewProjectionMatrix = 

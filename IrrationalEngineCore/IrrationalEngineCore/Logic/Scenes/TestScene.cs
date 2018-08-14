@@ -18,10 +18,10 @@ namespace Irrational.Logic.Scenes
            // _sceneObjects.Add(gameObject);
             //Knight knight = new Knight();
             //_sceneObjects.Add(knight);
-            GLtf2Helm gltf2helm = new GLtf2Helm("fs_PBR_gltf_pipeline_with_maps.glsl");
+            GLtf2Helm gltf2helm = new GLtf2Helm();
             _sceneObjects.Add(gltf2helm);
 
-            //GLtf2Helm gltf2helm2 = new GLtf2Helm("fs_PBR.glsl");
+            //GLtf2Helm gltf2helm2 = new GLtf2Helm();
             //_sceneObjects.Add(gltf2helm2);
 
             //PointLight light1 = new PointLight(new Vector3(1f, 1, 1f), 1);

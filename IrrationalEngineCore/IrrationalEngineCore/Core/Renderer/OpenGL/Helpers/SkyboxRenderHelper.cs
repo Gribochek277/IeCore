@@ -1,4 +1,5 @@
 ﻿using Irrational.Core.Entities;
+using Irrational.Core.Entities.Abstractions;
 using Irrational.Core.Entities.Primitives;
 using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Shaders;
@@ -10,7 +11,7 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
 {
     public class SkyboxRenderHelper
     {
-        public static int RenderCubemapSkybox(Matrix4 view, Matrix4 projection, SceneObject skybox)
+        public static int RenderCubemapSkybox(Matrix4 view, Matrix4 projection, ISceneObject skybox)
         {            
             GL.CullFace(CullFaceMode.Front);
             GL.DepthFunc(DepthFunction.Lequal);
@@ -29,7 +30,7 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
             return skyboxMeshComponent.ModelMesh.IndiceCount; 
         }
 
-        public static int RenderHdrToCubemapSkybox(Matrix4 view, Matrix4 projection, SceneObject skybox)
+        public static int RenderHdrToCubemapSkybox(Matrix4 view, Matrix4 projection, ISceneObject skybox)
         {
             GL.CullFace(CullFaceMode.Front);
             GL.DepthFunc(DepthFunction.Lequal);
