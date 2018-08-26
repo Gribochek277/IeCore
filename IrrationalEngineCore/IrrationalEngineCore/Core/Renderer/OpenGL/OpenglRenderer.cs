@@ -9,6 +9,9 @@ using OpenTK.Graphics.OpenGL;
 using Irrational.Core.Entities.Abstractions;
 using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Renderer.OpenGL.Helpers;
+using Irrational.Core.Entities.Primitives;
+using IrrationalEngineCore.Core.Shaders;
+using OpenTK.Input;
 
 namespace Irrational.Core.Renderer.OpenGL
 {
@@ -49,6 +52,7 @@ namespace Irrational.Core.Renderer.OpenGL
             }
 
             GL.GenBuffers(1, out ibo_elements);
+            GL.Enable(EnableCap.TextureCubeMapSeamless);
 
             pipelineData.Cam.Position += new Vector3(0f, 0f, 3f);
             GL.ClearColor(0,0,1,1);
@@ -131,7 +135,7 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
-            GL.Disable(EnableCap.FramebufferSrgb);
+            GL.Enable(EnableCap.FramebufferSrgb);
             GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -140,7 +144,8 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
 
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 1.0f, 40.0f);
+            Matrix4 projection =
+             Matrix4.CreatePerspectiveFieldOfView(1.3f, (float)_gameWindow.ClientSize.Width / (float)_gameWindow.ClientSize.Height, 0.1f, 120.0f);
             Matrix4 view = pipelineData.Cam.GetViewMatrix();
             // Update object positions
             time += (float)this._gameWindow.RenderPeriod;
@@ -177,8 +182,21 @@ namespace Irrational.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTexture2D(5,"brdfLUT", materialComponent.Shader, TextureUnit.Texture6);
                 _uniformHelper.TryAddUniform1(1f, "ambientStr", shaderProg);
                 */
+                Pbr b = (Pbr)materialComponent.shaderImplementation;
 
-                materialComponent.shaderImplementation.SetSpecificUniforms(pipelineData);              
+                 if (Keyboard.GetState().IsKeyDown(Key.Plus))
+                 {                
+                    b.randomCoeff += 0.01f;    
+                    Console.WriteLine(b.randomCoeff);                           
+                 }
+
+                  if (Keyboard.GetState().IsKeyDown(Key.P))
+                 {                
+                    b.randomCoeff -= 0.01f;   
+                     Console.WriteLine(b.randomCoeff);                                 
+                 }
+
+                b.SetSpecificUniforms(pipelineData);              
 
                 //_uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.shaderImplementation.shaderProg);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
                 //PBR uniforms
@@ -190,9 +208,11 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 materialComponent.shaderImplementation.shaderProg.DisableVertexAttribArrays();
             }
+            GL.Disable(EnableCap.FramebufferSrgb);
 
             indiceat += SkyboxRenderHelper.RenderHdrToCubemapSkybox(view, projection, pipelineData.Skybox);
-            GL.Enable(EnableCap.FramebufferSrgb);
+           
+           
             GL.Viewport(0, 0, _gameWindow.Width, _gameWindow.Height);
             GL.Flush();
             _gameWindow.SwapBuffers();
@@ -215,13 +235,13 @@ namespace Irrational.Core.Renderer.OpenGL
             {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
 
-                meshComponent.ModelMesh.Transform.CalculateModelMatrix();
-                meshComponent.ModelMesh.Transform.ViewProjectionMatrix = 
-                pipelineData.Cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, _gameWindow.ClientSize.Width 
-                / (float)_gameWindow.ClientSize.Height, 1.0f, 40);
+               // meshComponent.ModelMesh.Transform.CalculateModelMatrix();
+               // meshComponent.ModelMesh.Transform.ViewProjectionMatrix = 
+              //  pipelineData.Cam.GetViewMatrix() * Matrix4.CreatePerspectiveFieldOfView(1.3f, (float)_gameWindow.ClientSize.Width 
+               // / (float)_gameWindow.ClientSize.Height, 1.0f, 120);
 
-                meshComponent.ModelMesh.Transform.ModelViewProjectionMatrix = 
-                meshComponent.ModelMesh.Transform.ModelMatrix * meshComponent.ModelMesh.Transform.ViewProjectionMatrix;
+               // meshComponent.ModelMesh.Transform.ModelViewProjectionMatrix = 
+               // meshComponent.ModelMesh.Transform.ModelMatrix * meshComponent.ModelMesh.Transform.ViewProjectionMatrix;
             }
         }        
     }

@@ -63,7 +63,7 @@ namespace Irrational.Core.Entities {
         /// </summary>
         /// <returns></returns>
         public Vector2[] GetTextureCoords () {
-            return UvCoords.ToArray ();
+            return UvCoords;
         }
 
        

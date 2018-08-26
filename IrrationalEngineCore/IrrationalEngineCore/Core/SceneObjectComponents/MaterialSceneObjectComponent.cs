@@ -1,4 +1,5 @@
-﻿using Irrational.Core.Entities;
+﻿using ImageMagick;
+using Irrational.Core.Entities;
 using Irrational.Core.Entities.Abstractions;
 using Irrational.Core.Shaders;
 using Irrational.Utils.Interfaces;
@@ -59,12 +60,12 @@ namespace Irrational.Core.SceneObjectComponents
             {
                 if (File.Exists(mat.DiffuseMap) && !shaderImplementation.Textures.ContainsKey(mat.DiffuseMap))
                 {
-                    shaderImplementation.Textures.Add(mat.DiffuseMap, LoadImage(mat.DiffuseMap, PixelInternalFormat.Srgb8Alpha8));
+                    shaderImplementation.Textures.Add(mat.DiffuseMap, LoadImage(mat.DiffuseMap, PixelInternalFormat.Srgb8));
                 }
 
                 if (File.Exists(mat.NormalMap) && !shaderImplementation.Textures.ContainsKey(mat.NormalMap))
                 {
-                    shaderImplementation.Textures.Add(mat.NormalMap, LoadImage(mat.NormalMap, PixelInternalFormat.Rgba));
+                    shaderImplementation.Textures.Add(mat.NormalMap, LoadNormalsImage(mat.NormalMap));
                 }
 
                 if (File.Exists(mat.OpacityMap) && !shaderImplementation.Textures.ContainsKey(mat.OpacityMap))
@@ -85,7 +86,7 @@ namespace Irrational.Core.SceneObjectComponents
 
                 if (File.Exists(mat.MetallicRoughness) && !shaderImplementation.Textures.ContainsKey(mat.MetallicRoughness))
                 {
-                    shaderImplementation.Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Rgb));
+                    shaderImplementation.Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Srgb8));
                 }
             }
         }
@@ -101,6 +102,26 @@ namespace Irrational.Core.SceneObjectComponents
                 OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 
             image.UnlockBits(data);
+
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+            return texID;
+        }
+
+        int LoadNormalsImage(string filename)
+        {
+           
+           MagickImage img = new MagickImage(filename);
+
+            byte[] data = img.GetPixels().ToByteArray(0, 0, img.Width, img.Height, "RGB");
+           
+            int texID = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, texID);
+
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, img.Width, img.Height, 0,
+                    OpenTK.Graphics.OpenGL.PixelFormat.Rgb, PixelType.UnsignedByte, data);
+
+
 
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 

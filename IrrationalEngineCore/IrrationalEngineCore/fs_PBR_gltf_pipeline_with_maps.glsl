@@ -22,6 +22,8 @@ uniform sampler2D brdfLUT;
 
 uniform vec3 cameraPosition;
 
+uniform float randomCoeff;
+
 const float PI = 3.14159265359;
   
 float DistributionGGX(vec3 N, vec3 H, float roughness)
@@ -35,7 +37,7 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
     denom = PI * denom * denom;
 
-    return nom / max(denom, 0.001); // prevent divide by zero for roughness=0.0 and NdotH=1.0
+    return nom / denom;
 }
 // ----------------------------------------------------------------------------
 float GeometrySchlickGGX(float NdotV, float roughness)
@@ -67,16 +69,20 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 {
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
-} 
+}  
 
-vec3 getNormalFromMap(vec2 texcoord)
+vec3 getNormalFromMap()
 {
-    vec3 tangentNormal = texture(normaltexture, texcoord).xyz * 2.0 - 1.0;
 
+    vec3 normal = texture(normaltexture, f_texcoord).rgb ;
+
+    vec3 tangentNormal = normal * 2 - 1;
+
+    
     vec3 Q1  = dFdx(f_pos);
     vec3 Q2  = dFdy(f_pos);
-    vec2 st1 = dFdx(texcoord);
-    vec2 st2 = dFdy(texcoord);
+    vec2 st1 = dFdx(f_texcoord);
+    vec2 st2 = dFdy(f_texcoord);
 
     vec3 N   = normalize(v_norm);
     vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
@@ -88,12 +94,14 @@ vec3 getNormalFromMap(vec2 texcoord)
 
 void main()
 {		
-	vec3 N = getNormalFromMap(f_texcoord);
+	vec3 N = getNormalFromMap();
+    
     vec3 V = normalize(cameraPosition - f_pos);
     vec3 R = reflect(-V, N); 
-	vec3 albedo = texture(maintexture, f_texcoord).rgb;
+	vec3 albedo = //texture(maintexture, f_texcoord).rgb;
+    pow(texture(maintexture, f_texcoord).rgb, vec3(2.2));
 
-    float metallic = texture(metallicroughness, f_texcoord).r;
+    float metallic = texture(metallicroughness, f_texcoord).b;
     float roughness = texture(metallicroughness, f_texcoord).g;
     float ambientStr = texture(defaultAO, f_texcoord).r; 
 
@@ -116,12 +124,12 @@ void main()
 
         // Cook-Torrance BRDF
         float NDF = DistributionGGX(N, H, roughness);   
-        float G   = GeometrySmith(N, V, L, roughness);      
-        vec3 F    = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
+        float G   = GeometrySmith(N, V, L, roughness);    
+        vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);  
            
         vec3 nominator    = NDF * G * F; 
-        float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-        vec3 specular = nominator / max(denominator, 0.001); // prevent divide by zero for NdotV=0.0 or NdotL=0.0
+        float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
+        vec3 specular = nominator / denominator;
         
         // kS is equal to Fresnel
         vec3 kS = F;
@@ -144,19 +152,18 @@ void main()
 
 	//vec3 ambient = vec3(0.03) * albedo * ambientStr;
     vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
-    
+
     vec3 kS = F;
-    vec3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;
+    vec3 kD = (1.0 - kS) * (1.0 - metallic);
+  
+    vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 diffuse    = irradiance * albedo;
+  
+    const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefilterMap, R,  (roughness) * MAX_REFLECTION_LOD ).rgb;   
+    vec3 envBRDF  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rgb;  
 
-	vec3 irradiance = texture(irradianceMap, N).rgb;
-	vec3 diffuse    = irradiance * albedo;
-
-    // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
-   const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
-    vec2 brdf  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
-    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+    vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
 
     vec3 ambient = (kD * diffuse + specular) * ambientStr;
     
@@ -165,7 +172,23 @@ void main()
     // HDR tonemapping
     color = color / (color + vec3(1.0));
     // gamma correct
-    color = pow(color, vec3(1.0/2.2)); 
+    //color = pow(color, vec3(1.0/2.2)); 
+
+    //vec4 prefilter = textureLod(prefilterMap, R,  MAX_REFLECTION_LOD);
+
+    //FragColor = vec4(metallic,metallic,metallic , 1.0);
+
+    //FragColor = vec4(roughness,roughness,roughness , 1.0);
+
+    //FragColor = vec4(texture(normaltexture, f_texcoord).rgb , 1.0);
+
+    //FragColor = vec4(specular , 1.0);
+
+    //FragColor = vec4(ambient , 1.0);
+
+    //FragColor = vec4(Lo , 1.0);
+
+    //FragColor = vec4(envBRDF , 1.0);
 
     FragColor = vec4(color , 1.0);
 }  

@@ -114,14 +114,6 @@
     ],
     "materials" : [
         {
-            "emissiveFactor" : [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "emissiveTexture" : {
-                "index" : 2
-            },
             "name" : "Material_MR",
             "normalTexture" : {
                 "index" : 4

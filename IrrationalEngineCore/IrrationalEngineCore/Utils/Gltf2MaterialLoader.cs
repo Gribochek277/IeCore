@@ -20,10 +20,13 @@ namespace Irrational.Utils
                 {
                     Material mat = new Material();
                     mat.MaterialName = material.Name;
-                    mat.DiffuseMap = Path.Combine(relativeLocation,deserializedFile.Images[0].Uri);
+                    mat.DiffuseMap = Path.Combine(relativeLocation,deserializedFile.Images[material.PbrMetallicRoughness.BaseColorTexture.Index].Uri);
                     mat.NormalMap =  Path.Combine(relativeLocation,deserializedFile.Images[material.NormalTexture.Index].Uri);
                     mat.MetallicRoughness =  Path.Combine(relativeLocation,deserializedFile.Images[material.PbrMetallicRoughness.MetallicRoughnessTexture.Index].Uri);
+                    try{
                     mat.AmbientMap = Path.Combine(relativeLocation,deserializedFile.Images[material.OcclusionTexture.Index].Uri);
+                    }
+                    catch{mat.AmbientMap = mat.MetallicRoughness;}
                     mats.Add(material.Name, mat);
                 }
             }            

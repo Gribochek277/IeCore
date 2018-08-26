@@ -7,7 +7,7 @@ namespace Irrational.Logic
 {
     public class Skybox : SceneObject
     {
-        public Skybox(ShaderProg shader, string skyboxLocation = "Resources\\Cubemaps")
+        public Skybox(ShaderProg shader, string skyboxLocation = "Resources//Cubemaps")
         {
             SkyboxSceneObjectComponent skyboxComponent =
                 new SkyboxSceneObjectComponent(skyboxLocation, 
@@ -21,7 +21,7 @@ namespace Irrational.Logic
             AddComponent(skyboxComponent);
         }
 
-        public Skybox(string skyboxLocation = "Resources//HDR//MonValley_DirtRoad//MonValley_G_DirtRoad_3k.hdr")
+        public Skybox(string skyboxLocation = "Resources//OpenfootageNET_Saalfelden_low.hdr")
         {
             SkyboxSceneObjectComponent skyboxComponent = 
                 new SkyboxSceneObjectComponent(skyboxLocation, 

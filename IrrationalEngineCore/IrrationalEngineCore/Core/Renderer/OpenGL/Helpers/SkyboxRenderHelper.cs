@@ -22,8 +22,13 @@ namespace Irrational.Core.Renderer.OpenGL.Helpers
             GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("projection"), false, ref projection);
             Matrix4 clearTraslationViewMatrix = view.ClearTranslation();
             GL.UniformMatrix4(skyboxComponent.Shader.GetUniform("view"), false, ref clearTraslationViewMatrix);
-            new UniformHelper().TryAddUniformTextureCubemap(skyboxComponent.EnvironmentMap, "skybox", skyboxComponent.Shader, TextureUnit.Texture0);           
-            GL.Enable(EnableCap.FramebufferSrgb);
+            bool isSetted =  
+                new UniformHelper().TryAddUniformTextureCubemap(skyboxComponent.EnvironmentMap, "skybox", skyboxComponent.Shader, TextureUnit.Texture0);           
+            if (!isSetted)
+            {
+                Console.WriteLine("wrong uniform");
+            }
+           // GL.Enable(EnableCap.FramebufferSrgb);
             GL.DrawElements(BeginMode.Triangles, skyboxMeshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, 0 * sizeof(uint));            
             GL.DepthFunc(DepthFunction.Less);
             skyboxComponent.Shader.DisableVertexAttribArrays();

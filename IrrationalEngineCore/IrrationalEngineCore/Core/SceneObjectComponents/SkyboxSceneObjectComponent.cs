@@ -33,7 +33,6 @@ namespace Irrational.Core.SceneObjectComponents
         public SkyboxSceneObjectComponent(string location, SkyboxType type)
         {
             _skyboxLocation = location;
-            _shader = Shader;
             skyboxType = type;
             switch (skyboxType)
             {

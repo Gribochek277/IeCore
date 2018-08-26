@@ -3,6 +3,7 @@ using Irrational.Core.Entities;
 using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Shaders;
 using Irrational.Utils;
+using IrrationalEngineCore.Core.Shaders;
 using OpenTK;
 
 namespace Irrational.Logic
@@ -11,8 +12,8 @@ namespace Irrational.Logic
     {
         public Knight()
         {
-         /*   MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
-                new ShaderProg("vs_norm.glsl", "fs_norm.glsl", true),
+            MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
+                new SpecularNormal(),
                 "Resources/knight3.mtl",
                 new WavefrontMaterialLoader()
                 );
@@ -26,7 +27,7 @@ namespace Irrational.Logic
             AddComponent(manipulation);
             AddComponent(material);
             AddComponent(meshComponent);
-            */
+            
         }
 
         public override void OnLoad()

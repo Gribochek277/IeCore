@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Irrational.Core.Entities;
@@ -16,11 +17,13 @@ namespace IrrationalEngineCore.Core.Shaders
         public ShaderProg shaderProg {get;}
 
         private Dictionary<string, Material> _materials = new Dictionary<string, Material>();
-        public Dictionary<string, Material> Materials { get { return _materials; } set { _materials = value; } }
 
         private Dictionary<string, int> _textures = new Dictionary<string, int>();      
 
-        public Dictionary<string, int> Textures { get { return _textures; } set { _textures = value; } }
+        public float randomCoeff = 0;
+
+        public Dictionary<string, Material> Materials { get => _materials; set => _materials = value; }
+        public Dictionary<string, int> Textures { get => _textures; set => _textures = value; }
 
         private UniformHelper _uniformHelper;
 
@@ -43,10 +46,10 @@ namespace IrrationalEngineCore.Core.Shaders
         }
         public void SetSpecificUniforms(IPipelineData pipelineData)
         {
-            int texId = _textures[Materials.FirstOrDefault().Value.DiffuseMap];
-            int normId = _textures[Materials.FirstOrDefault().Value.NormalMap];
-            int metRoughId = _textures[Materials.FirstOrDefault().Value.MetallicRoughness];
-            int ambientId = _textures[Materials.FirstOrDefault().Value.AmbientMap];
+            int texId = Textures[Materials.FirstOrDefault().Value.DiffuseMap];
+            int normId = Textures[Materials.FirstOrDefault().Value.NormalMap];
+            int metRoughId = Textures[Materials.FirstOrDefault().Value.MetallicRoughness];
+            int ambientId = Textures[Materials.FirstOrDefault().Value.AmbientMap];
 
              _uniformHelper.TryAddUniformTexture2D(texId, maintexture, shaderProg, TextureUnit.Texture0);
 
@@ -55,14 +58,14 @@ namespace IrrationalEngineCore.Core.Shaders
              _uniformHelper.TryAddUniformTexture2D(metRoughId, metallicRoughness, shaderProg, TextureUnit.Texture2);
 
              _uniformHelper.TryAddUniformTexture2D(ambientId, amibenOclussionMap, shaderProg, TextureUnit.Texture3);
-
-
-                //TODO retrieve it properly skybox texture
+            
              _uniformHelper.TryAddUniformTextureCubemap(pipelineData.SkyboxComponent.IrradianceMap, irradianceMap, shaderProg, TextureUnit.Texture4);
 
              _uniformHelper.TryAddUniformTextureCubemap(pipelineData.SkyboxComponent.PrefilteredMap, prefilterMap, shaderProg, TextureUnit.Texture5);
-
+      
              _uniformHelper.TryAddUniformTexture2D(pipelineData.SkyboxComponent.BrdfMap, brdf, shaderProg, TextureUnit.Texture6);
+
+            _uniformHelper.TryAddUniform1(randomCoeff, "randomCoeff", shaderProg);
 
               _uniformHelper.TryAddUniform1(pipelineData.Lights.Count(), numberOfLights, shaderProg);
                 Vector3[] lightpositions = new Vector3[pipelineData.Lights.Count()];
@@ -76,7 +79,6 @@ namespace IrrationalEngineCore.Core.Shaders
                 bool suc = _uniformHelper.TryAddUniform1(lightcolors, lightColor, shaderProg);
                 bool suc2 = _uniformHelper.TryAddUniform1(lightpositions, lightPosition, shaderProg);
 
-                
                 _uniformHelper.TryAddUniform1(pipelineData.Cam.Position, cameraPosition, shaderProg);
         }
 
