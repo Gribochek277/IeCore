@@ -27,6 +27,11 @@ namespace Irrational.Utils
                     mat.AmbientMap = Path.Combine(relativeLocation,deserializedFile.Images[material.OcclusionTexture.Index].Uri);
                     }
                     catch{mat.AmbientMap = mat.MetallicRoughness;}
+                    try{
+                        mat.NormalScale = material.NormalTexture.Scale;
+                    }
+                    catch
+                    {}
                     mats.Add(material.Name, mat);
                 }
             }            

@@ -80,6 +80,8 @@ namespace IrrationalEngineCore.Core.Shaders
                 bool suc2 = _uniformHelper.TryAddUniform1(lightpositions, lightPosition, shaderProg);
 
                 _uniformHelper.TryAddUniform1(pipelineData.Cam.Position, cameraPosition, shaderProg);
+
+                _uniformHelper.TryAddUniform1(Materials.FirstOrDefault().Value.NormalScale, "normalScale", shaderProg);
         }
 
         public void OnLoad()

@@ -176,7 +176,7 @@ namespace Irrational.Core.SceneObjectComponents.SkyboxHelpers
 
         private int CalculateBRDF( ShaderProg shader, int framebuffer, int renderbuffer, int size = 512)
         {
-           int textureId = /*LoadBrdfImage("Resources/ibl_brdf_lut.png");*/ AllocateBrdf(size);
+           int textureId = /*LoadBrdfImage("Resources/zB8UF1G.png");*/AllocateBrdf(size);
             Quad quad = new Quad();
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
             GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, renderbuffer);
@@ -203,6 +203,8 @@ namespace Irrational.Core.SceneObjectComponents.SkyboxHelpers
         {
 
             System.Drawing.Bitmap image = new System.Drawing.Bitmap(filename);
+
+            //image.RotateFlip(RotateFlipType.Rotate180FlipY);
            
            int texID = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, texID);
@@ -288,6 +290,8 @@ namespace Irrational.Core.SceneObjectComponents.SkyboxHelpers
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Linear);
+
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             return brdfTexture;
         }

@@ -75,7 +75,7 @@ namespace Irrational.Core.SceneObjectComponents
 
                 if (File.Exists(mat.AmbientMap) && !shaderImplementation.Textures.ContainsKey(mat.AmbientMap))
                 {
-                    shaderImplementation.Textures.Add(mat.AmbientMap, LoadImage(mat.AmbientMap,PixelInternalFormat.Rgba));
+                    shaderImplementation.Textures.Add(mat.AmbientMap, LoadImage(mat.AmbientMap,PixelInternalFormat.Rgb));
                 }
 
                 if (File.Exists(mat.SpecularMap) && !shaderImplementation.Textures.ContainsKey(mat.SpecularMap))
@@ -86,7 +86,7 @@ namespace Irrational.Core.SceneObjectComponents
 
                 if (File.Exists(mat.MetallicRoughness) && !shaderImplementation.Textures.ContainsKey(mat.MetallicRoughness))
                 {
-                    shaderImplementation.Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Srgb8));
+                    shaderImplementation.Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Rgb));
                 }
             }
         }
