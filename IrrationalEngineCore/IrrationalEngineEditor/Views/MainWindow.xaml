@@ -12,7 +12,8 @@
   </Design.DataContext>
   <StackPanel Orientation="Vertical">      
       <Button Content="{Binding Start}" Command="{Binding DoRunIrrationalInstance}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-      <Button Content="{Binding Rotate}" Command="{Binding DoRotation}"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
       <TextBlock Text="{Binding SelectedItemName}"/>
+    <Slider Value="{Binding DoRotationX}" Minimum="0" Maximum="3600"></Slider>
+    <Slider Value="{Binding DoRotationY}" Minimum="0" Maximum="3600"></Slider>
   </StackPanel>
 </Window>
