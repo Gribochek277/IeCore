@@ -15,12 +15,14 @@ namespace Irrational.Logic
         {
             MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
                 new Pbr(),
+               // "Resources/Gltf/sphere/sphere.gltf",
                 "Resources/Gltf/cerebrus/scene.gltf",
                 new Gltf2MaterialLoader());
 
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
                 new Gltf2ModelLoader(),
-                "Resources/Gltf/cerebrus/scene.gltf"
+            //    "Resources/Gltf/sphere/sphere.gltf"
+                 "Resources/Gltf/cerebrus/scene.gltf"
                 );
             BasicManipulationsComponent manipulation = new BasicManipulationsComponent(meshComponent);
             AddComponent(manipulation);

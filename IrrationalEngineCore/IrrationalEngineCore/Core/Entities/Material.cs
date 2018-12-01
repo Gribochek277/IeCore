@@ -17,6 +17,8 @@ namespace Irrational.Core.Entities {
         public String NormalMap = "";
         public String MetallicRoughness = "";
 
+        public float NormalScale = 1;
+
         public Material () { }
 
         public Material (Vector3 ambient, Vector3 diffuse, Vector3 specular, float specexponent = 1.0f, float opacity = 1.0f) {

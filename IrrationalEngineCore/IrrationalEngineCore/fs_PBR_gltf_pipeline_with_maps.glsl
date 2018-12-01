@@ -24,6 +24,8 @@ uniform vec3 cameraPosition;
 
 uniform float randomCoeff;
 
+uniform float normalScale;
+
 const float PI = 3.14159265359;
   
 float DistributionGGX(vec3 N, vec3 H, float roughness)
@@ -74,7 +76,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 vec3 getNormalFromMap()
 {
 
-    vec3 normal = texture(normaltexture, f_texcoord).rgb ;
+    vec3 normal = texture(normaltexture, f_texcoord).rgb;
 
     vec3 tangentNormal = normal * 2 - 1;
 
@@ -89,7 +91,7 @@ vec3 getNormalFromMap()
     vec3 B  = -normalize(cross(N, T));
     mat3 TBN = mat3(T, B, N);
 
-    return normalize(TBN * tangentNormal);
+    return normalize(TBN * tangentNormal) * vec3(normalScale);
 }
 
 void main()
@@ -101,8 +103,8 @@ void main()
 	vec3 albedo = //texture(maintexture, f_texcoord).rgb;
     pow(texture(maintexture, f_texcoord).rgb, vec3(2.2));
 
-    float metallic = texture(metallicroughness, f_texcoord).b;
-    float roughness = texture(metallicroughness, f_texcoord).g;
+    float metallic = texture(metallicroughness, f_texcoord).b;// * texture(maintexture, f_texcoord).b;
+    float roughness = texture(metallicroughness, f_texcoord).g;// * texture(maintexture, f_texcoord).g;
     float ambientStr = texture(defaultAO, f_texcoord).r; 
 
 
@@ -161,7 +163,7 @@ void main()
   
     const float MAX_REFLECTION_LOD = 4.0;
     vec3 prefilteredColor = textureLod(prefilterMap, R,  (roughness) * MAX_REFLECTION_LOD ).rgb;   
-    vec3 envBRDF  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rgb;  
+    vec2 envBRDF  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;  
 
     vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
 

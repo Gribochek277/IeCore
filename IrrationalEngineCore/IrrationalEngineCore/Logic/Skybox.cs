@@ -21,7 +21,7 @@ namespace Irrational.Logic
             AddComponent(skyboxComponent);
         }
 
-        public Skybox(string skyboxLocation = "Resources//OpenfootageNET_Saalfelden_low.hdr")
+        public Skybox(string skyboxLocation = "Resources//newport_loft.hdr")
         {
             SkyboxSceneObjectComponent skyboxComponent = 
                 new SkyboxSceneObjectComponent(skyboxLocation, 
