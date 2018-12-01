@@ -14,7 +14,7 @@ namespace Irrational.Core.Entities {
             get { return _position; }
             set {
                 _position = value;
-                if (_components.ContainsKey ("MeshSceneObjectComponent")) {
+                if (components.ContainsKey ("MeshSceneObjectComponent")) {
                     OnTransform ();
                 }
             }
@@ -24,7 +24,7 @@ namespace Irrational.Core.Entities {
             get { return _scale; }
             set {
                 _scale = value;
-                if (_components.ContainsKey ("MeshSceneObjectComponent")) {
+                if (components.ContainsKey ("MeshSceneObjectComponent")) {
                     OnTransform ();
                 }
             }
@@ -34,21 +34,19 @@ namespace Irrational.Core.Entities {
             get { return _rotaion; }
             set {
                 _rotaion = value;
-                if (_components.ContainsKey ("MeshSceneObjectComponent")) {
+                if (components.ContainsKey ("MeshSceneObjectComponent")) {
                     OnTransform ();
                 }
             }
         }
-
-        private Dictionary<string, ISceneObjectComponent> _components = new Dictionary<string, ISceneObjectComponent> ();
-        public Dictionary<string, ISceneObjectComponent> components { get { return _components; } }
+        public Dictionary<string, ISceneObjectComponent> components { get; } = new Dictionary<string, ISceneObjectComponent>();
 
         public void AddComponent (ISceneObjectComponent component) {
-            _components.Add (component.GetType ().Name, component);
+            components.Add (component.GetType ().Name, component);
         }
 
         public virtual void OnLoad () {
-            foreach (var component in _components.Values)
+            foreach (var component in components.Values)
                 component.OnLoad ();
         }
 
@@ -57,7 +55,7 @@ namespace Irrational.Core.Entities {
         }
 
         public virtual void OnTransform () {
-            MeshSceneObjectComponent meshCompnent = (MeshSceneObjectComponent) _components["MeshSceneObjectComponent"];
+            MeshSceneObjectComponent meshCompnent = (MeshSceneObjectComponent) components["MeshSceneObjectComponent"];
             meshCompnent.ModelMesh.Transform.Position = _position;
             meshCompnent.ModelMesh.Transform.Scale = _scale;
             meshCompnent.ModelMesh.Transform.Rotation = _rotaion;

@@ -8,7 +8,7 @@ namespace Irrational.Core.Entities {
         protected List<ISceneObject> _sceneObjects = new List<ISceneObject> ();
         private PlayerCamera _camera;
         protected Skybox _skybox;
-        public List<ISceneObject> GetObjects { get { return _sceneObjects; } }
+        public List<ISceneObject> SceneObjects { get { return _sceneObjects; } }
         public SceneObject Camera { get { return _camera; } }
 
         public virtual void OnLoad () {

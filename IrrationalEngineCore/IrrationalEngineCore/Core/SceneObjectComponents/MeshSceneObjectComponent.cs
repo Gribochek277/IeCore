@@ -7,10 +7,10 @@ namespace Irrational.Core.SceneObjectComponents
 {
     public class MeshSceneObjectComponent : ISceneObjectComponent
     {
-
-        private Mesh _modelMesh;
         private string _mdlSource;
         private IModelLoader _modelLoader;
+
+        public Mesh ModelMesh { get; private set; }
 
         public MeshSceneObjectComponent() { }
 
@@ -20,12 +20,11 @@ namespace Irrational.Core.SceneObjectComponents
             _mdlSource = modelSource;
         }
 
-        public Mesh ModelMesh { get { return _modelMesh; } }
 
         public void OnLoad()
         {
             if(_modelLoader!=null)
-            _modelMesh = _modelLoader.LoadFromFile(_mdlSource);
+            ModelMesh = _modelLoader.LoadFromFile(_mdlSource);
         }
 
         public void OnUnload()

@@ -6,7 +6,6 @@ using System;
 using Irrational.Core.Renderer.Abstractions;
 using Irrational.Core.Renderer.OpenGL;
 using Irrational.Core.CoreManager;
-using System.Drawing;
 using Irrational.Logic.Scenes;
 
 namespace Irrational.Core.Windows
@@ -14,16 +13,17 @@ namespace Irrational.Core.Windows
     public class OpenTKWindow : IWindow
     {
         private GameWindow _gameWindow;
-        private ISceneManager _sceneManager;
-        private IRenderer _renderer;
 
-        public static OpenTK.Rectangle Bounds;
+        public ISceneManager SceneManager { get; }
+        public IRenderer Renderer { get; }
+
+        public static Rectangle Bounds;
 
         public OpenTKWindow()
         {
             _gameWindow = new GameWindow(800, 600, new GraphicsMode(32, 24, 0, 4), "Irrational");
-            _renderer = new OpenglRenderer(_gameWindow);
-            _sceneManager = new SceneManager(_renderer, new TestScene());
+            Renderer = new OpenglRenderer(_gameWindow);
+            SceneManager = new SceneManager(Renderer, new TestScene());
             AddListeners();            
         }
 
@@ -54,23 +54,23 @@ namespace Irrational.Core.Windows
         public void OnLoad()
         {
             Bounds = _gameWindow.Bounds;
-            _sceneManager.OnLoad();
+            SceneManager.OnLoad();
         }
 
         public void OnRendered()
         {
-            _sceneManager.OnRendered();
+            SceneManager.OnRendered();
         }
 
         public void OnResized()
         {
             Bounds = _gameWindow.Bounds;
-            _sceneManager.OnResized();
+            SceneManager.OnResized();
         }
 
         public void OnUpdated()
         {
-            _sceneManager.OnUpdated();
+            SceneManager.OnUpdated();
         }
     }
 }
