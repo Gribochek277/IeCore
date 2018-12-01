@@ -36,7 +36,7 @@ namespace IrrationalEngineEditor.ViewModels
             SceneManager manager = Program.context.SceneManager as SceneManager;
             Scene scene = manager.Scene as Scene;
             List<ISceneObject> sceneObjects = scene.SceneObjects;
-            sceneObjects[3].Rotation += new Vector3(30, 30, 0);
+            sceneObjects[2].Rotation += new Vector3(30, 30, 0);
         }
     }
 }

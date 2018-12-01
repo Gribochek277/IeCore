@@ -265,6 +265,9 @@
     <None Update="Resources\monkey.obj1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\newport_loft.hdr">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\NightText.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
