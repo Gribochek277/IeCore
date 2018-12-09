@@ -1,0 +1,25 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:IrrationalEngineEditor.ViewModels;assembly=IrrationalEngineEditor"
+        Title="IrrationalEngineEditor"
+        Height="720"
+        Width="400"
+        Position="0,0">
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
+  <StackPanel Orientation="Vertical">      
+      <Button Content="{Binding Start}" Command="{Binding DoRunIrrationalInstance}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+      <TextBlock Text="{Binding SelectedItemName, Mode=OneWay}"/>
+    <Slider Value="{Binding DoRotationX}" Minimum="0" Maximum="3600"></Slider>
+    <Slider Value="{Binding DoRotationY}" Minimum="0" Maximum="3600"></Slider>
+    <TreeView Items="{Binding}" Width="250" Height="350">
+        <TreeView.ItemTemplate>
+          <TreeDataTemplate ItemsSource="{Binding SceneObjects}">
+            <TextBlock Text="223"/>
+          </TreeDataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+  </StackPanel>
+</Window>
