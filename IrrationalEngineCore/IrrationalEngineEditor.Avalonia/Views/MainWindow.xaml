@@ -14,12 +14,12 @@
       <TextBlock Text="{Binding SelectedItemName, Mode=OneWay}"/>
     <Slider Value="{Binding DoRotationX}" Minimum="0" Maximum="3600"></Slider>
     <Slider Value="{Binding DoRotationY}" Minimum="0" Maximum="3600"></Slider>
-    <TreeView Items="{Binding}" Width="250" Height="350">
-        <TreeView.ItemTemplate>
-          <TreeDataTemplate ItemsSource="{Binding SceneObjects}">
-            <TextBlock Text="223"/>
-          </TreeDataTemplate>
-        </TreeView.ItemTemplate>
-      </TreeView>
+    <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Items="{Binding SceneObjects}" SelectedIndex ="{Binding selectedItemIndex, Mode=TwoWay}" Width="250" Height="350" >
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding Name}"/>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
   </StackPanel>
 </Window>

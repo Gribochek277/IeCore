@@ -6,9 +6,15 @@ using OpenTK;
 
 namespace Irrational.Core.Entities {
     public class SceneObject : ISceneObject {
+        public string Name { get; set; }
         private Vector3 _position;
         private Vector3 _scale;
         private Vector3 _rotaion;
+
+        public SceneObject(string name = "NewSceneObject")
+        {
+            Name = name;
+        }
 
         public Vector3 Position {
             get { return _position; }
@@ -40,7 +46,7 @@ namespace Irrational.Core.Entities {
             }
         }
         public Dictionary<string, ISceneObjectComponent> components { get; } = new Dictionary<string, ISceneObjectComponent>();
-
+       
         public void AddComponent (ISceneObjectComponent component) {
             components.Add (component.GetType ().Name, component);
         }
