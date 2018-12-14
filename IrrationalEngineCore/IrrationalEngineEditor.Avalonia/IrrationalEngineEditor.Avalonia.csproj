@@ -13,6 +13,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Pages\EngineWindow.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.7.0" />
     <PackageReference Include="Avalonia.Desktop" Version="0.7.0" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.7.0" />
@@ -30,5 +33,10 @@
     <None Update="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Pages\EngineWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

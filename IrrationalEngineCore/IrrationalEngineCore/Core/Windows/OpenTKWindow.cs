@@ -29,6 +29,15 @@ namespace Irrational.Core.Windows
             AddListeners();            
         }
 
+        public OpenTKWindow(int width, int height, int positionX, int positionY)
+        {
+            _gameWindow = new GameWindow(width, height, new GraphicsMode(32, 24, 0, 4), "Irrational");
+            _gameWindow.Location = new Point(positionX, positionY);
+            Renderer = new OpenglRenderer(_gameWindow);
+            SceneManager = new SceneManager(Renderer, new TestScene());
+            AddListeners();
+        }
+
         public void Run()
         {
             _gameWindow.Run(60, 60);

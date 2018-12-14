@@ -8,14 +8,13 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Reactive;
-using System.Threading.Tasks;
 
 namespace IrrationalEngineEditor.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
     public class MainWindowViewModel : ViewModelBase
     {
-        public static OpenTKWindow context = new OpenTKWindow();
+        public static OpenTKWindow context = new OpenTKWindow(800, 600, 500, 0);
         //Labels
         public string Rotate => "Rotate something";
         public string Start => "Load scene";
