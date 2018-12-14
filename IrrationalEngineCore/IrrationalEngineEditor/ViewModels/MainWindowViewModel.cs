@@ -22,8 +22,10 @@ namespace IrrationalEngineEditor.ViewModels
         public string Header => "Some text";
         private int rotationValueX = 0;
         private int rotationValueY = 0;
+        private int rotationValueZ = 0;
         private int transfromValueX = 0;
         private int transfromValueY = 0;
+        private int transfromValueZ = 0;
         public int selectedItemIndex { get; set; } = 0;
 
         public string SelectedItemName { get; set; } = "Nothing was selected yet";
@@ -51,6 +53,17 @@ namespace IrrationalEngineEditor.ViewModels
             }
         }
 
+        public int DoRotationZ
+        {
+            get { return rotationValueZ; }
+            set
+            {
+                if (SceneObjects == null)
+                    InitObjects();
+                SceneObjects[selectedItemIndex].Rotation = new Vector3(SceneObjects[selectedItemIndex].Rotation.X, SceneObjects[selectedItemIndex].Rotation.Y, value * 0.001f); rotationValueZ = value;
+            }
+        }
+
         public int DoTransformX
         {
             get { return transfromValueX; }
@@ -70,6 +83,17 @@ namespace IrrationalEngineEditor.ViewModels
                 if (SceneObjects == null)
                     InitObjects();
                 SceneObjects[selectedItemIndex].Position = new Vector3(SceneObjects[selectedItemIndex].Position.X, value * 0.001f, SceneObjects[selectedItemIndex].Position.Z); transfromValueY = value;
+            }
+        }
+
+        public int DoTransformZ
+        {
+            get { return transfromValueZ; }
+            set
+            {
+                if (SceneObjects == null)
+                    InitObjects();
+                SceneObjects[selectedItemIndex].Position = new Vector3(SceneObjects[selectedItemIndex].Position.X, SceneObjects[selectedItemIndex].Position.Y, value * 0.001f); transfromValueZ = value;
             }
         }
 

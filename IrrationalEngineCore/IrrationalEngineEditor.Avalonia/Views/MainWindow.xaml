@@ -12,20 +12,34 @@
   <StackPanel Orientation="Vertical">      
       <Button Content="{Binding Start}" Command="{Binding DoRunIrrationalInstance}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
       <TextBlock Text="{Binding SelectedItemName, Mode=OneWay}"/>
-    <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto">
-      <TextBox Width ="100" Grid.Row="0" Grid.Column="0" Text="{Binding DoRotationX}"/>
-      <TextBox Width ="100" Grid.Row="0" Grid.Column="1" Text="{Binding DoRotationY}"/>
-      <Slider Value="{Binding DoRotationX}"  Width ="100" Grid.Row="1" Grid.Column="0" Minimum="0" Maximum="3600"></Slider>
-      <Slider Value="{Binding DoRotationY}"  Width ="100" Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="3600"></Slider>
+    <Grid Width="400">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" /> 
+      </Grid.ColumnDefinitions>
+      <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding DoRotationX}"/>
+      <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DoRotationY}"/>
+      <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding DoRotationZ}"/>
+      <Slider Value="{Binding DoRotationX}"  Grid.Row="1" Grid.Column="0" Minimum="0" Maximum="3600"></Slider>
+      <Slider Value="{Binding DoRotationY}"  Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="3600"></Slider>
+      <Slider Value="{Binding DoRotationZ}"  Grid.Row="1" Grid.Column="2" Minimum="0" Maximum="3600"></Slider>
     </Grid>
     <Separator/>
-    <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto">
-      <TextBox Width ="100" Grid.Row="0" Grid.Column="0" Text="{Binding DoTransformX}"/>
-      <TextBox Width ="100" Grid.Row="0" Grid.Column="1" Text="{Binding DoTransformY}"/>
-      <Slider Value="{Binding DoTransformX}"  Width ="100" Grid.Row="1" Grid.Column="0" Minimum="-3600" Maximum="3600"></Slider>
-      <Slider Value="{Binding DoTransformY}"  Width ="100" Grid.Row="1" Grid.Column="1" Minimum="-3600" Maximum="3600"></Slider>
+    <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*">
+      <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding DoTransformX}"/>
+      <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DoTransformY}"/>
+      <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding DoTransformZ}"/>
+      <Slider Value="{Binding DoTransformX}"  Grid.Row="1" Grid.Column="0" Minimum="-3600" Maximum="3600"></Slider>
+      <Slider Value="{Binding DoTransformY}"  Grid.Row="1" Grid.Column="1" Minimum="-3600" Maximum="3600"></Slider>
+      <Slider Value="{Binding DoTransformZ}"  Grid.Row="1" Grid.Column="2" Minimum="-3600" Maximum="3600"></Slider>
     </Grid>
-    <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Items="{Binding SceneObjects}" SelectedIndex ="{Binding selectedItemIndex, Mode=TwoWay}" Width="250" Height="350" >
+    <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Items="{Binding SceneObjects}"
+             SelectedIndex ="{Binding selectedItemIndex, Mode=TwoWay}" Width="250" Height="350" >
       <ListBox.ItemTemplate>
         <DataTemplate>
           <TextBlock Text="{Binding Name}"/>
