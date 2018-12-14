@@ -2,7 +2,6 @@
 using Irrational.Core.Entities;
 using Irrational.Core.Entities.Abstractions;
 using Irrational.Core.Renderer.Abstractions;
-using Irrational.Logic.Scenes;
 using System.Collections.Generic;
 
 namespace Irrational.Core.CoreManager
