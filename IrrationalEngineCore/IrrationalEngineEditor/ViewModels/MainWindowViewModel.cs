@@ -8,6 +8,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Reactive;
+using System.Threading.Tasks;
 
 namespace IrrationalEngineEditor.ViewModels
 {
@@ -17,10 +18,12 @@ namespace IrrationalEngineEditor.ViewModels
         public static OpenTKWindow context = new OpenTKWindow();
         //Labels
         public string Rotate => "Rotate something";
-        public string Start => "Start the engine window";
+        public string Start => "Load scene";
         public string Header => "Some text";
         private int rotationValueX = 0;
         private int rotationValueY = 0;
+        private int transfromValueX = 0;
+        private int transfromValueY = 0;
         public int selectedItemIndex { get; set; } = 0;
 
         public string SelectedItemName { get; set; } = "Nothing was selected yet";
@@ -35,7 +38,7 @@ namespace IrrationalEngineEditor.ViewModels
                     InitObjects();
                 SceneObjects[selectedItemIndex].Rotation = new Vector3(value * 0.001f, SceneObjects[selectedItemIndex].Rotation.Y, SceneObjects[selectedItemIndex].Rotation.Z); rotationValueX = value;
             }
-        }
+        }        
 
         public int DoRotationY
         {
@@ -45,6 +48,28 @@ namespace IrrationalEngineEditor.ViewModels
                 if (SceneObjects == null)
                     InitObjects();
                 SceneObjects[selectedItemIndex].Rotation = new Vector3(SceneObjects[selectedItemIndex].Rotation.X, value * 0.001f, SceneObjects[selectedItemIndex].Rotation.Z); rotationValueY = value;
+            }
+        }
+
+        public int DoTransformX
+        {
+            get { return transfromValueX; }
+            set
+            {
+                if (SceneObjects == null)
+                    InitObjects();
+                SceneObjects[selectedItemIndex].Position = new Vector3(value * 0.001f, SceneObjects[selectedItemIndex].Position.Y, SceneObjects[selectedItemIndex].Position.Z); transfromValueX = value;
+            }
+        }
+
+        public int DoTransformY
+        {
+            get { return transfromValueY; }
+            set
+            {
+                if (SceneObjects == null)
+                    InitObjects();
+                SceneObjects[selectedItemIndex].Position = new Vector3(SceneObjects[selectedItemIndex].Position.X, value * 0.001f, SceneObjects[selectedItemIndex].Position.Z); transfromValueY = value;
             }
         }
 
@@ -62,7 +87,7 @@ namespace IrrationalEngineEditor.ViewModels
 
         void RunIrrationalInstance()
         {
-            context.Run();
+           context.Run();
         }
 
         void SelectItem(int selectedItem)
@@ -74,10 +99,11 @@ namespace IrrationalEngineEditor.ViewModels
 
         void InitObjects()
         {
-            SceneManager manager = context.SceneManager as SceneManager;
-            Scene scene = manager.Scene as Scene;
-            SceneObjects = scene.SceneObjects;
-            SelectedItemName = SceneObjects[selectedItemIndex].Name;
+            //Think about callback
+                    SceneManager manager = context.SceneManager as SceneManager;
+                    Scene scene = manager.Scene as Scene;
+                    SceneObjects = scene.SceneObjects;
+                    SelectedItemName = SceneObjects[selectedItemIndex].Name;
         }
     }
 }

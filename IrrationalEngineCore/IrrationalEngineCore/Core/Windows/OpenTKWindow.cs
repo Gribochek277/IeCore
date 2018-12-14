@@ -19,6 +19,8 @@ namespace Irrational.Core.Windows
 
         public static Rectangle Bounds;
 
+        public bool LoadingDone { get; private set; }
+
         public OpenTKWindow()
         {
             _gameWindow = new GameWindow(800, 600, new GraphicsMode(32, 24, 0, 4), "Irrational");
@@ -55,7 +57,9 @@ namespace Irrational.Core.Windows
         {
             Bounds = _gameWindow.Bounds;
             SceneManager.OnLoad();
+            LoadingDone = true;
         }
+        
 
         public void OnRendered()
         {
