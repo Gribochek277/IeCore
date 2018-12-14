@@ -19,7 +19,7 @@ namespace Irrational.Core.Windows
 
         public static Rectangle Bounds;
 
-        public bool LoadingDone { get; private set; }
+        public event EventHandler LoadingComplete;
 
         public OpenTKWindow()
         {
@@ -45,11 +45,17 @@ namespace Irrational.Core.Windows
 
         public void OnUnload()
         {
+            RemoveListeners();
             _gameWindow.Dispose();
         }
 
         public void RemoveListeners()
         {
+            _gameWindow.Load -= (object o, EventArgs e) => { OnLoad(); };
+            _gameWindow.Unload -= (object o, EventArgs e) => { OnUnload(); };
+            _gameWindow.RenderFrame -= (object o, FrameEventArgs e) => { OnRendered(); };
+            _gameWindow.UpdateFrame -= (object o, FrameEventArgs e) => { OnUpdated(); };
+            _gameWindow.Resize -= (object o, EventArgs e) => { OnResized(); };
             //TODO Check memory leak after closing window
         }
 
@@ -57,7 +63,7 @@ namespace Irrational.Core.Windows
         {
             Bounds = _gameWindow.Bounds;
             SceneManager.OnLoad();
-            LoadingDone = true;
+            LoadingComplete(this, null);
         }
         
 

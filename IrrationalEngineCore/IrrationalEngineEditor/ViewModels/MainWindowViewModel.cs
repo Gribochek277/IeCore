@@ -36,9 +36,7 @@ namespace IrrationalEngineEditor.ViewModels
             get { return rotationValueX; }
             set
             {
-                if (SceneObjects == null)
-                    InitObjects();
-                SceneObjects[selectedItemIndex].Rotation = new Vector3(value * 0.001f, SceneObjects[selectedItemIndex].Rotation.Y, SceneObjects[selectedItemIndex].Rotation.Z); rotationValueX = value;
+                  SceneObjects[selectedItemIndex].Rotation = new Vector3(value * 0.001f, SceneObjects[selectedItemIndex].Rotation.Y, SceneObjects[selectedItemIndex].Rotation.Z); rotationValueX = value;
             }
         }        
 
@@ -47,9 +45,7 @@ namespace IrrationalEngineEditor.ViewModels
             get { return rotationValueY; }
             set
             {
-                if (SceneObjects == null)
-                    InitObjects();
-                SceneObjects[selectedItemIndex].Rotation = new Vector3(SceneObjects[selectedItemIndex].Rotation.X, value * 0.001f, SceneObjects[selectedItemIndex].Rotation.Z); rotationValueY = value;
+                 SceneObjects[selectedItemIndex].Rotation = new Vector3(SceneObjects[selectedItemIndex].Rotation.X, value * 0.001f, SceneObjects[selectedItemIndex].Rotation.Z); rotationValueY = value;
             }
         }
 
@@ -58,9 +54,7 @@ namespace IrrationalEngineEditor.ViewModels
             get { return rotationValueZ; }
             set
             {
-                if (SceneObjects == null)
-                    InitObjects();
-                SceneObjects[selectedItemIndex].Rotation = new Vector3(SceneObjects[selectedItemIndex].Rotation.X, SceneObjects[selectedItemIndex].Rotation.Y, value * 0.001f); rotationValueZ = value;
+                 SceneObjects[selectedItemIndex].Rotation = new Vector3(SceneObjects[selectedItemIndex].Rotation.X, SceneObjects[selectedItemIndex].Rotation.Y, value * 0.001f); rotationValueZ = value;
             }
         }
 
@@ -69,8 +63,6 @@ namespace IrrationalEngineEditor.ViewModels
             get { return transfromValueX; }
             set
             {
-                if (SceneObjects == null)
-                    InitObjects();
                 SceneObjects[selectedItemIndex].Position = new Vector3(value * 0.001f, SceneObjects[selectedItemIndex].Position.Y, SceneObjects[selectedItemIndex].Position.Z); transfromValueX = value;
             }
         }
@@ -80,9 +72,7 @@ namespace IrrationalEngineEditor.ViewModels
             get { return transfromValueY; }
             set
             {
-                if (SceneObjects == null)
-                    InitObjects();
-                SceneObjects[selectedItemIndex].Position = new Vector3(SceneObjects[selectedItemIndex].Position.X, value * 0.001f, SceneObjects[selectedItemIndex].Position.Z); transfromValueY = value;
+                 SceneObjects[selectedItemIndex].Position = new Vector3(SceneObjects[selectedItemIndex].Position.X, value * 0.001f, SceneObjects[selectedItemIndex].Position.Z); transfromValueY = value;
             }
         }
 
@@ -91,8 +81,6 @@ namespace IrrationalEngineEditor.ViewModels
             get { return transfromValueZ; }
             set
             {
-                if (SceneObjects == null)
-                    InitObjects();
                 SceneObjects[selectedItemIndex].Position = new Vector3(SceneObjects[selectedItemIndex].Position.X, SceneObjects[selectedItemIndex].Position.Y, value * 0.001f); transfromValueZ = value;
             }
         }
@@ -111,6 +99,7 @@ namespace IrrationalEngineEditor.ViewModels
 
         void RunIrrationalInstance()
         {
+           context.LoadingComplete += InitObjects;
            context.Run();
         }
 
@@ -121,7 +110,7 @@ namespace IrrationalEngineEditor.ViewModels
             SelectedItemName = SceneObjects[selectedItemIndex].Name;
         }
 
-        void InitObjects()
+        void InitObjects(object sender, EventArgs e)
         {
             //Think about callback
                     SceneManager manager = context.SceneManager as SceneManager;
