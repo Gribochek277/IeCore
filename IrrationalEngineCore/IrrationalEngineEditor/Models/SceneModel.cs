@@ -1,27 +1,80 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using Irrational.Core.CoreManager;
+using Irrational.Core.Entities;
+using Irrational.Core.Entities.Abstractions;
+using Irrational.Core.Windows;
+using OpenTK;
+using System.Collections.Generic;
 
 namespace IrrationalEngineEditor.Models
 {
-    public class SceneModel : INotifyPropertyChanged
+    public class SceneModel
     {
-        private string _sceneName;
+        public OpenTKWindow context  = null;
 
-        public string SceneName {
-            get => _sceneName;
-            set {
-                if (_sceneName != value)
-                {
-                    _sceneName = value;
-                    OnPropertyChanged(nameof(SceneName));
-                }
+        public int SelectedItemIndex { get; set; } = 0;
+
+        private IList<ISceneObject> _sceneObjects;
+
+        private float _rotationX = 0;
+        private float _rotationY = 0;
+        private float _rotationZ = 0;
+        private float _positionX = 0;
+        private float _positionY = 0;
+        private float _positionZ = 0;
+
+        public float RotationX { get { return _rotationX; }  set { _rotationX = value; Rotate(); } }
+        public float RotationY { get { return _rotationY; } set { _rotationY = value; Rotate(); } }
+        public float RotationZ { get { return _rotationZ; } set { _rotationZ = value; Rotate(); } }
+        public float PositionX { get { return _positionX; } set { _positionX = value; UpdatePosition(); } }
+        public float PositionY { get { return _positionY; } set { _positionY = value; UpdatePosition(); } }
+        public float PositionZ { get { return _positionZ; } set { _positionZ = value; UpdatePosition(); } }
+        public float ScaleX { get; set; }
+        public float ScaleY { get; set; }
+        public float ScaleZ { get; set; }
+
+        public SceneModel()
+        {
+            if (context == null)
+            {
+                context = new OpenTKWindow(800, 600, 401, 0);
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        public void Rotate()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            if (_sceneObjects != null)
+            {
+                _sceneObjects[SelectedItemIndex].Rotation = new Vector3(_rotationX, _rotationY, _rotationZ);
+            }
+        }
+
+        public void UpdatePosition()
+        {
+            if (_sceneObjects != null)
+            {
+                _sceneObjects[SelectedItemIndex].Position = new Vector3(_positionX, _positionY, _positionZ);
+            }
+        }
+
+        public void Scale(int selectedItem, float X, float Y, float Z)
+        {
+            if (_sceneObjects != null)
+            {
+                _sceneObjects[selectedItem].Scale = new Vector3(X, Y, Z);
+            }
+        }
+
+        public IList<ISceneObject> GetSceneObjects()
+        {
+            if(context != null && _sceneObjects == null)
+            { 
+                SceneManager manager = context.SceneManager as SceneManager;
+                Scene scene = manager.Scene as Scene;
+                _sceneObjects = scene.SceneObjects;
+                return _sceneObjects;
+            }
+
+            return _sceneObjects;
         }
     }
 }

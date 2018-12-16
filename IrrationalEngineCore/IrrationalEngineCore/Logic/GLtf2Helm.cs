@@ -11,7 +11,7 @@ namespace Irrational.Logic
 {
     public class GLtf2Helm : SceneObject, IUpdatable
     {
-        public GLtf2Helm()
+        public GLtf2Helm(): base("Gltf2Helm")
         {
             MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
                 new Pbr(),

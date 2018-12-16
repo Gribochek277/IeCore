@@ -1,8 +1,6 @@
-﻿using Irrational.Core.CoreManager;
-using Irrational.Core.Entities;
+﻿using Irrational.Core.Entities;
 using Irrational.Core.Entities.Abstractions;
-using Irrational.Core.Windows;
-using OpenTK;
+using IrrationalEngineEditor.Models;
 using PropertyChanged;
 using ReactiveUI;
 using System;
@@ -14,108 +12,52 @@ namespace IrrationalEngineEditor.ViewModels
     [AddINotifyPropertyChangedInterface]
     public class MainWindowViewModel : ViewModelBase
     {
-        public static OpenTKWindow context = new OpenTKWindow(800, 600, 500, 0);
-        //Labels
-        public string Rotate => "Rotate something";
-        public string Start => "Load scene";
-        public string Header => "Some text";
-        private int rotationValueX = 0;
-        private int rotationValueY = 0;
-        private int rotationValueZ = 0;
-        private int transfromValueX = 0;
-        private int transfromValueY = 0;
-        private int transfromValueZ = 0;
-        public int selectedItemIndex { get; set; } = 0;
 
-        public string SelectedItemName { get; set; } = "Nothing was selected yet";
+        public SceneModel SceneModel { get; set; }
+        public int SelectedItemIndex { get { return SceneModel.SelectedItemIndex; } set { SceneModel.SelectedItemIndex = value; } }
+        public string Rotation => "Rotation";
+        public string Position => "Position";
+        public string Scale => "Scale";
 
-        //Values
-        public int DoRotationX
-        {
-            get { return rotationValueX; }
-            set
-            {
-                  SceneObjects[selectedItemIndex].Rotation = new Vector3(value * 0.001f, SceneObjects[selectedItemIndex].Rotation.Y, SceneObjects[selectedItemIndex].Rotation.Z); rotationValueX = value;
-            }
-        }        
+        public string SelectedItemName { get { return SelectedSceneObject != null ? SelectedSceneObject.Name : null; } }
 
-        public int DoRotationY
-        {
-            get { return rotationValueY; }
-            set
-            {
-                 SceneObjects[selectedItemIndex].Rotation = new Vector3(SceneObjects[selectedItemIndex].Rotation.X, value * 0.001f, SceneObjects[selectedItemIndex].Rotation.Z); rotationValueY = value;
+        
+
+        public float RotationX { get { return SelectedSceneObject.Rotation.X; } set { SceneModel.RotationX = value; } }
+        public float RotationY { get { return SelectedSceneObject.Rotation.Y; } set { SceneModel.RotationY = value; } }
+        public float RotationZ { get { return SelectedSceneObject.Rotation.Z; } set { SceneModel.RotationZ = value; } }
+        public float PositionX { get { return SelectedSceneObject.Position.X; } set { SceneModel.PositionX = value; } }
+        public float PositionY { get { return SelectedSceneObject.Position.Y; } set { SceneModel.PositionY = value; } }
+        public float PositionZ { get { return SelectedSceneObject.Position.Z; } set { SceneModel.PositionZ = value; } }
+
+        public IList<ISceneObject> SceneObjects { get; set; }
+
+        public ISceneObject SelectedSceneObject {
+            get {
+                if (SceneObjects != null)
+                    return SceneObjects[SelectedItemIndex];
+                else return new SceneObject();
             }
         }
 
-        public int DoRotationZ
-        {
-            get { return rotationValueZ; }
-            set
-            {
-                 SceneObjects[selectedItemIndex].Rotation = new Vector3(SceneObjects[selectedItemIndex].Rotation.X, SceneObjects[selectedItemIndex].Rotation.Y, value * 0.001f); rotationValueZ = value;
-            }
-        }
-
-        public int DoTransformX
-        {
-            get { return transfromValueX; }
-            set
-            {
-                SceneObjects[selectedItemIndex].Position = new Vector3(value * 0.001f, SceneObjects[selectedItemIndex].Position.Y, SceneObjects[selectedItemIndex].Position.Z); transfromValueX = value;
-            }
-        }
-
-        public int DoTransformY
-        {
-            get { return transfromValueY; }
-            set
-            {
-                 SceneObjects[selectedItemIndex].Position = new Vector3(SceneObjects[selectedItemIndex].Position.X, value * 0.001f, SceneObjects[selectedItemIndex].Position.Z); transfromValueY = value;
-            }
-        }
-
-        public int DoTransformZ
-        {
-            get { return transfromValueZ; }
-            set
-            {
-                SceneObjects[selectedItemIndex].Position = new Vector3(SceneObjects[selectedItemIndex].Position.X, SceneObjects[selectedItemIndex].Position.Y, value * 0.001f); transfromValueZ = value;
-            }
-        }
-
-        public IList<ISceneObject> SceneObjects { get; private set; }
-
-        //Commands 
         public ReactiveCommand<Unit, Unit> DoRunIrrationalInstance { get; }
-        public ReactiveCommand<int, Unit> DoSelectItem { get; }
+        public ReactiveCommand<Unit, Unit> OnNewWindow { get; }
 
         public MainWindowViewModel()
         {
+            SceneModel = new SceneModel();
+            SceneModel.context.LoadingComplete += InitControls;
             DoRunIrrationalInstance = ReactiveCommand.Create(RunIrrationalInstance);
-            DoSelectItem = ReactiveCommand.Create<int>(SelectItem);
         }
 
         void RunIrrationalInstance()
         {
-           context.LoadingComplete += InitObjects;
-           context.Run();
+            SceneModel.context.Run();
         }
 
-        void SelectItem(int selectedItem)
+        private void InitControls(object o, EventArgs e)
         {
-            Console.WriteLine(selectedItem);
-            selectedItemIndex = selectedItem;
-            SelectedItemName = SceneObjects[selectedItemIndex].Name;
-        }
-
-        void InitObjects(object sender, EventArgs e)
-        {
-            //Think about callback
-                    SceneManager manager = context.SceneManager as SceneManager;
-                    Scene scene = manager.Scene as Scene;
-                    SceneObjects = scene.SceneObjects;
-                    SelectedItemName = SceneObjects[selectedItemIndex].Name;
+            SceneObjects = SceneModel.GetSceneObjects();
         }
     }
 }

@@ -2,16 +2,45 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:IrrationalEngineEditor.ViewModels;assembly=IrrationalEngineEditor"
         Title="IrrationalEngineEditor"
-        xmlns:pages="clr-namespace:IrrationalEngineEditor.Avalonia.Pages"
-        Position="0,0">
+        Width="400"
+        Position="0,0"
+         xmlns:window="clr-namespace:IrrationalEngineEditor.Avalonia.Views">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
   </Design.DataContext>
-  <StackPanel Orientation="Vertical">      
-      <Button Content="{Binding Start}" Command="{Binding DoRunIrrationalInstance}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-      <TextBlock Text="{Binding SelectedItemName, Mode=OneWay}"/>
-    <Grid ColumnDefinitions="*,*" RowDefinitions="*">
+  <StackPanel>
+  <DockPanel>
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="File">
+        <MenuItem Header="New" Command="{Binding DoRunIrrationalInstance}"/>
+        <Separator/>
+        <MenuItem Header="_Exit"/>
+      </MenuItem>
+      <MenuItem Header="Scene">
+        <MenuItem Header="Create new object"/>
+      </MenuItem>
+    </Menu>
+  </DockPanel>
+  <Border
+   BorderThickness="3"
+   Padding="4">
+  <StackPanel Orientation="Vertical">
+
+ 
+
+    <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Items="{Binding SceneObjects}"
+               SelectedIndex ="{Binding SelectedItemIndex, Mode=TwoWay}" Height="350" >
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding Name}"/>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+    
+      <TextBlock Text="{Binding SelectedItemName}" />
+
+      <TextBlock Text="{Binding Rotation}" />
       <Grid Grid.Column="0" Grid.Row="0">
         <Grid.RowDefinitions>
           <RowDefinition Height="*" />
@@ -22,31 +51,33 @@
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding DoRotationX}"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DoRotationY}"/>
-        <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding DoRotationZ}"/>
-        <Slider Value="{Binding DoRotationX}"  Grid.Row="1" Grid.Column="0" Minimum="0" Maximum="3600"></Slider>
-        <Slider Value="{Binding DoRotationY}"  Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="3600"></Slider>
-        <Slider Value="{Binding DoRotationZ}"  Grid.Row="1" Grid.Column="2" Minimum="0" Maximum="3600"></Slider>
+        <TextBox  Name="RotateX" Grid.Row="0" Grid.Column="0" Text="{Binding RotationX}"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding RotationY}"/>
+        <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding RotationZ}"/>
+        <Slider Value="{Binding RotationX}"  Grid.Row="1" Grid.Column="0" Minimum="-360" Maximum="360"></Slider>
+        <Slider Value="{Binding RotationY}"  Grid.Row="1" Grid.Column="1" Minimum="-360" Maximum="360"></Slider>
+        <Slider Value="{Binding RotationZ}"  Grid.Row="1" Grid.Column="2" Minimum="-360" Maximum="360"></Slider>
       </Grid>
       <Separator/>
+      <TextBlock Text="{Binding Transform}" />
       <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*">
-        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding DoTransformX}"/>
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DoTransformY}"/>
-        <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding DoTransformZ}"/>
-        <Slider Value="{Binding DoTransformX}"  Grid.Row="1" Grid.Column="0" Minimum="-3600" Maximum="3600"></Slider>
-        <Slider Value="{Binding DoTransformY}"  Grid.Row="1" Grid.Column="1" Minimum="-3600" Maximum="3600"></Slider>
-        <Slider Value="{Binding DoTransformZ}"  Grid.Row="1" Grid.Column="2" Minimum="-3600" Maximum="3600"></Slider>
+        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding PositionX}"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding PositionY}"/>
+        <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding PositionZ}"/>
+        <Slider Value="{Binding PositionX}"  Grid.Row="1" Grid.Column="0" Minimum="-360" Maximum="360"></Slider>
+        <Slider Value="{Binding PositionY}"  Grid.Row="1" Grid.Column="1" Minimum="-360" Maximum="360"></Slider>
+        <Slider Value="{Binding PositionZ}"  Grid.Row="1" Grid.Column="2" Minimum="-360" Maximum="360"></Slider>
       </Grid>
-      <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Items="{Binding SceneObjects}"
-               SelectedIndex ="{Binding selectedItemIndex, Mode=TwoWay}"  Height="350" >
+
+
+      <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Items="{Binding SelectedSceneObject.components}" Height="350" >
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <TextBlock Text="{Binding Name}"/>
+            <TextBlock Text="{Binding Key}" />
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
-      <pages:EngineWindow Grid.Column="1" Grid.Row="0"/> 
-    </Grid>
+  </StackPanel>
+  </Border>
   </StackPanel>
 </Window>

@@ -15,16 +15,16 @@ namespace Irrational.Core.Shaders
         public int AttributeCount = 0;
         public int UniformCount = 0;
 
-        public Dictionary<String, AttributeInfo> Attributes = new Dictionary<string, AttributeInfo>();
-        public Dictionary<String, UniformInfo> Uniforms = new Dictionary<string, UniformInfo>();
-        public Dictionary<String, uint> Buffers = new Dictionary<string, uint>();
+        public Dictionary<string, AttributeInfo> Attributes = new Dictionary<string, AttributeInfo>();
+        public Dictionary<string, UniformInfo> Uniforms = new Dictionary<string, UniformInfo>();
+        public Dictionary<string, uint> Buffers = new Dictionary<string, uint>();
 
         public ShaderProg()
         {
             ProgramID = GL.CreateProgram();
         }
 
-        private void loadShader(String code, ShaderType type, out int address)
+        private void loadShader(string code, ShaderType type, out int address)
         {
             address = GL.CreateShader(type);
             GL.ShaderSource(address, code);
@@ -34,7 +34,7 @@ namespace Irrational.Core.Shaders
             Console.WriteLine(GL.GetShaderInfoLog(address));
         }
 
-        public void LoadShaderFromString(String code, ShaderType type)
+        public void LoadShaderFromString(string code, ShaderType type)
         {
             if (type == ShaderType.VertexShader)
             {
@@ -46,7 +46,7 @@ namespace Irrational.Core.Shaders
             }
         }
 
-        public void LoadShaderFromFile(String filename, ShaderType type)
+        public void LoadShaderFromFile(string filename, ShaderType type)
         {
             using (StreamReader sr = new StreamReader(filename))
             {
@@ -170,7 +170,7 @@ namespace Irrational.Core.Shaders
             }
         }
 
-        public ShaderProg(String vshader, String fshader, bool fromFile = false)
+        public ShaderProg(string vshader, string fshader, bool fromFile = false)
         {
             ProgramID = GL.CreateProgram();
 

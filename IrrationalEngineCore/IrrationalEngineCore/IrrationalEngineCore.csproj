@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="CoreCompat.System.Drawing" Version="1.0.0-beta006" />
     <PackageReference Include="glTF2Loader" Version="1.1.1-alpha" />
-    <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="7.5.0.1" />
+    <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="7.9.1" />
     <PackageReference Include="OpenTK.NETCore" Version="1.1.2749.6433" />
   </ItemGroup>
 

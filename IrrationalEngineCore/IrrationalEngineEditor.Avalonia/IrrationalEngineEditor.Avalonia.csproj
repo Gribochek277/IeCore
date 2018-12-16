@@ -13,7 +13,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Pages\EngineWindow.xaml" />
+    <None Remove="Views\SceneObjectProperties.xaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.7.0" />
@@ -30,13 +30,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Views\SceneObjectProperties.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <None Update="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Pages\EngineWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>

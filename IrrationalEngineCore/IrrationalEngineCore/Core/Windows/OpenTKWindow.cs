@@ -72,7 +72,7 @@ namespace Irrational.Core.Windows
         {
             Bounds = _gameWindow.Bounds;
             SceneManager.OnLoad();
-            LoadingComplete(this, null);
+            LoadingComplete?.Invoke(this, null);
         }
         
 
