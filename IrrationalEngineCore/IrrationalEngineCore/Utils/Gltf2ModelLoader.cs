@@ -4,7 +4,6 @@ using Irrational.Utils.Interfaces;
 using OpenTK;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Irrational.Utils

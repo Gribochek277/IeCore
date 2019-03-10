@@ -12,8 +12,9 @@ namespace IrrationalEngineEditor.ViewModels
     [AddINotifyPropertyChangedInterface]
     public class MainWindowViewModel : ViewModelBase
     {
-
-        public SceneModel SceneModel { get; set; }
+        private SceneModel SceneModel { get; set; }
+        public string SceneObjectPanel => "Scene objects:";
+        public string SceneObjectComponentsPanel => "Scene object components:";
         public int SelectedItemIndex { get { return SceneModel.SelectedItemIndex; } set { SceneModel.SelectedItemIndex = value; } }
         public string Rotation => "Rotation";
         public string Position => "Position";
@@ -29,6 +30,9 @@ namespace IrrationalEngineEditor.ViewModels
         public float PositionX { get { return SelectedSceneObject.Position.X; } set { SceneModel.PositionX = value; } }
         public float PositionY { get { return SelectedSceneObject.Position.Y; } set { SceneModel.PositionY = value; } }
         public float PositionZ { get { return SelectedSceneObject.Position.Z; } set { SceneModel.PositionZ = value; } }
+        public float ScaleX { get { return SelectedSceneObject.Scale.X; } set { SceneModel.ScaleX = value; } }
+        public float ScaleY { get { return SelectedSceneObject.Scale.Y; } set { SceneModel.ScaleY = value; } }
+        public float ScaleZ { get { return SelectedSceneObject.Scale.Z; } set { SceneModel.ScaleZ = value; } }
 
         public IList<ISceneObject> SceneObjects { get; set; }
 
@@ -40,14 +44,10 @@ namespace IrrationalEngineEditor.ViewModels
             }
         }
 
-        public ReactiveCommand<Unit, Unit> DoRunIrrationalInstance { get; }
-        public ReactiveCommand<Unit, Unit> OnNewWindow { get; }
-
         public MainWindowViewModel()
         {
             SceneModel = new SceneModel();
             SceneModel.context.LoadingComplete += InitControls;
-            DoRunIrrationalInstance = ReactiveCommand.Create(RunIrrationalInstance);
         }
 
         void RunIrrationalInstance()

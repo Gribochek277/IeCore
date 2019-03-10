@@ -1,12 +1,10 @@
 ﻿using ImageMagick;
 using Irrational.Core.Entities;
 using Irrational.Core.Entities.Abstractions;
-using Irrational.Core.Shaders;
 using Irrational.Utils.Interfaces;
 using IrrationalEngineCore.Core.Shaders.Abstractions;
 using OpenTK.Graphics.OpenGL;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -90,7 +88,7 @@ namespace Irrational.Core.SceneObjectComponents
                 }
             }
         }
-        // Similiar realisation exists in SkyboxComponent maybe need to be merged in future
+        // Similar realization exists in SkyboxComponent maybe need to be merged in future
         int LoadImage(Bitmap image, PixelInternalFormat textureColorspace)
         {
             int texID = GL.GenTexture();

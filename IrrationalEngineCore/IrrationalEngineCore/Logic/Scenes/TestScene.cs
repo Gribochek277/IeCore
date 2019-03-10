@@ -29,17 +29,17 @@ namespace Irrational.Logic.Scenes
             _sceneObjects.Add(gltf2helm2);
 
             PointLight light1 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
-            light1.Position = new Vector3(-10.0f,  10.0f, 10.0f);
+            light1.Position = new Vector3(10.0f,  10.0f, 10.0f);
             _sceneObjects.Add(light1);
-            PointLight light2 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
-            light2.Position = new Vector3(10.0f,  10.0f, 10.0f);
-            _sceneObjects.Add(light2);
-            PointLight light3 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
-            light3.Position = new Vector3(-10.0f, -10.0f, 10.0f);
-            _sceneObjects.Add(light3);
-            PointLight light4 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
-            light4.Position = new Vector3(10.0f, -10.0f, 10.0f);
-            _sceneObjects.Add(light4);
+            //PointLight light2 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
+            //light2.Position = new Vector3(10.0f,  10.0f, 10.0f);
+            //_sceneObjects.Add(light2);
+            //PointLight light3 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
+            //light3.Position = new Vector3(-10.0f, -10.0f, 10.0f);
+            //_sceneObjects.Add(light3);
+            //PointLight light4 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
+            //light4.Position = new Vector3(10.0f, -10.0f, 10.0f);
+            //_sceneObjects.Add(light4);
 
 
 

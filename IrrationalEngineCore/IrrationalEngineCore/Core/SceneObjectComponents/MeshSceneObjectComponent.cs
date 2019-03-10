@@ -7,24 +7,23 @@ namespace Irrational.Core.SceneObjectComponents
 {
     public class MeshSceneObjectComponent : ISceneObjectComponent
     {
-        private string _mdlSource;
-        private IModelLoader _modelLoader;
-
         public Mesh ModelMesh { get; private set; }
+        public string MdlSource { get; set; }
+        public IModelLoader ModelLoader { get; private set; }
 
         public MeshSceneObjectComponent() { }
 
         public MeshSceneObjectComponent(IModelLoader modelLoader, string modelSource)
         {
-            _modelLoader = modelLoader;
-            _mdlSource = modelSource;
+            ModelLoader = modelLoader;
+            MdlSource = modelSource;
         }
 
 
         public void OnLoad()
         {
-            if(_modelLoader!=null)
-            ModelMesh = _modelLoader.LoadFromFile(_mdlSource);
+            if(ModelLoader!=null)
+            ModelMesh = ModelLoader.LoadFromFile(MdlSource);
         }
 
         public void OnUnload()

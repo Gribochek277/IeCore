@@ -2,16 +2,13 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace IrrationalEngineEditor.Avalonia.Views
+namespace IrrationalEngineEditor.Avalonia.Templates
 {
-    public class SceneObjectProperties : Window
+    public class SceneObjectComponents : UserControl
     {
-        public SceneObjectProperties()
+        public SceneObjectComponents()
         {
             this.InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         private void InitializeComponent()

@@ -1,12 +1,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IrrationalEngineCore", "IrrationalEngineCore\IrrationalEngineCore.csproj", "{8EF499E7-9B48-4D4B-9630-63475F7C2E89}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IrrationalEngineEditor", "IrrationalEngineEditor\IrrationalEngineEditor.csproj", "{722562BB-E262-4A8E-87F3-C96E09CD5B3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IrrationalEngineEditor.Avalonia", "IrrationalEngineEditor.Avalonia\IrrationalEngineEditor.Avalonia.csproj", "{EFBCC48C-3FAE-4921-98C8-F3B371B99AD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IrrationalEngineEditor.Avalonia", "IrrationalEngineEditor.Avalonia\IrrationalEngineEditor.Avalonia.csproj", "{EFBCC48C-3FAE-4921-98C8-F3B371B99AD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

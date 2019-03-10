@@ -12,6 +12,10 @@ namespace Irrational.Logic
         private bool isFPSmode = false;
         private Vector2 lastMousePos = new Vector2();
         private Camera cam;
+
+        public PlayerCamera() : base("PlayerCamera")
+        { }
+
         public override void OnLoad()
         {
             lastMousePos = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);

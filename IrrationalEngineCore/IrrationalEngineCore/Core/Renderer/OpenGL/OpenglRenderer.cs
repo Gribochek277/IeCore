@@ -58,7 +58,7 @@ namespace Irrational.Core.Renderer.OpenGL
             GL.ClearColor(0,0,1,1);
             GL.PointSize(5f);
             
-            // Assemble vertex and indice data for all volumes
+            // Assemble vertex and index data for all volumes
             int vertcount = 0;
 
             List<Vector3> verts = new List<Vector3>();
@@ -85,7 +85,7 @@ namespace Irrational.Core.Renderer.OpenGL
             normdata = normals.ToArray();
             
 
-            Console.WriteLine("Vertexies: " + vertdata.Length);
+            Console.WriteLine("Vertexes: " + vertdata.Length);
             Console.WriteLine("Triangles: " + vertdata.Length/3);
             
             foreach (SceneObject v in _objects) {
@@ -101,7 +101,7 @@ namespace Irrational.Core.Renderer.OpenGL
                     GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(vertdata.Length * Vector3.SizeInBytes), vertdata, BufferUsageHint.StaticDraw);
                     GL.VertexAttribPointer(materialComponent.shaderImplementation.shaderProg.GetAttribute("vPosition"), 3, VertexAttribPointerType.Float, false, 0, 0);
 
-                    // Buffer vertex color if shader supports it. Currently commented out vecause not used for first implementation.
+                    // Buffer vertex color if shader supports it. Currently commented out because not used for first implementation.
                   /*  if (materialComponent.shaderImplementation.shaderProg.GetAttribute("vColor") != -1)
                     {
                         GL.BindBuffer(BufferTarget.ArrayBuffer, materialComponent.shaderImplementation.shaderProg.GetBuffer("vColor"));
@@ -168,13 +168,13 @@ namespace Irrational.Core.Renderer.OpenGL
                 Matrix4 modelMatrix = meshComponent.ModelMesh.Transform.ModelMatrix;
                 GL.UniformMatrix4(materialComponent.shaderImplementation.shaderProg.GetUniform("model"), false, ref modelMatrix);
                 GL.UniformMatrix4(materialComponent.shaderImplementation.shaderProg.GetUniform("projection"), false, ref projection);
-                GL.UniformMatrix4(materialComponent.shaderImplementation.shaderProg.GetUniform("view"), false, ref view);//think about adding to uniformhelper Matrix4 type, but for now it's not required.
+                GL.UniformMatrix4(materialComponent.shaderImplementation.shaderProg.GetUniform("view"), false, ref view);//think about adding to uniform helper Matrix4 type, but for now it's not required.
 
                /* _uniformHelper.TryAddUniformTexture2D(texId, "maintexture", materialComponent.Shader, TextureUnit.Texture0);
                 _uniformHelper.TryAddUniformTexture2D(normId, "normaltexture", materialComponent.Shader, TextureUnit.Texture1);
                 _uniformHelper.TryAddUniformTexture2D(metRoughId, "metallicroughness", materialComponent.Shader, TextureUnit.Texture2);
                 _uniformHelper.TryAddUniformTexture2D(ambientId, "defaultAO", materialComponent.Shader, TextureUnit.Texture3);
-
+                W
 
                 //TODO retrieve it properly skybox texture
                 _uniformHelper.TryAddUniformTextureCubemap(3, "irradianceMap", materialComponent.Shader, TextureUnit.Texture4);
@@ -198,7 +198,7 @@ namespace Irrational.Core.Renderer.OpenGL
 
                 b.SetSpecificUniforms(pipelineData);              
 
-                //_uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.shaderImplementation.shaderProg);//TODO : find a way how to extract specular exponent from material. Additional refactoring is requiered.
+                //_uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.shaderImplementation.shaderProg);//TODO : find a way how to extract specular exponent from material. Additional refactoring is required.
                 //PBR uniforms
                 /*_uniformHelper.TryAddUniform1((float)Math.Abs(Math.Sin(time*0.1f)), "metallic", materialComponent.shaderImplementation.shaderProg);
                 _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Cos(time*0.1f)), "roughness", materialComponent.shaderImplementation.shaderProg);*/

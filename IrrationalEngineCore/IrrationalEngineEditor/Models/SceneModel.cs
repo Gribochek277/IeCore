@@ -9,9 +9,9 @@ namespace IrrationalEngineEditor.Models
 {
     public class SceneModel
     {
-        public OpenTKWindow context  = null;
+        public static OpenTKWindow context  = null;
 
-        public int SelectedItemIndex { get; set; } = 0;
+        public static int SelectedItemIndex { get; set; } = 0;
 
         private IList<ISceneObject> _sceneObjects;
 
@@ -22,15 +22,21 @@ namespace IrrationalEngineEditor.Models
         private float _positionY = 0;
         private float _positionZ = 0;
 
+        private float _scaleX = 0;
+        private float _scaleY = 0;
+        private float _scaleZ = 0;
+
         public float RotationX { get { return _rotationX; }  set { _rotationX = value; Rotate(); } }
         public float RotationY { get { return _rotationY; } set { _rotationY = value; Rotate(); } }
         public float RotationZ { get { return _rotationZ; } set { _rotationZ = value; Rotate(); } }
+
         public float PositionX { get { return _positionX; } set { _positionX = value; UpdatePosition(); } }
         public float PositionY { get { return _positionY; } set { _positionY = value; UpdatePosition(); } }
         public float PositionZ { get { return _positionZ; } set { _positionZ = value; UpdatePosition(); } }
-        public float ScaleX { get; set; }
-        public float ScaleY { get; set; }
-        public float ScaleZ { get; set; }
+
+        public float ScaleX { get { return _scaleX; } set { _scaleX = value; Scale(); } }
+        public float ScaleY { get { return _scaleY; } set { _scaleY = value; Scale(); } }
+        public float ScaleZ { get { return _scaleZ; } set { _scaleZ = value; Scale(); } }
 
         public SceneModel()
         {
@@ -56,11 +62,11 @@ namespace IrrationalEngineEditor.Models
             }
         }
 
-        public void Scale(int selectedItem, float X, float Y, float Z)
+        public void Scale()
         {
             if (_sceneObjects != null)
             {
-                _sceneObjects[selectedItem].Scale = new Vector3(X, Y, Z);
+                _sceneObjects[SelectedItemIndex].Scale = new Vector3(_scaleX, _scaleY, _scaleZ);
             }
         }
 

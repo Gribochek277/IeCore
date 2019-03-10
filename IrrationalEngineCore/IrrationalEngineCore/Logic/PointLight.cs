@@ -6,7 +6,7 @@ namespace Irrational.Logic
 {
     public class PointLight : SceneObject
     {
-        public PointLight(Vector3 color, float lightStr)
+        public PointLight(Vector3 color, float lightStr): base("PointLight")
         {
             AddComponent(new PointLightSceneObjectComponent()
                 { LightStrenght = lightStr, Color = color
