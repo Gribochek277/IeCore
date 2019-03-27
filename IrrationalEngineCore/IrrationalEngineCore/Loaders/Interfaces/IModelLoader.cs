@@ -1,6 +1,6 @@
 ﻿using Irrational.Core.Entities;
 
-namespace Irrational.Utils.Interfaces
+namespace Irrational.Loaders.Interfaces
 {
     public interface IModelLoader
     {

@@ -5,13 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Globalization;
 using Irrational.Core.Entities;
-using Irrational.Utils.Interfaces;
+using Irrational.Loaders.Interfaces;
 
-namespace Irrational.Utils
+
+namespace Irrational.Loaders
 {
     /// <summary>
     /// Loads info about materials
     /// </summary>
+    [Obsolete("Use Gltf2 implementation instead")]
     public class WavefrontMaterialLoader : IMaterialLoader
     {
         public Dictionary<string, Material> LoadFromFile(string filename)

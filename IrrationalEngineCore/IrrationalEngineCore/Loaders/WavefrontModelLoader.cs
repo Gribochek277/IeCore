@@ -4,11 +4,12 @@ using System.Linq;
 using OpenTK;
 using System.IO;
 using System.Globalization;
-using Irrational.Utils.Interfaces;
+using Irrational.Loaders.Interfaces;
 using Irrational.Core.Entities;
 
-namespace Irrational.Utils
+namespace Irrational.Loaders
 {
+    [Obsolete("Use Gltf2 implementation instead")]
     class WavefrontModelLoader : IModelLoader
     {
         public Mesh LoadFromFile(string path)

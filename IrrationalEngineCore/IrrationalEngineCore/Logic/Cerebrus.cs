@@ -2,7 +2,7 @@
 using Irrational.Core.Entities;
 using Irrational.Core.SceneObjectComponents;
 using Irrational.Core.Shaders;
-using Irrational.Utils;
+using Irrational.Loaders.Gltf2;
 using IrrationalEngineCore.Core.Shaders;
 using OpenTK;
 using static IrrationalEngineCore.Core.Shaders.Pbr;

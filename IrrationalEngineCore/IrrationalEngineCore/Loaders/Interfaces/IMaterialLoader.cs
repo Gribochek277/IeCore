@@ -1,7 +1,7 @@
 ﻿using Irrational.Core.Entities;
 using System.Collections.Generic;
 
-namespace Irrational.Utils.Interfaces
+namespace Irrational.Loaders.Interfaces
 {
     public interface IMaterialLoader
     {

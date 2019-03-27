@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using glTFLoader;
 using Irrational.Core.Entities;
-using Irrational.Utils.Interfaces;
+using Irrational.Loaders.Interfaces;
 
-namespace Irrational.Utils
+namespace Irrational.Loaders.Gltf2
 {
     class Gltf2MaterialLoader : IMaterialLoader
     {
@@ -31,7 +31,7 @@ namespace Irrational.Utils
                         mat.NormalScale = material.NormalTexture.Scale;
                     }
                     catch
-                    {}
+                    {} //WTF?
                     mats.Add(material.Name, mat);
                 }
             }            

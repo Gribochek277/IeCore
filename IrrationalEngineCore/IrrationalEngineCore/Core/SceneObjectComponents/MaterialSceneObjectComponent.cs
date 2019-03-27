@@ -1,7 +1,7 @@
 ﻿using ImageMagick;
 using Irrational.Core.Entities;
 using Irrational.Core.Entities.Abstractions;
-using Irrational.Utils.Interfaces;
+using Irrational.Loaders.Interfaces;
 using IrrationalEngineCore.Core.Shaders.Abstractions;
 using OpenTK.Graphics.OpenGL;
 using System;

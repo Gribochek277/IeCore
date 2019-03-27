@@ -1,6 +1,6 @@
 ﻿using Irrational.Core.Entities;
 using Irrational.Core.Entities.Abstractions;
-using Irrational.Utils.Interfaces;
+using Irrational.Loaders.Interfaces;
 using System;
 
 namespace Irrational.Core.SceneObjectComponents
