@@ -3,6 +3,7 @@ using Irrational.Core.Entities;
 using Irrational.Core.SceneObjectComponents;
 using Irrational.Loaders.Gltf2;
 using IrrationalEngineCore.Core.Shaders;
+using IrrationalEngineCore.Loaders.Assimp;
 using OpenTK;
 
 namespace Irrational.Logic
@@ -14,10 +15,10 @@ namespace Irrational.Logic
             MaterialSceneObjectComponent material = new MaterialSceneObjectComponent(
                 new Pbr(),
                 "Resources/Gltf/DamagedHelmet/glTF/DamagedHelmet.gltf",
-                new Gltf2MaterialLoader());
+                new AssimpMaterialLoader());
 
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
-                new Gltf2ModelLoader(),
+                new AssimpModelLoader(),
                 "Resources/Gltf/DamagedHelmet/glTF/DamagedHelmet.gltf"
                 );
             BasicManipulationsComponent manipulation = new BasicManipulationsComponent(meshComponent);

@@ -16,17 +16,17 @@ namespace Irrational.Logic.Scenes
             base.OnLoad();
             //  Lion gameObject = new Lion();
             //_sceneObjects.Add(gameObject);
-          //  Cerebrus gameObject = new Cerebrus();
-          //  _sceneObjects.Add(gameObject);
+            Cerebrus gameObject = new Cerebrus();
+            _sceneObjects.Add(gameObject);
 
-            
+
             //Knight knight = new Knight();
             //_sceneObjects.Add(knight);
-          // GLtf2Helm gltf2helm = new GLtf2Helm();
-          //  _sceneObjects.Add(gltf2helm);
+            //GLtf2Helm gltf2helm = new GLtf2Helm();
+            //_sceneObjects.Add(gltf2helm);
 
-            GLtf2Helm gltf2helm2 = new GLtf2Helm();
-            _sceneObjects.Add(gltf2helm2);
+            //GLtf2Helm gltf2helm2 = new GLtf2Helm();
+            //_sceneObjects.Add(gltf2helm2);
 
             PointLight light1 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
             light1.Position = new Vector3(10.0f,  10.0f, 10.0f);

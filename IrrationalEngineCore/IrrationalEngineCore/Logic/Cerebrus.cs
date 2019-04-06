@@ -1,11 +1,9 @@
 ﻿using Irrational.Core.Abstractions;
 using Irrational.Core.Entities;
 using Irrational.Core.SceneObjectComponents;
-using Irrational.Core.Shaders;
-using Irrational.Loaders.Gltf2;
 using IrrationalEngineCore.Core.Shaders;
+using IrrationalEngineCore.Loaders.Assimp;
 using OpenTK;
-using static IrrationalEngineCore.Core.Shaders.Pbr;
 
 namespace Irrational.Logic
 {
@@ -17,10 +15,10 @@ namespace Irrational.Logic
                 new Pbr(),
                // "Resources/Gltf/sphere/sphere.gltf",
                 "Resources/Gltf/cerebrus/scene.gltf",
-                new Gltf2MaterialLoader());
+                new AssimpMaterialLoader());
 
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
-                new Gltf2ModelLoader(),
+                new AssimpModelLoader(),
             //    "Resources/Gltf/sphere/sphere.gltf"
                  "Resources/Gltf/cerebrus/scene.gltf"
                 );

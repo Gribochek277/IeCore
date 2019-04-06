@@ -46,12 +46,18 @@ namespace IrrationalEngineCore.Core.Shaders
         }
         public void SetSpecificUniforms(IPipelineData pipelineData)
         {
-            int texId = Textures[Materials.FirstOrDefault().Value.DiffuseMap];
-            int normId = Textures[Materials.FirstOrDefault().Value.NormalMap];
-            int metRoughId = Textures[Materials.FirstOrDefault().Value.MetallicRoughness];
-            int ambientId = Textures[Materials.FirstOrDefault().Value.AmbientMap];
+            int texId = -1;
+            int normId = -1; 
+            int metRoughId = -1; 
+            int ambientId = -1; 
 
-             _uniformHelper.TryAddUniformTexture2D(texId, maintexture, shaderProg, TextureUnit.Texture0);
+
+            Textures.TryGetValue(Materials.FirstOrDefault().Value.DiffuseMap, out texId);
+            Textures.TryGetValue(Materials.FirstOrDefault().Value.NormalMap, out normId);
+            Textures.TryGetValue(Materials.FirstOrDefault().Value.MetallicRoughness, out metRoughId);
+            Textures.TryGetValue(Materials.FirstOrDefault().Value.AmbientMap, out ambientId);
+
+            _uniformHelper.TryAddUniformTexture2D(texId, maintexture, shaderProg, TextureUnit.Texture0);
 
              _uniformHelper.TryAddUniformTexture2D(normId, normaltexture, shaderProg, TextureUnit.Texture1);
 

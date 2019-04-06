@@ -1,4 +1,5 @@
-﻿using glTFLoader;
+﻿using Assimp;
+using glTFLoader;
 using glTFLoader.Schema;
 using Irrational.Loaders.Interfaces;
 using IrrationalEngineCore.Loaders.Gltf2;
@@ -15,14 +16,14 @@ namespace Irrational.Loaders.Gltf2
         public Core.Entities.Mesh LoadFromFile(string path)
         {
 
-            if (!path.EndsWith("gltf") && !path.EndsWith("glb")) return null;
+            if (!path.EndsWith("gltf") && !path.EndsWith("glb")) return null;           
 
             try
             {
                 Gltf deserializedFile = Interface.LoadModel(path);
                 byte[] bufferBytes = null;
                 //Only one mesh currently supported.
-                Mesh[] meshes = deserializedFile.Meshes;
+                glTFLoader.Schema.Mesh[] meshes = deserializedFile.Meshes;
 
                 Core.Entities.Mesh loadedModel = new Core.Entities.Mesh();
 
