@@ -29,8 +29,6 @@ namespace IrrationalEngineCore.Loaders.Assimp
 
             List<AssimpMat> materials = loadedAssimpScene.Materials;
 
-
-
             foreach (var material in materials)
             {
                 EngineMaterial _material = new EngineMaterial();
@@ -50,7 +48,6 @@ namespace IrrationalEngineCore.Loaders.Assimp
                 {
                     _material.AmbientMap = Path.Combine(relativeLocation, material.TextureAmbient.FilePath);
                 }
-
 
                 _material.MetallicRoughness = Path.Combine(relativeLocation, textureSlots.Where(t=>t.TextureType == TextureType.Unknown).FirstOrDefault().FilePath);
 
