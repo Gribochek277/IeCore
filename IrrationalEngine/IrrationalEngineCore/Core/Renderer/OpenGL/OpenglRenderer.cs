@@ -170,27 +170,13 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
                 _uniformHelper.TryAddUniformTexture2D(5,"brdfLUT", materialComponent.Shader, TextureUnit.Texture6);
                 _uniformHelper.TryAddUniform1(1f, "ambientStr", shaderProg);
                 */
-                Pbr b = (Pbr)materialComponent.shaderImplementation;
-
-                 if (Keyboard.GetState().IsKeyDown(Key.Plus))
-                 {                
-                    b.randomCoeff += 0.01f;    
-                    Console.WriteLine(b.randomCoeff);                           
-                 }
-
-                  if (Keyboard.GetState().IsKeyDown(Key.P))
-                 {                
-                    b.randomCoeff -= 0.01f;   
-                     Console.WriteLine(b.randomCoeff);                                 
-                 }
-
-                b.SetSpecificUniforms(_pipelineData);              
+               materialComponent.shaderImplementation.SetSpecificUniforms(_pipelineData);
 
                 //_uniformHelper.TryAddUniform1(1f, "specStr", materialComponent.shaderImplementation.shaderProg);//TODO : find a way how to extract specular exponent from material. Additional refactoring is required.
                 //PBR uniforms
                 /*_uniformHelper.TryAddUniform1((float)Math.Abs(Math.Sin(time*0.1f)), "metallic", materialComponent.shaderImplementation.shaderProg);
                 _uniformHelper.TryAddUniform1((float)Math.Abs(Math.Cos(time*0.1f)), "roughness", materialComponent.shaderImplementation.shaderProg);*/
-               
+
                 GL.DrawElements(BeginMode.Triangles, meshComponent.ModelMesh.IndiceCount, DrawElementsType.UnsignedInt, indiceat * sizeof(uint));
                 indiceat += meshComponent.ModelMesh.IndiceCount;
 
@@ -198,7 +184,7 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
             }
             GL.Disable(EnableCap.FramebufferSrgb);
 
-            indiceat += SkyboxRenderHelper.RenderHdrToCubemapSkybox(view, projection, _pipelineData.Skybox);
+            SkyboxRenderHelper.RenderSkybox(view, projection, _pipelineData.Skybox);
            
             GL.Flush();
         }

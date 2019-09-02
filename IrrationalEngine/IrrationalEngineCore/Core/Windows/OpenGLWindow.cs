@@ -1,12 +1,8 @@
 ﻿using IrrationalEngineCore.Core.CoreManager.Abstractions;
 using IrrationalEngineCore.Core.Windows.Abstractions;
 using OpenTK;
-using OpenTK.Graphics;
 using System;
 using IrrationalEngineCore.Core.Renderer.Abstractions;
-using IrrationalEngineCore.Core.Renderer.OpenGL;
-using IrrationalEngineCore.Core.CoreManager;
-using IrrationalEngineCore.Logic.Scenes;
 
 namespace IrrationalEngineCore.Core.Windows
 {
@@ -20,7 +16,7 @@ namespace IrrationalEngineCore.Core.Windows
 
         public event EventHandler LoadingComplete;
 
-         private double time = 0.0d;
+        public double Time { get; set; } = 0.0d;
 
         public OpenGLWindow(GameWindow gameWindow, IRenderer renderer, ISceneManager sceneManager)
         {
@@ -74,7 +70,7 @@ namespace IrrationalEngineCore.Core.Windows
         {
             _sceneManager.OnRendered();
             _renderer.OnRendered();            
-            time += _gameWindow.RenderPeriod;
+            Time += _gameWindow.RenderPeriod;
             _gameWindow.Title = _sceneManager.Scene.GetType().Name + " FPS: " + (1d / _gameWindow.RenderPeriod).ToString("0.");
 
             _gameWindow.SwapBuffers();

@@ -1,0 +1,187 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v0.9.36",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0,
+                1,
+                2
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "Knight",
+            "rotation" : [
+                0.7071068286895752,
+                0,
+                0,
+                0.7071067094802856
+            ]
+        },
+        {
+            "name" : "Lamp",
+            "rotation" : [
+                0.5232754349708557,
+                0.7269423604011536,
+                0.3420339822769165,
+                0.2841661274433136
+            ],
+            "translation" : [
+                4.076245307922363,
+                1.0054532289505005,
+                5.903862476348877
+            ]
+        },
+        {
+            "name" : "Camera.001",
+            "rotation" : [
+                0.8937963247299194,
+                0.3857799172401428,
+                0.09062855690717697,
+                0.20997287333011627
+            ],
+            "translation" : [
+                7.481131553649902,
+                -6.507641792297363,
+                5.343664646148682
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "KnightMaterial",
+            "normalTexture" : {
+                "index" : 0,
+                "texCoord" : 0
+            },
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 1,
+                    "texCoord" : 0
+                },
+                "metallicFactor" : 1,
+                "roughnessFactor" : 1
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "Knight",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TANGENT" : 2,
+                        "TEXCOORD_0" : 3
+                    },
+                    "indices" : 4,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "source" : 0
+        },
+        {
+            "source" : 1
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "knight3_None_Normal",
+            "uri" : "knight3_None_Normal.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "knight3_None_BaseColor",
+            "uri" : "knight3_None_BaseColor.png"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 682,
+            "max" : [
+                1.9383970499038696,
+                2.9927480220794678,
+                1.124258041381836
+            ],
+            "min" : [
+                -1.937917947769165,
+                -3.7703349590301514,
+                -1
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 682,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 682,
+            "type" : "VEC4"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5126,
+            "count" : 682,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5123,
+            "count" : 2622,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 8184,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 8184,
+            "byteOffset" : 8184
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 10912,
+            "byteOffset" : 16368
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 5456,
+            "byteOffset" : 27280
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 5244,
+            "byteOffset" : 32736
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 37980,
+            "uri" : "knight.bin"
+        }
+    ]
+}

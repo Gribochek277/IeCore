@@ -16,15 +16,16 @@ namespace IrrationalEngineCore.Logic.Scenes
         {
             ShaderProg skyboxShader = 
                 new ShaderProg("vs_cubemap.glsl", "fs_cubemap.glsl", true);
-            base._skybox = new Skybox(skyboxShader);
+            _skybox = new Skybox(skyboxShader);
             base.OnLoad();
             //Lion gameObject = new Lion();
             //_sceneObjects.Add(gameObject);
             Knight knight = new Knight();
             _sceneObjects.Add(knight);
-             PointLight light1 = new PointLight(new Vector3(1f, 1, 1f), 1);
+             PointLight light1 = new PointLight(new Vector3(0f, 0f, 0f), 1);
             light1.Position = new Vector3(0, 0, -1);
             _sceneObjects.Add(light1);
+           
             //GLtf2Helm gltf2helm = new GLtf2Helm();
             //_sceneObjects.Add(gltf2helm);
 

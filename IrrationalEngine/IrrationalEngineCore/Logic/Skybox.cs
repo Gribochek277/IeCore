@@ -1,7 +1,6 @@
 ﻿using IrrationalEngineCore.Core.Entities;
 using IrrationalEngineCore.Core.SceneObjectComponents;
 using IrrationalEngineCore.Core.Shaders;
-using IrrationalEngineCore.Loaders;
 using IrrationalEngineCore.Loaders.Assimp;
 
 namespace IrrationalEngineCore.Logic

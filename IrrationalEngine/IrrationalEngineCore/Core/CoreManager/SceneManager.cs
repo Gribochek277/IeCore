@@ -7,10 +7,9 @@ namespace IrrationalEngineCore.Core.CoreManager
 {
     public class SceneManager: ISceneManager
     {
-        private List<ISceneObject> _sceneObjects = new List<ISceneObject>();
         public IScene Scene { get; }
 
-        public List<ISceneObject> SceneObjects {get{return _sceneObjects;}}
+        public List<ISceneObject> SceneObjects { get; } = new List<ISceneObject>();
 
         public SceneManager(IScene scene)
         {
@@ -21,7 +20,7 @@ namespace IrrationalEngineCore.Core.CoreManager
         {
             Scene.OnLoad();
             foreach (SceneObject sceneObject in Scene.SceneObjects)// TODO: i don't like this part of code
-                _sceneObjects.Add(sceneObject);
+                SceneObjects.Add(sceneObject);
         }
 
         public void OnRendered()

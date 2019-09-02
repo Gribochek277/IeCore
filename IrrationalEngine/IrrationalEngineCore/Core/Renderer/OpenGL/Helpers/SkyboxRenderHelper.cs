@@ -1,17 +1,33 @@
-﻿using IrrationalEngineCore.Core.Entities;
-using IrrationalEngineCore.Core.Entities.Abstractions;
-using IrrationalEngineCore.Core.Entities.Primitives;
+﻿using IrrationalEngineCore.Core.Entities.Abstractions;
 using IrrationalEngineCore.Core.SceneObjectComponents;
-using IrrationalEngineCore.Core.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 
 namespace IrrationalEngineCore.Core.Renderer.OpenGL.Helpers
 {
-    public class SkyboxRenderHelper
+    public static class SkyboxRenderHelper
     {
-        public static int RenderCubemapSkybox(Matrix4 view, Matrix4 projection, ISceneObject skybox)
+        public static int RenderSkybox(Matrix4 view, Matrix4 projection, ISceneObject skybox)
+        {
+            switch (skybox.Name)
+            { 
+                case "CubemapSkybox":
+                    {
+                        return RenderCubemapSkybox(view, projection, skybox);
+                    }
+                case "HdriSkybox":
+                    {
+                        return RenderHdrToCubemapSkybox(view, projection, skybox);
+                    }
+                default:
+                    {
+                        return 0;
+                    }
+            }
+        }
+
+        private static int RenderCubemapSkybox(Matrix4 view, Matrix4 projection, ISceneObject skybox)
         {            
             GL.CullFace(CullFaceMode.Front);
             GL.DepthFunc(DepthFunction.Lequal);
@@ -35,7 +51,7 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL.Helpers
             return skyboxMeshComponent.ModelMesh.IndiceCount; 
         }
 
-        public static int RenderHdrToCubemapSkybox(Matrix4 view, Matrix4 projection, ISceneObject skybox)
+        private static int RenderHdrToCubemapSkybox(Matrix4 view, Matrix4 projection, ISceneObject skybox)
         {
             GL.CullFace(CullFaceMode.Front);
             GL.DepthFunc(DepthFunction.Lequal);

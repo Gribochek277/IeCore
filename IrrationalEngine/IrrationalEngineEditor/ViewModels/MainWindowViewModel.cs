@@ -1,11 +1,12 @@
-﻿using Irrational.Core.Entities;
-using Irrational.Core.Entities.Abstractions;
+﻿using IrrationalEngineCore.Core.Entities;
+using IrrationalEngineCore.Core.Entities.Abstractions;
+using IrrationalEngineCore.Core.Windows;
+using IrrationalEngineCore.Core.Windows.Abstractions;
 using IrrationalEngineEditor.Models;
 using PropertyChanged;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Reactive;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IrrationalEngineEditor.ViewModels
 {
@@ -34,6 +35,8 @@ namespace IrrationalEngineEditor.ViewModels
         public float ScaleY { get { return SelectedSceneObject.Scale.Y; } set { SceneModel.ScaleY = value; } }
         public float ScaleZ { get { return SelectedSceneObject.Scale.Z; } set { SceneModel.ScaleZ = value; } }
 
+        private OpenGLWindow window;
+
         public IList<ISceneObject> SceneObjects { get; set; }
 
         public ISceneObject SelectedSceneObject {
@@ -47,12 +50,13 @@ namespace IrrationalEngineEditor.ViewModels
         public MainWindowViewModel()
         {
             SceneModel = new SceneModel();
-            SceneModel.context.LoadingComplete += InitControls;
+            window = SceneModel.endgineServiceProvier.GetService<IWindowFactory>().Create() as OpenGLWindow;
+             window.LoadingComplete += InitControls;
         }
 
         void RunIrrationalInstance()
         {
-            SceneModel.context.Run();
+            window.Run();
         }
 
         private void InitControls(object o, EventArgs e)

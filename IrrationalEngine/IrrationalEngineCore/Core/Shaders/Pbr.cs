@@ -16,14 +16,10 @@ namespace IrrationalEngineCore.Core.Shaders
     {
         public ShaderProg shaderProg {get;}
 
-        private Dictionary<string, Material> _materials = new Dictionary<string, Material>();
-
-        private Dictionary<string, int> _textures = new Dictionary<string, int>();      
-
         public float randomCoeff = 0;
 
-        public Dictionary<string, Material> Materials { get => _materials; set => _materials = value; }
-        public Dictionary<string, int> Textures { get => _textures; set => _textures = value; }
+        public Dictionary<string, Material> Materials { get; set; } = new Dictionary<string, Material>();
+        public Dictionary<string, int> Textures { get; set; } = new Dictionary<string, int>();
 
         private UniformHelper _uniformHelper;
 

@@ -12,43 +12,44 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace IrrationalEngineCore
 {
-    class Program
+    public class IrrationalEngine
     {
-        private static IServiceProvider _serviceProvider;
-		static void Main(string[] args)
+        public static IServiceProvider ServiceProvider;
+        static void Main(string[] args)
         {
-            //Gltf2ModelLoader loader = new Gltf2ModelLoader();
-            //loader.LoadFromFile("Resources/Gltf/Damagedhelmet/glTF/DamagedHelmet.gltf");
             RegisterServices();
-            IWindow window = _serviceProvider.GetService<IWindowFactory>().Create();
+            IWindow window = ServiceProvider.GetService<IWindowFactory>().Create();
             window.Run();
             DisposeServices();
         }
 
-
+        public static void RunProgram()
+        {
+            RegisterServices();
+        }
 
      private static void RegisterServices()
      {
          ServiceCollection collection = new ServiceCollection();
 
-         collection.AddScoped<IScene, TestScene>();
+         collection.AddScoped<IScene, TestLinuxScene>();
          collection.AddScoped<IRenderer, OpenglRenderer>();
          collection.AddScoped<ISceneManager, SceneManager>();
          collection.AddScoped<IWindowFactory, WindowFactory>();
          collection.AddScoped<IUniformHelper, UniformHelper>();
          collection.AddScoped<IPipelineData, PipelineData>();
          
-         _serviceProvider = collection.BuildServiceProvider();
+         ServiceProvider = collection.BuildServiceProvider();
      }
      private static void DisposeServices()
      {
-         if(_serviceProvider == null)
+         if(ServiceProvider == null)
          {
              return;
          }
-         if (_serviceProvider is IDisposable)
+         if (ServiceProvider is IDisposable)
          {
-             ((IDisposable)_serviceProvider).Dispose();
+             ((IDisposable)ServiceProvider).Dispose();
          }
      }
 	}

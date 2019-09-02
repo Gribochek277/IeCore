@@ -1,11 +1,14 @@
-﻿using Irrational.Core.Entities;
-using Irrational.Core.Entities.Abstractions;
+﻿using IrrationalEngineCore.Core.Entities;
+using IrrationalEngineCore.Core.Entities.Abstractions;
+using IrrationalEngineCore.Core.Windows;
+using IrrationalEngineCore.Core.Windows.Abstractions;
 using IrrationalEngineEditor.Models;
 using PropertyChanged;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Reactive;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IrrationalEngineEditor.ViewModels
 {
@@ -13,6 +16,7 @@ namespace IrrationalEngineEditor.ViewModels
     public class SceneObjectComponentsViewModel: ViewModelBase
     {
         private SceneModel SceneModel { get; set; }
+        private readonly OpenGLWindow window;
         public int SelectedItemIndex { get { return SceneModel.SelectedItemIndex; } set { SceneModel.SelectedItemIndex = value; } }
         public string SelectedComponent { get
             {
@@ -31,7 +35,8 @@ namespace IrrationalEngineEditor.ViewModels
         public SceneObjectComponentsViewModel()
         {
             SceneModel = new SceneModel();
-            SceneModel.context.LoadingComplete += InitControls;
+            window = SceneModel.endgineServiceProvier.GetService<IWindowFactory>().Create() as OpenGLWindow;
+            window.LoadingComplete += InitControls;
             ChangeListItemCommand = ReactiveCommand.Create<string>(ChangeListItem);
         }
 

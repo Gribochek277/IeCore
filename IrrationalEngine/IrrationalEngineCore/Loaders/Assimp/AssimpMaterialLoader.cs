@@ -49,7 +49,14 @@ namespace IrrationalEngineCore.Loaders.Assimp
                     _material.AmbientMap = Path.Combine(relativeLocation, material.TextureAmbient.FilePath);
                 }
 
-                _material.MetallicRoughness = Path.Combine(relativeLocation, textureSlots.Where(t=>t.TextureType == TextureType.Unknown).FirstOrDefault().FilePath);
+                try
+                {
+                    _material.MetallicRoughness = Path.Combine(relativeLocation, textureSlots.Where(t => t.TextureType == TextureType.Unknown).FirstOrDefault().FilePath);
+                }
+                catch {
+
+                    //TODO: add handling
+                }
 
                 mats.Add(_material.MaterialName, _material);
             }

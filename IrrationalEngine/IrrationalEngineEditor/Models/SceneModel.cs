@@ -1,15 +1,18 @@
-﻿using Irrational.Core.CoreManager;
-using Irrational.Core.Entities;
-using Irrational.Core.Entities.Abstractions;
-using Irrational.Core.Windows;
+﻿using IrrationalEngineCore;
+using Microsoft.Extensions.DependencyInjection;
+using IrrationalEngineCore.Core.CoreManager.Abstractions;
+using IrrationalEngineCore.Core.Entities;
+using IrrationalEngineCore.Core.Entities.Abstractions;
 using OpenTK;
+using System;
 using System.Collections.Generic;
+using IrrationalEngineCore.Core.CoreManager;
 
 namespace IrrationalEngineEditor.Models
 {
     public class SceneModel
     {
-        public static OpenTKWindow context  = null;
+        public static IServiceProvider endgineServiceProvier  = null;
 
         public static int SelectedItemIndex { get; set; } = 0;
 
@@ -40,9 +43,10 @@ namespace IrrationalEngineEditor.Models
 
         public SceneModel()
         {
-            if (context == null)
+            if (endgineServiceProvier == null)
             {
-                context = new OpenTKWindow(800, 600, 401, 0);
+                IrrationalEngine.RunProgram();
+                endgineServiceProvier = IrrationalEngine.ServiceProvider;
             }
         }
 
@@ -72,9 +76,9 @@ namespace IrrationalEngineEditor.Models
 
         public IList<ISceneObject> GetSceneObjects()
         {
-            if(context != null && _sceneObjects == null)
-            { 
-                SceneManager manager = context.SceneManager as SceneManager;
+            if(endgineServiceProvier != null && _sceneObjects == null)
+            {
+                ISceneManager manager = endgineServiceProvier.GetService<ISceneManager>() as SceneManager;
                 Scene scene = manager.Scene as Scene;
                 _sceneObjects = scene.SceneObjects;
                 return _sceneObjects;

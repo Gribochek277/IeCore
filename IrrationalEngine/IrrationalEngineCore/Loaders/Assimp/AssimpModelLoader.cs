@@ -9,7 +9,7 @@ namespace IrrationalEngineCore.Loaders.Assimp
     public class AssimpModelLoader : IModelLoader
     {
         List<Mesh> meshes = new List<Mesh>();
-        public IrrationalEngineCore.Core.Entities.Mesh LoadFromFile(string path)
+        public Core.Entities.Mesh LoadFromFile(string path)
         {
             AssimpContext context = new AssimpContext();
             Scene loadedAssimpScene = context.ImportFile(path, PostProcessSteps.OptimizeMeshes | PostProcessSteps.Triangulate | PostProcessSteps.FlipUVs);
@@ -37,9 +37,9 @@ namespace IrrationalEngineCore.Loaders.Assimp
             }
         }
 
-        private IrrationalEngineCore.Core.Entities.Mesh convertAssimpToEngineFormat(Mesh assimpMesh)
+        private Core.Entities.Mesh convertAssimpToEngineFormat(Mesh assimpMesh)
         {
-            IrrationalEngineCore.Core.Entities.Mesh mesh = new IrrationalEngineCore.Core.Entities.Mesh();
+            Core.Entities.Mesh mesh = new Core.Entities.Mesh();
 
             mesh.Vertices = assimpMesh.Vertices.AssimpListToOpentkVector().ToArray();
             mesh.Normals = assimpMesh.Normals.AssimpListToOpentkVector().ToArray();

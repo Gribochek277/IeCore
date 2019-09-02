@@ -3,6 +3,7 @@ using IrrationalEngineCore.Core.Entities;
 using IrrationalEngineCore.Core.SceneObjectComponents;
 using IrrationalEngineCore.Core.Shaders;
 using IrrationalEngineCore.Loaders;
+using IrrationalEngineCore.Loaders.Assimp;
 using OpenTK;
 
 namespace IrrationalEngineCore.Logic
@@ -19,7 +20,7 @@ namespace IrrationalEngineCore.Logic
 
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
                 new WavefrontModelLoader(),
-               "Resources/knight3.obj1"
+                "Resources/knight3.obj1"
                 );
 
             BasicManipulationsComponent manipulation = new BasicManipulationsComponent(meshComponent);
