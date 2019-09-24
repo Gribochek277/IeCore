@@ -17,7 +17,9 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
     {
         private IUniformHelper _uniformHelper;
         private List<ISceneObject> _objects;
-                
+        private int windowWidth = 0;
+        private int windowHeight = 0;
+
         private Vector3[] vertdata;
         private Vector3[] coldata;
         private Vector2[] texCoordinatesData;
@@ -44,6 +46,7 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
 
             GL.GenBuffers(1, out ibo_elements);
             GL.Enable(EnableCap.TextureCubeMapSeamless);
+            GL.Viewport(0, 0, windowWidth, windowHeight);
 
             _pipelineData.Cam.Position += new Vector3(0f, 0f, 3f);
             GL.ClearColor(0,0,1,1);
@@ -135,7 +138,7 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(indicedata.Length * sizeof(int)), indicedata, BufferUsageHint.StaticDraw);
 
             Matrix4 projection =
-             Matrix4.CreatePerspectiveFieldOfView(1.3f, 800f / 600f, 0.1f, 120.0f);
+             Matrix4.CreatePerspectiveFieldOfView(1.3f, (float)windowWidth / (float)windowHeight, 0.1f, 120.0f);
             Matrix4 view = _pipelineData.Cam.GetViewMatrix();
             // Update object positions
            
@@ -218,6 +221,8 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
 
         public void SetViewPort(int width, int height)
         {
+            windowWidth = width;
+            windowHeight = height;
             GL.Viewport(0,0, width, height);
         }
     }

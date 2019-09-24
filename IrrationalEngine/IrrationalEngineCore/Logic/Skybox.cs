@@ -1,6 +1,7 @@
 ﻿using IrrationalEngineCore.Core.Entities;
 using IrrationalEngineCore.Core.SceneObjectComponents;
 using IrrationalEngineCore.Core.Shaders;
+using IrrationalEngineCore.Loaders;
 using IrrationalEngineCore.Loaders.Assimp;
 
 namespace IrrationalEngineCore.Logic
@@ -14,8 +15,8 @@ namespace IrrationalEngineCore.Logic
                                                shader,
                                                SkyboxSceneObjectComponent.SkyboxType.cubemap);
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
-               new AssimpModelLoader(),
-               "Resources/TestBox/Gltf/boxgltf.gltf"
+               new WavefrontModelLoader(),
+               "Resources/box.obj1"
                );
             AddComponent(meshComponent);
             AddComponent(skyboxComponent);
@@ -27,8 +28,8 @@ namespace IrrationalEngineCore.Logic
                 new SkyboxSceneObjectComponent(skyboxLocation, 
                                                SkyboxSceneObjectComponent.SkyboxType.hdr);
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
-              new AssimpModelLoader(),
-              "Resources/TestBox/Gltf/boxgltf.gltf"
+              new WavefrontModelLoader(),
+              "Resources/box.obj1"
               );
             AddComponent(meshComponent);
             AddComponent(skyboxComponent);

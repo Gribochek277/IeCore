@@ -7,6 +7,7 @@ using IrrationalEngineCore.Loaders.Interfaces;
 
 namespace IrrationalEngineCore.Loaders.Gltf2
 {
+    [Obsolete("Use Assimp implementation instead")]
     internal class Gltf2MaterialLoader : IMaterialLoader
     {
         public Dictionary<string, Material> LoadFromFile(string path)

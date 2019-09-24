@@ -32,7 +32,7 @@ namespace IrrationalEngineCore
      {
          ServiceCollection collection = new ServiceCollection();
 
-         collection.AddScoped<IScene, TestLinuxScene>();
+         collection.AddScoped<IScene, TestScene>();
          collection.AddScoped<IRenderer, OpenglRenderer>();
          collection.AddScoped<ISceneManager, SceneManager>();
          collection.AddScoped<IWindowFactory, WindowFactory>();

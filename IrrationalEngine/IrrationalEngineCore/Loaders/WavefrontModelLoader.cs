@@ -8,8 +8,7 @@ using IrrationalEngineCore.Loaders.Interfaces;
 using IrrationalEngineCore.Core.Entities;
 
 namespace IrrationalEngineCore.Loaders
-{
-    [Obsolete("Use Gltf2 implementation instead")]
+{    
     class WavefrontModelLoader : IModelLoader
     {
         public Mesh LoadFromFile(string path)

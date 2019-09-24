@@ -3,6 +3,7 @@ using IrrationalEngineCore.Core.Windows.Abstractions;
 using OpenTK;
 using System;
 using IrrationalEngineCore.Core.Renderer.Abstractions;
+using System.Drawing;
 
 namespace IrrationalEngineCore.Core.Windows
 {
@@ -12,7 +13,7 @@ namespace IrrationalEngineCore.Core.Windows
         private ISceneManager _sceneManager;
         private IRenderer _renderer;
 
-        public static Rectangle Bounds;
+        public static System.Drawing.Rectangle Bounds;
 
         public event EventHandler LoadingComplete;
 
@@ -20,7 +21,7 @@ namespace IrrationalEngineCore.Core.Windows
 
         public OpenGLWindow(GameWindow gameWindow, IRenderer renderer, ISceneManager sceneManager)
         {
-            _gameWindow =gameWindow;
+            _gameWindow = gameWindow;
             _renderer = renderer;
             _sceneManager = sceneManager;
             AddListeners();            

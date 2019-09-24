@@ -1,5 +1,6 @@
 ﻿using IrrationalEngineCore.Core.Abstractions;
 using IrrationalEngineCore.Core.Entities;
+using IrrationalEngineCore.Core.Windows;
 using OpenTK;
 using OpenTK.Input;
 using System;
@@ -73,7 +74,7 @@ namespace IrrationalEngineCore.Logic
 
             if (isFPSmode|| Mouse.GetState().IsButtonDown(MouseButton.Right))
             {                 
-           //  Mouse.SetPosition(OpenGLWindow.Bounds.Left + OpenGLWindow.Bounds.Width / 2, OpenGLWindow.Bounds.Top + OpenGLWindow.Bounds.Height / 2);
+             Mouse.SetPosition(OpenGLWindow.Bounds.Left + OpenGLWindow.Bounds.Width / 2, OpenGLWindow.Bounds.Top + OpenGLWindow.Bounds.Height / 2);
             }
             
         }

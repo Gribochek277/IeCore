@@ -7,11 +7,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="4.1.0" />
-    <PackageReference Include="CoreCompat.System.Drawing" Version="1.0.0-beta006" />
     <PackageReference Include="glTF2Loader" Version="1.1.1-alpha" />
     <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="7.9.1" />
-    <PackageReference Include="OpenTK.NETCore" Version="1.1.2749.6433" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+    <PackageReference Include="OpenTK.NetStandard" Version="1.0.7-prerelease" />
   </ItemGroup>
   <ItemGroup>
     <None Update="fs.glsl">
@@ -48,6 +47,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\african_head.obj1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\box.obj1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\buffer_plane.bin">

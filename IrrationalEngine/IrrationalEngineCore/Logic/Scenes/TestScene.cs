@@ -19,20 +19,19 @@ namespace IrrationalEngineCore.Logic.Scenes
             Cerberus gameObject = new Cerberus();
             _sceneObjects.Add(gameObject);
 
-
             //Knight knight = new Knight();
             //_sceneObjects.Add(knight);
-            //GLtf2Helm gltf2helm = new GLtf2Helm();
-            //_sceneObjects.Add(gltf2helm);
+            GLtf2Helm gltf2helm = new GLtf2Helm();
+            _sceneObjects.Add(gltf2helm);
 
             //GLtf2Helm gltf2helm2 = new GLtf2Helm();
             //_sceneObjects.Add(gltf2helm2);
 
             PointLight light1 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
             light1.Position = new Vector3(10.0f,  10.0f, 10.0f);
-            _sceneObjects.Add(light1);
+            //_sceneObjects.Add(light1);
             //PointLight light2 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
-            //light2.Position = new Vector3(10.0f,  10.0f, 10.0f);
+            //light2.Position = new Vector3(10.0f, 10.0f, 10.0f);
             //_sceneObjects.Add(light2);
             //PointLight light3 = new PointLight(new Vector3(300.0f, 300.0f, 300.0f), 1);
             //light3.Position = new Vector3(-10.0f, -10.0f, 10.0f);
@@ -43,7 +42,7 @@ namespace IrrationalEngineCore.Logic.Scenes
 
 
 
-          
+
         }
 
         public override void OnUpdated()

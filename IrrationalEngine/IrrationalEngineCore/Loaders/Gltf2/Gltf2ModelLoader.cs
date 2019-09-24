@@ -11,6 +11,7 @@ using System.Linq;
 
 namespace IrrationalEngineCore.Loaders.Gltf2
 {
+    [Obsolete("Use Assimp implementation instead")]
     public class Gltf2ModelLoader : IModelLoader
     {
         public Core.Entities.Mesh LoadFromFile(string path)
