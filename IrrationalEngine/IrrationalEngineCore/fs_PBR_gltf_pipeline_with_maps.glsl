@@ -91,7 +91,7 @@ vec3 getNormalFromMap()
     vec3 B  = -normalize(cross(N, T));
     mat3 TBN = mat3(T, B, N);
 
-    return normalize(TBN * tangentNormal) * vec3(normalScale);
+    return normalize(TBN * tangentNormal);
 }
 
 void main()
@@ -100,8 +100,8 @@ void main()
     
     vec3 V = normalize(cameraPosition - f_pos);
     vec3 R = reflect(-V, N); 
-	vec3 albedo = //texture(maintexture, f_texcoord).rgb;
-    pow(texture(maintexture, f_texcoord).rgb, vec3(2.2));
+	vec3 albedo = texture(maintexture, f_texcoord).rgb;
+    //pow(texture(maintexture, f_texcoord).rgb, vec3(2.2));
 
     float metallic = texture(metallicroughness, f_texcoord).b;// * texture(maintexture, f_texcoord).b;
     float roughness = texture(metallicroughness, f_texcoord).g;// * texture(maintexture, f_texcoord).g;

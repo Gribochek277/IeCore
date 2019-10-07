@@ -3,6 +3,7 @@ using IrrationalEngineCore.Core.Entities;
 using IrrationalEngineCore.Core.SceneObjectComponents;
 using IrrationalEngineCore.Core.Shaders;
 using IrrationalEngineCore.Loaders.Assimp;
+using IrrationalEngineCore.Loaders.Gltf2;
 using OpenTK;
 
 namespace IrrationalEngineCore.Logic
@@ -15,10 +16,10 @@ namespace IrrationalEngineCore.Logic
                 new Pbr(),
                // "Resources/Gltf/sphere/sphere.gltf",
                 "Resources/Gltf/cerebrus/scene.gltf",
-                new AssimpMaterialLoader());
+                new Gltf2MaterialLoader());
 
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
-                new AssimpModelLoader(),
+                new Gltf2ModelLoader(true),
             //    "Resources/Gltf/sphere/sphere.gltf"
                  "Resources/Gltf/cerebrus/scene.gltf"
                 );

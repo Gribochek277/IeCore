@@ -1,8 +1,6 @@
-﻿using Assimp;
-using glTFLoader;
+﻿using glTFLoader;
 using glTFLoader.Schema;
 using IrrationalEngineCore.Loaders.Interfaces;
-using IrrationalEngineCore.Loaders.Gltf2;
 using IrrationalEngineCore.Loaders.Gltf2.Gltf2Extentions;
 using OpenTK;
 using System;
@@ -11,9 +9,14 @@ using System.Linq;
 
 namespace IrrationalEngineCore.Loaders.Gltf2
 {
-    [Obsolete("Use Assimp implementation instead")]
     public class Gltf2ModelLoader : IModelLoader
     {
+        private bool _recalculateNormals = false; //TODO: Investigate the problem with loading normals or calculate smooth
+        public Gltf2ModelLoader(bool recalculateNormals = false)
+        {
+            _recalculateNormals = recalculateNormals;
+        }
+
         public Core.Entities.Mesh LoadFromFile(string path)
         {
 
@@ -24,9 +27,9 @@ namespace IrrationalEngineCore.Loaders.Gltf2
                 Gltf deserializedFile = Interface.LoadModel(path);
                 byte[] bufferBytes = null;
                 //Only one mesh currently supported.
-                glTFLoader.Schema.Mesh[] meshes = deserializedFile.Meshes;
+                Mesh[] meshes = deserializedFile.Meshes;
 
-                Core.Entities.Mesh loadedModel = new Core.Entities.Mesh();
+                Core.Entities.Mesh loadedModel = new Core.Entities.Mesh(_recalculateNormals);
 
                 // read all buffers
                 for (int i = 0; i < deserializedFile.Buffers?.Length; i++)
@@ -77,7 +80,7 @@ namespace IrrationalEngineCore.Loaders.Gltf2
                     }
 
                     loadedModel.Vertices = decodedVertices.ToArray();
-                    loadedModel.Normals = decodedVertices.ToArray();
+                    loadedModel.Normals = decodedNormals.ToArray();
                     loadedModel.UvCoords = decodedUvCoords.ToArray();
                     loadedModel.Indeces = indeces;
                 }

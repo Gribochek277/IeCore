@@ -8,6 +8,7 @@ namespace IrrationalEngineCore.Loaders.Assimp
 {
     public class AssimpModelLoader : IModelLoader
     {
+        [Obsolete("Use Gltf2 implementation instead, for now assimp does not support animation")]
         List<Mesh> meshes = new List<Mesh>();
         public Core.Entities.Mesh LoadFromFile(string path)
         {

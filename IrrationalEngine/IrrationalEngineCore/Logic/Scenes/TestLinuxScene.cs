@@ -20,8 +20,8 @@ namespace IrrationalEngineCore.Logic.Scenes
             base.OnLoad();
             //Lion gameObject = new Lion();
             //_sceneObjects.Add(gameObject);
-            Knight knight = new Knight();
-            _sceneObjects.Add(knight);
+            AnimatedModelTest animatedModel = new AnimatedModelTest();
+            _sceneObjects.Add(animatedModel);
              PointLight light1 = new PointLight(new Vector3(0f, 0f, 0f), 1);
             light1.Position = new Vector3(0, 0, -1);
             _sceneObjects.Add(light1);

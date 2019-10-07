@@ -3,6 +3,7 @@ using OpenTK;
 
 namespace IrrationalEngineCore.Core.Entities {
     public class Mesh {
+        private bool _recalculateNormals = false;
         
         public Transform Transform {get; set;}
         public int[] Indeces { get; set; }
@@ -21,8 +22,9 @@ namespace IrrationalEngineCore.Core.Entities {
 
         public int NormalCount { get { return Normals.Length; } }
 
-        public Mesh(){
+        public Mesh(bool recalculateNormals = false){
             Transform = new Transform();
+            _recalculateNormals = recalculateNormals;
         }
 
         /// <summary>
@@ -38,6 +40,8 @@ namespace IrrationalEngineCore.Core.Entities {
         /// </summary>
         /// <returns>normals for object</returns>
         public Vector3[] GetNormals () {
+
+            if(_recalculateNormals) CalculateNormals();
             return Normals.ToArray ();
         }
 
@@ -71,7 +75,7 @@ namespace IrrationalEngineCore.Core.Entities {
         /// <summary>
         /// Calculates the model normals
         /// </summary>
-        public void CalculateNormals () {
+        public void CalculateNormals() {
             Vector3[] normals = new Vector3[VertCount];
             Vector3[] verts = GetVerts ();
             int[] inds = GetIndices ();
@@ -89,7 +93,7 @@ namespace IrrationalEngineCore.Core.Entities {
             }
 
             for (int i = 0; i < NormalCount; i++) {
-                normals[i] = normals[i].Normalized ();
+                normals[i] = normals[i].Normalized();
             }
 
             Normals = normals;

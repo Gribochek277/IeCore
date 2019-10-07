@@ -13,6 +13,12 @@
     <PackageReference Include="OpenTK.NetStandard" Version="1.0.7-prerelease" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="diffuse_fs.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="diffuse_vs.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="fs.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -341,6 +347,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TestBox\ObjFormat\box.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Textures\FallabackTexture.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\TwoSidedPlane\glTF\TwoSidedPlane.bin">

@@ -175,7 +175,6 @@
           "attributes": {
             "NORMAL": 1,
             "POSITION": 0,
-            "TANGENT": 2,
             "TEXCOORD_0": 3
           },
           "indices": 4,
