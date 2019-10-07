@@ -1,0 +1,113 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:IrrationalEngineEditor.ViewModels;assembly=IrrationalEngineEditor"
+        Title="IrrationalEngineEditor"
+        Position="0,0"
+        xmlns:controls="clr-namespace:IrrationalEngineEditor.Avalonia.Templates"
+        xmlns:window="clr-namespace:IrrationalEngineEditor.Avalonia.Views">
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
+  <StackPanel>
+  <DockPanel>
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="File">
+        <MenuItem Header="New" Command="{Binding RunIrrationalInstance}"/>
+        <Separator/>
+        <MenuItem Header="_Exit"/>
+      </MenuItem>
+      <MenuItem Header="Scene">
+        <MenuItem Header="Create new object"/>
+      </MenuItem>
+    </Menu>
+  </DockPanel>
+  <Border
+   BorderThickness="2" 
+   Padding="4">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+  <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0">
+    <TabControl>
+      <TabItem Header="Scene object panel">
+        <StackPanel Orientation="Vertical">
+        <TextBlock Text="{Binding SceneObjectPanel}"/>
+        <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Items="{Binding SceneObjects}"
+               SelectedIndex ="{Binding SelectedItemIndex, Mode=TwoWay}" Height="350">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}"/>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock Text="{Binding SelectedItemName}" />
+          </StackPanel>
+      </TabItem>
+      <TabItem Header="SceneObjectComponentsPanel">
+        <StackPanel Orientation="Vertical">
+        <TextBlock Text="{Binding SceneObjectComponentsPanel}"/>
+        <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Items="{Binding SelectedSceneObject.components}" Height="350" >
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Key}" />
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        </StackPanel>
+      </TabItem>
+    </TabControl>
+    
+
+    
+ 
+      
+  </StackPanel>  
+   <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0">     
+     <TextBlock Text="{Binding Rotation}" />
+     <Grid Grid.Column="0" Grid.Row="0" ColumnDefinitions="*,*,*" RowDefinitions="*,*">
+       <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding RotationX}"/>
+       <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding RotationY}"/>
+       <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding RotationZ}"/>
+       <Slider Value="{Binding RotationX}"  Grid.Row="1" Grid.Column="0" Minimum="-360" Maximum="360"></Slider>
+       <Slider Value="{Binding RotationY}"  Grid.Row="1" Grid.Column="1" Minimum="-360" Maximum="360"></Slider>
+       <Slider Value="{Binding RotationZ}"  Grid.Row="1" Grid.Column="2" Minimum="-360" Maximum="360"></Slider>
+     </Grid>
+     <Separator/>
+     <TextBlock Text="{Binding Position}" />
+     <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*">
+       <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding PositionX}"/>
+       <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding PositionY}"/>
+       <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding PositionZ}"/>
+       <Slider Value="{Binding PositionX}"  Grid.Row="1" Grid.Column="0" Minimum="-1" Maximum="1"></Slider>
+       <Slider Value="{Binding PositionY}"  Grid.Row="1" Grid.Column="1" Minimum="-1" Maximum="1"></Slider>
+       <Slider Value="{Binding PositionZ}"  Grid.Row="1" Grid.Column="2" Minimum="-1" Maximum="1"></Slider>
+     </Grid>
+     <Separator/>
+     <TextBlock Text="{Binding Scale}" />
+     <Grid ColumnDefinitions="*,*,*" RowDefinitions="*,*">
+       <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding ScaleX}"/>
+       <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ScaleY}"/>
+       <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding ScaleZ}"/>
+       <Slider Value="{Binding ScaleX}"  Grid.Row="1" Grid.Column="0" Minimum="-1000" Maximum="1000"></Slider>
+       <Slider Value="{Binding ScaleY}"  Grid.Row="1" Grid.Column="1" Minimum="-1000" Maximum="1000"></Slider>
+       <Slider Value="{Binding ScaleZ}"  Grid.Row="1" Grid.Column="2" Minimum="-1000" Maximum="1000"></Slider>
+     </Grid>
+     <TabControl Classes="sidebar">
+       <TabItem Header="SceneObjectComponents">
+         <controls:SceneObjectComponents/>
+       </TabItem>
+       <TabItem Header="Second item">
+         <TextBlock Text="HELLO" />
+       </TabItem>
+     </TabControl>
+   </StackPanel>
+  </Grid>
+  </Border>    
+  </StackPanel>
+</Window>

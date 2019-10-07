@@ -1,0 +1,14 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:vm="clr-namespace:IrrationalEngineEditor.ViewModels;assembly=IrrationalEngineEditor"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.DataContext>
+    <vm:SceneObjectComponentsViewModel/>
+  </Design.DataContext>
+  <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" Items="{Binding SelectedSceneObject.components}" Height="350" SelectedItem="{Binding SelectedItemName, Mode=TwoWay}">
+    <ListBox.ItemTemplate>
+      <DataTemplate>
+        <Button DataContext="{Binding vm}" Command="{Binding ChangeListItemCommand}" CommandParameter="key" Content="{Binding Key}" />
+      </DataTemplate>
+    </ListBox.ItemTemplate>
+  </ListBox>
+</UserControl>
