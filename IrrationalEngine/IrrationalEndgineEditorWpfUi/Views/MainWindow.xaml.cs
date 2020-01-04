@@ -1,6 +1,7 @@
-﻿using IrrationalEngineEditor.Interfaces;
+﻿using IrrationalEngineEditor.Models;
 using Microsoft.Extensions.Options;
 using System.Windows;
+using IrrationalEngineEditor.Interfaces.ViewModels;
 
 namespace IrrationalEndgineEditorWpfUi
 {
@@ -9,16 +10,19 @@ namespace IrrationalEndgineEditorWpfUi
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ISampleService _sampleService;
+        private readonly IMainWindowViewModel _mainWindowViewModel;
         private readonly AppSettings _settings;
 
-        public MainWindow(ISampleService sampleService,
+        public MainWindow(IMainWindowViewModel mainViewModel,
                       IOptions<AppSettings> settings)
         {
+            _mainWindowViewModel = mainViewModel;
             InitializeComponent();
-            _sampleService = sampleService;
-            _settings = settings.Value;
-            Title = _sampleService.GetCurrentDate();
+        }
+
+        private void NewWindow(object sender, RoutedEventArgs e)
+        {
+            _mainWindowViewModel.NewWindow();
         }
     }
 }
