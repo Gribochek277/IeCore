@@ -11,7 +11,7 @@ pipelines:
         caches:
           - dotnetcore
         script: # Modify the commands below to build your repository.
-          - export PROJECT_NAME=IrrationalEngine\IrrationaEngineCore.sln
+          - export PROJECT_NAME=.\IrrationalEngine\IrrationaEngineCore.sln
           #For now we dont have tests
           #- export TEST_NAME=yourTestName
           - dotnet restore
