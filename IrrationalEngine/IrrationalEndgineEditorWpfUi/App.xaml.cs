@@ -1,4 +1,4 @@
-﻿using IrrationalEndgineEditorWpfUi.CustomComponents;
+﻿using IrrationalEngineCore;
 using IrrationalEngineEditor.Implementations;
 using IrrationalEngineEditor.Implementations.ViewModels;
 using IrrationalEngineEditor.Interfaces;
@@ -31,12 +31,13 @@ namespace IrrationalEndgineEditorWpfUi
             Configuration = builder.Build();
 
             ServiceCollection serviceCollection = new ServiceCollection();
-
+            IrrationalEngine.RunProgram();
             ConfigureServices(serviceCollection);
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
 
             MainWindow mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+            
             mainWindow.Show();
         }
 
@@ -46,7 +47,8 @@ namespace IrrationalEndgineEditorWpfUi
                     (Configuration.GetSection(nameof(AppSettings)));
             services.AddScoped<ISampleService, SampleService>();
             services.AddScoped<IObjectBrowserViewModel, ObjectBrowserViewModel>();
-            services.AddSingleton(nameof(SceneModel));
+            services.AddScoped<IMainWindowViewModel, MainWindowViewModel>();
+            services.AddSingleton(typeof(SceneModel));
             services.AddTransient(typeof(ObjectBrowserViewModel));
             services.AddTransient(typeof(MainWindow));
         }

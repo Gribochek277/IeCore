@@ -17,13 +17,13 @@ namespace IrrationalEngineCore.Core.SceneObjectComponents
        
         private IMaterialLoader _materialLoader;
 
-        public IShaderImplementation shaderImplementation {get; private set;}
+        public IShaderImplementation ShaderImplementation {get; private set;}
 
         public MaterialSceneObjectComponent(IShaderImplementation ShaderImplementation, string MaterialSource, IMaterialLoader materialLoader)
         {
             _matSource = MaterialSource;
             _materialLoader = materialLoader;
-            shaderImplementation = ShaderImplementation;
+            this.ShaderImplementation = ShaderImplementation;
         }
 
         public string MaterialSource
@@ -47,44 +47,54 @@ namespace IrrationalEngineCore.Core.SceneObjectComponents
         {
             foreach (var mat in _materialLoader.LoadFromFile(filename))
             {
-                if (!shaderImplementation.Materials.ContainsKey(mat.Key))
+                if (!ShaderImplementation.Materials.ContainsKey(mat.Key))
                 {
-                    shaderImplementation.Materials.Add(mat.Key, mat.Value);
+                    ShaderImplementation.Materials.Add(mat.Key, mat.Value);
                 }
             }
 
             // Load textures
-            foreach (Material mat in shaderImplementation.Materials.Values) //TODO; probably required textures should be retrieved from shaderImplementation
+            foreach (Material mat in ShaderImplementation.Materials.Values) //TODO; probably required textures should be retrieved from ShaderImplementation
             {
-                if (File.Exists(mat.DiffuseMap) && !shaderImplementation.Textures.ContainsKey(mat.DiffuseMap))
+                if (File.Exists(mat.DiffuseMap) && !ShaderImplementation.Textures.ContainsKey(mat.DiffuseMap))
                 {
-                    shaderImplementation.Textures.Add(mat.DiffuseMap, LoadImage(mat.DiffuseMap, PixelInternalFormat.Srgb8));
+                    ShaderImplementation.Textures.Add(mat.DiffuseMap, LoadImage(mat.DiffuseMap, PixelInternalFormat.Srgb8));
                 }
 
-                if (File.Exists(mat.NormalMap) && !shaderImplementation.Textures.ContainsKey(mat.NormalMap))
+                if (File.Exists(mat.NormalMap) && !ShaderImplementation.Textures.ContainsKey(mat.NormalMap))
                 {
-                    shaderImplementation.Textures.Add(mat.NormalMap, LoadNormalsImage(mat.NormalMap));
+                    ShaderImplementation.Textures.Add(mat.NormalMap, LoadNormalsImage(mat.NormalMap));
                 }
 
-                if (File.Exists(mat.OpacityMap) && !shaderImplementation.Textures.ContainsKey(mat.OpacityMap))
+                if (File.Exists(mat.OpacityMap) && !ShaderImplementation.Textures.ContainsKey(mat.OpacityMap))
                 {
-                    shaderImplementation.Textures.Add(mat.OpacityMap, LoadImage(mat.OpacityMap,PixelInternalFormat.Rgba));
+                    ShaderImplementation.Textures.Add(mat.OpacityMap, LoadImage(mat.OpacityMap,PixelInternalFormat.Rgba));
                 }
 
-                if (File.Exists(mat.AmbientMap) && !shaderImplementation.Textures.ContainsKey(mat.AmbientMap))
+                if (File.Exists(mat.AmbientMap) && !ShaderImplementation.Textures.ContainsKey(mat.AmbientMap))
                 {
-                    shaderImplementation.Textures.Add(mat.AmbientMap, LoadImage(mat.AmbientMap,PixelInternalFormat.Rgb));
+                    ShaderImplementation.Textures.Add(mat.AmbientMap, LoadImage(mat.AmbientMap,PixelInternalFormat.Rgb));
                 }
 
-                if (File.Exists(mat.SpecularMap) && !shaderImplementation.Textures.ContainsKey(mat.SpecularMap))
+                if (File.Exists(mat.SpecularMap) && !ShaderImplementation.Textures.ContainsKey(mat.SpecularMap))
                 {
-                    shaderImplementation.Textures.Add(mat.SpecularMap, LoadImage(mat.SpecularMap,PixelInternalFormat.Rgba));
+                    ShaderImplementation.Textures.Add(mat.SpecularMap, LoadImage(mat.SpecularMap,PixelInternalFormat.Rgba));
                 }
 
 
-                if (File.Exists(mat.MetallicRoughness) && !shaderImplementation.Textures.ContainsKey(mat.MetallicRoughness))
+                if (File.Exists(mat.MetallicRoughness) && !ShaderImplementation.Textures.ContainsKey(mat.MetallicRoughness))
                 {
-                    shaderImplementation.Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Rgb));
+                    ShaderImplementation.Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Rgb));
+                }
+
+                if (File.Exists(mat.Metallic) && !ShaderImplementation.Textures.ContainsKey(mat.Metallic))
+                {
+                    ShaderImplementation.Textures.Add(mat.Metallic, LoadImage(mat.Metallic, PixelInternalFormat.Rgb));
+                }
+
+                if (File.Exists(mat.Roughness) && !ShaderImplementation.Textures.ContainsKey(mat.Roughness))
+                {
+                    ShaderImplementation.Textures.Add(mat.Roughness, LoadImage(mat.Roughness, PixelInternalFormat.Rgb));
                 }
             }
         }

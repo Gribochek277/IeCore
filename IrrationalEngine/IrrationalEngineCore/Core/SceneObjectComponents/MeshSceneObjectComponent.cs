@@ -1,6 +1,7 @@
 ﻿using IrrationalEngineCore.Core.Entities;
 using IrrationalEngineCore.Core.Entities.Abstractions;
 using IrrationalEngineCore.Loaders.Interfaces;
+using OpenTK;
 using System;
 
 namespace IrrationalEngineCore.Core.SceneObjectComponents
@@ -10,6 +11,10 @@ namespace IrrationalEngineCore.Core.SceneObjectComponents
         public Mesh ModelMesh { get; private set; }
         public string MdlSource { get; set; }
         public IModelLoader ModelLoader { get; private set; }
+
+        public Vector3 Position { get { return ModelMesh.Transform.Position; } }
+
+        public Vector3 Rosition { get { return ModelMesh.Transform.Rotation; } }
 
         public MeshSceneObjectComponent() { }
 

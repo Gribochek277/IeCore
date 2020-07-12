@@ -16,13 +16,15 @@ namespace IrrationalEngineCore.Logic.Scenes
             base.OnLoad();
             //  Lion gameObject = new Lion();
             //_sceneObjects.Add(gameObject);
-            Cerberus gameObject = new Cerberus();
-            _sceneObjects.Add(gameObject);
+            //Cerberus gameObject = new Cerberus();
+            //_sceneObjects.Add(gameObject);
 
             //Knight knight = new Knight();
             //_sceneObjects.Add(knight);
-            GLtf2Helm gltf2helm = new GLtf2Helm();
-            _sceneObjects.Add(gltf2helm);
+            //GLtf2Helm gltf2helm = new GLtf2Helm();
+            //_sceneObjects.Add(gltf2helm);
+            MiraFbx miraFbx = new MiraFbx();
+            _sceneObjects.Add(miraFbx);
 
             //GLtf2Helm gltf2helm2 = new GLtf2Helm();
             //_sceneObjects.Add(gltf2helm2);

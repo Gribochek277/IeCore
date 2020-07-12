@@ -10,6 +10,24 @@ namespace IrrationalEngineCore.Loaders.Gltf2.Gltf2Extentions
     {
         public static dynamic ParseBufferViews(this byte[] bufferBytes, Accessor accessors, BufferView bufferViews)
         {
+            if (accessors.ComponentType == Accessor.ComponentTypeEnum.UNSIGNED_SHORT && accessors.Type == Accessor.TypeEnum.VEC4)
+            {
+                byte[] subarray = bufferBytes.SubArray(bufferViews.ByteOffset, bufferViews.ByteLength);
+
+                var size = subarray.Count() / sizeof(ushort);
+                var ints = new int[size];
+                for (var index = 0; index < size; index++)
+                {
+                    ints[index] = BitConverter.ToUInt16(subarray, index * sizeof(ushort));
+                }
+                Vector4[] vectors = new Vector4[ints.Count() / 4];
+                for (int f = 0; f < ints.Count(); f += 4)
+                {
+                    vectors[f / 4] = new Vector4(ints[f], ints[f + 1], ints[f + 2], ints[f + 3]);
+                }
+                return vectors.ToList();
+            }
+
             if (accessors.ComponentType == Accessor.ComponentTypeEnum.UNSIGNED_SHORT && accessors.Type == Accessor.TypeEnum.SCALAR)
             {
                 byte[] subarray = bufferBytes.SubArray(bufferViews.ByteOffset, bufferViews.ByteLength);
@@ -18,7 +36,7 @@ namespace IrrationalEngineCore.Loaders.Gltf2.Gltf2Extentions
                 int[] ints = new int[size];
                 for (var index = 0; index < size; index++)
                 {
-                    ints[index] = (int)BitConverter.ToUInt16(subarray, index * sizeof(ushort));
+                    ints[index] = BitConverter.ToUInt16(subarray, index * sizeof(ushort));
                 }
                 return ints;
             }

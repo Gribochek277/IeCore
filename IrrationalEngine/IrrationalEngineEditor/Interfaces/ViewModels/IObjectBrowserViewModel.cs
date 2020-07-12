@@ -8,5 +8,7 @@ namespace IrrationalEngineEditor.Interfaces.ViewModels
     public interface IObjectBrowserViewModel
     {
         List<ISceneObject> Items { get; set; }
+        public event EventHandler UpdateTreeViewHandler;
+        public void UpdateTreeView();
     }
 }

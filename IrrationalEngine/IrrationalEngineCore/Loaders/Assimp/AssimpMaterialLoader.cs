@@ -36,24 +36,36 @@ namespace IrrationalEngineCore.Loaders.Assimp
                 TextureSlot[] textureSlots =  material.GetAllMaterialTextures();
                 if (material.HasTextureDiffuse)
                 {
-                    _material.DiffuseMap = Path.Combine(relativeLocation, material.TextureDiffuse.FilePath);
+                    _material.DiffuseMap = "C:/Users/kpbil/source/models/mira/textures/Mira_bc2.jpg"; //Path.Combine(relativeLocation, material.TextureDiffuse.FilePath);
+
+
                 }
 
                 if (material.HasTextureNormal)
                 {
-                    _material.NormalMap = Path.Combine(relativeLocation, material.TextureNormal.FilePath);
+                    _material.NormalMap = "C:/Users/kpbil/source/models/mira/textures/Mira_nm.jpg"; //Path.Combine(relativeLocation, material.TextureNormal.FilePath);
                 }
 
                 if (material.HasTextureAmbient)
                 {
-                    _material.AmbientMap = Path.Combine(relativeLocation, material.TextureAmbient.FilePath);
+                    _material.AmbientMap = "C:/Users/kpbil/source/models/mira/textures/Mira_ao.jpg";//Path.Combine(relativeLocation, material.TextureAmbient.FilePath);
                 }
 
                 try
                 {
-                    _material.MetallicRoughness = Path.Combine(relativeLocation, textureSlots.Where(t => t.TextureType == TextureType.Unknown).FirstOrDefault().FilePath);
+                    _material.Metallic = "C:/Users/kpbil/source/models/mira/textures/Mira_metal.jpg";//Path.Combine(relativeLocation, textureSlots.Where(t => t.TextureType == TextureType.Unknown).FirstOrDefault().FilePath);
                 }
                 catch {
+
+                    //TODO: add handling
+                }
+
+                try
+                {
+                    _material.Roughness = "C:/Users/kpbil/source/models/mira/textures/Mira_rou.jpg";//Path.Combine(relativeLocation, textureSlots.Where(t => t.TextureType == TextureType.Unknown).FirstOrDefault().FilePath);
+                }
+                catch
+                {
 
                     //TODO: add handling
                 }
