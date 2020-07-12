@@ -26,6 +26,9 @@ namespace IrrationalEngineCore.Core.Shaders
         private const string maintexture = "maintexture";
         private const string normaltexture = "normaltexture";
         private const string metallicRoughness = "metallicroughness";
+
+        private const string metallic = "metallicSampler";
+        private const string roughness = "roughnessSampler";
         private const string amibenOclussionMap = "defaultAO";
         private const string irradianceMap = "irradianceMap";
         private const string prefilterMap = "prefilterMap";
@@ -44,13 +47,17 @@ namespace IrrationalEngineCore.Core.Shaders
         {
             int texId = -1;
             int normId = -1; 
-            int metRoughId = -1; 
+            int metRoughId = -1;
+            int metallicId = -1;
+            int roughnessId = -1;
             int ambientId = -1; 
 
 
             Textures.TryGetValue(Materials.FirstOrDefault().Value.DiffuseMap, out texId);
             Textures.TryGetValue(Materials.FirstOrDefault().Value.NormalMap, out normId);
             Textures.TryGetValue(Materials.FirstOrDefault().Value.MetallicRoughness, out metRoughId);
+            Textures.TryGetValue(Materials.FirstOrDefault().Value.Metallic, out metallicId);
+            Textures.TryGetValue(Materials.FirstOrDefault().Value.Roughness, out roughnessId);
             Textures.TryGetValue(Materials.FirstOrDefault().Value.AmbientMap, out ambientId);
 
             _uniformHelper.TryAddUniformTexture2D(texId, maintexture, shaderProg, TextureUnit.Texture0);
@@ -59,7 +66,10 @@ namespace IrrationalEngineCore.Core.Shaders
 
              _uniformHelper.TryAddUniformTexture2D(metRoughId, metallicRoughness, shaderProg, TextureUnit.Texture2);
 
-             _uniformHelper.TryAddUniformTexture2D(ambientId, amibenOclussionMap, shaderProg, TextureUnit.Texture3);
+            _uniformHelper.TryAddUniformTexture2D(metallicId, metallic, shaderProg, TextureUnit.Texture2);
+            _uniformHelper.TryAddUniformTexture2D(roughnessId, roughness, shaderProg, TextureUnit.Texture2);
+
+            _uniformHelper.TryAddUniformTexture2D(ambientId, amibenOclussionMap, shaderProg, TextureUnit.Texture3);
             
              _uniformHelper.TryAddUniformTextureCubemap(pipelineData.SkyboxComponent.IrradianceMap, irradianceMap, shaderProg, TextureUnit.Texture4);
 

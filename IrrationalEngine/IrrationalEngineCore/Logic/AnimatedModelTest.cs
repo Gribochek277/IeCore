@@ -16,12 +16,12 @@ namespace IrrationalEngineCore.Logic
                 new MaterialSceneObjectComponent(
                     new SimpleDiffuse(),
                     "C:/Users/kpbil/source/repos/glTF-Sample-Models/2.0/RiggedSimple/glTF/RiggedSimple.gltf",
-                    new Gltf2MaterialLoader()
+                    new AssimpMaterialLoader()
                     );
 
 
             MeshSceneObjectComponent meshComponent = new MeshSceneObjectComponent(
-                new Gltf2ModelLoader(),
+                new AssimpModelLoader(),
                 "C:/Users/kpbil/source/repos/glTF-Sample-Models/2.0/RiggedSimple/glTF/RiggedSimple.gltf"
                 );
             BasicManipulationsComponent manipulation = new BasicManipulationsComponent(meshComponent);

@@ -8,6 +8,8 @@ in vec3 v_norm;
 uniform sampler2D maintexture;
 uniform sampler2D normaltexture;
 uniform sampler2D metallicroughness;
+uniform sampler2D metallicSampler;
+uniform sampler2D roughnessSampler;
 uniform sampler2D defaultAO;
 
 // lights
@@ -103,8 +105,8 @@ void main()
 	vec3 albedo = texture(maintexture, f_texcoord).rgb;
     //pow(texture(maintexture, f_texcoord).rgb, vec3(2.2));
 
-    float metallic = texture(metallicroughness, f_texcoord).b;// * texture(maintexture, f_texcoord).b;
-    float roughness = texture(metallicroughness, f_texcoord).g;// * texture(maintexture, f_texcoord).g;
+    float metallic = texture(metallicSampler, f_texcoord).r;// * texture(maintexture, f_texcoord).b;
+    float roughness = texture(roughnessSampler, f_texcoord).r;// * texture(maintexture, f_texcoord).g;
     float ambientStr = 1;//texture(defaultAO, f_texcoord).r; 
 
 

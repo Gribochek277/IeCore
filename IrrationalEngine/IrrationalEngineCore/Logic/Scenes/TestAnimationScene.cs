@@ -7,7 +7,7 @@ using OpenTK.Input;
 
 namespace IrrationalEngineCore.Logic.Scenes
 {
-    public class TestLinuxScene : Scene
+    public class TestAnimationScene : Scene
     {
 
         int pickedObject = 2;
@@ -25,9 +25,9 @@ namespace IrrationalEngineCore.Logic.Scenes
              PointLight light1 = new PointLight(new Vector3(0f, 0f, 0f), 1);
             light1.Position = new Vector3(0, 0, -1);
             _sceneObjects.Add(light1);
-           
-            //GLtf2Helm gltf2helm = new GLtf2Helm();
-            //_sceneObjects.Add(gltf2helm);
+
+            GLtf2Helm gltf2helm = new GLtf2Helm();
+            _sceneObjects.Add(gltf2helm);
 
         }
 

@@ -8,8 +8,6 @@ using OpenTK.Graphics.OpenGL;
 using IrrationalEngineCore.Core.Entities.Abstractions;
 using IrrationalEngineCore.Core.SceneObjectComponents;
 using IrrationalEngineCore.Core.Renderer.OpenGL.Helpers;
-using IrrationalEngineCore.Core.Shaders;
-using OpenTK.Input;
 
 namespace IrrationalEngineCore.Core.Renderer.OpenGL
 {
@@ -57,7 +55,7 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
 
             List<Vector3> vertices = new List<Vector3>();
             List <int> indices = new List<int>();
-            List <Vector3> colors = new List<Vector3>();
+            //List <Vector3> colors = new List<Vector3>();
             List <Vector2> texcoords = new List<Vector2>();
             List <Vector3> normals = new List<Vector3>();
 
@@ -65,8 +63,8 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
             {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)v.components["MeshSceneObjectComponent"];
                 vertices.AddRange(meshComponent.ModelMesh.GetVerts().ToList());
-                indices.AddRange(meshComponent.ModelMesh.GetIndices(vertcount).ToList());
-                colors.AddRange(meshComponent.ModelMesh.GetColorData().ToList());
+                indices.AddRange(meshComponent.ModelMesh.GetIndicesWithOffcet(vertcount).ToList());
+                //colors.AddRange(meshComponent.ModelMesh.GetColorData().ToList());
                 texcoords.AddRange(meshComponent.ModelMesh.GetTextureCoords());
                 normals.AddRange(meshComponent.ModelMesh.GetNormals().ToList());
                 vertcount += meshComponent.ModelMesh.VertCount;
@@ -74,7 +72,7 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
 
             vertdata = vertices.ToArray();
             indicedata = indices.ToArray();
-            coldata = colors.ToArray();
+            //coldata = colors.ToArray();
             texCoordinatesData = texcoords.ToArray();
             normdata = normals.ToArray();
             

@@ -4,9 +4,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon />
     <StartupObject />
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AssimpNet" Version="4.1.0" />
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
     <PackageReference Include="glTF2Loader" Version="1.1.1-alpha" />
     <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="7.9.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />

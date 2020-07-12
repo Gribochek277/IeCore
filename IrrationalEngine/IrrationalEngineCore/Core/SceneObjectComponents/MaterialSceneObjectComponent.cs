@@ -86,6 +86,16 @@ namespace IrrationalEngineCore.Core.SceneObjectComponents
                 {
                     ShaderImplementation.Textures.Add(mat.MetallicRoughness, LoadImage(mat.MetallicRoughness,PixelInternalFormat.Rgb));
                 }
+
+                if (File.Exists(mat.Metallic) && !ShaderImplementation.Textures.ContainsKey(mat.Metallic))
+                {
+                    ShaderImplementation.Textures.Add(mat.Metallic, LoadImage(mat.Metallic, PixelInternalFormat.Rgb));
+                }
+
+                if (File.Exists(mat.Roughness) && !ShaderImplementation.Textures.ContainsKey(mat.Roughness))
+                {
+                    ShaderImplementation.Textures.Add(mat.Roughness, LoadImage(mat.Roughness, PixelInternalFormat.Rgb));
+                }
             }
         }
         // Similar realization exists in SkyboxComponent maybe need to be merged in future

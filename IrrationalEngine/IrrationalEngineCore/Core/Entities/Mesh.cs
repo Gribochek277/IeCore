@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenTK;
 
@@ -13,6 +15,14 @@ namespace IrrationalEngineCore.Core.Entities {
         public Vector3[] Normals { get; set; }
 
         public Vector2[] UvCoords { get; set; }
+
+        public Vector4[] Weights { get; set; }
+
+        public Vector4[] Joints { get; set; }
+
+        public List<VertexBoneData> Bones { get; set; }
+
+        public Dictionary<string, int> BoneMapping { get; set; }
 
         public int IndiceCount { get { return Indeces.Length; } }
 
@@ -50,7 +60,7 @@ namespace IrrationalEngineCore.Core.Entities {
         /// </summary>
         /// <param name="offset">Number of vertices buffered before this object</param>
         /// <returns>Array of indices with offset applied</returns>
-        public int[] GetIndices (int offset = 0) {
+        public int[] GetIndicesWithOffcet (int offset = 0) {
             return Enumerable.Range (offset, IndiceCount).ToArray ();
         }
 
@@ -59,7 +69,8 @@ namespace IrrationalEngineCore.Core.Entities {
         /// </summary>
         /// <returns></returns>
         public Vector3[] GetColorData () {
-            return new Vector3[ColorDataCount];
+            throw new NotImplementedException();
+            //return new Vector3[ColorDataCount];
         }
 
         /// <summary>
@@ -78,7 +89,7 @@ namespace IrrationalEngineCore.Core.Entities {
         public void CalculateNormals() {
             Vector3[] normals = new Vector3[VertCount];
             Vector3[] verts = GetVerts ();
-            int[] inds = GetIndices ();
+            int[] inds = GetIndicesWithOffcet ();
 
             // Compute normals for each face
             for (int i = 0; i < IndiceCount; i += 3) {

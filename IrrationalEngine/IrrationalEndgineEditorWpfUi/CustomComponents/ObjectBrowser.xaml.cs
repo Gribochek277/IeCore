@@ -1,6 +1,4 @@
 ﻿using IrrationalEngineCore.Core.Entities.Abstractions;
-using IrrationalEngineCore.Core.SceneObjectComponents;
-using IrrationalEngineEditor.Implementations.ViewModels;
 using IrrationalEngineEditor.Interfaces.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -10,7 +8,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -26,7 +23,7 @@ namespace IrrationalEndgineEditorWpfUi.CustomComponents
         public ObjectBrowser()
         {
             InitializeComponent();
-           
+
             _objectBrowserViewModel = App.ServiceProvider.GetService<IObjectBrowserViewModel>();
             _objectBrowserViewModel.UpdateTreeViewHandler += ReloadTreeView;
         }
@@ -78,7 +75,7 @@ namespace IrrationalEndgineEditorWpfUi.CustomComponents
 
         private void PropertiesGridScrollViewer_Loaded(object sender, RoutedEventArgs e)
         {
-            // Add MouseWheel support for the datagrid scrollviewer.
+            // Add MouseWheel support for the data-grid scroll-viewer.
             PropertiesGrid.AddHandler(MouseWheelEvent, new RoutedEventHandler(DataGridMouseWheelHorizontal), true);
         }
 
