@@ -1,0 +1,379 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>IeCoreInterfaces</name>
+    </assembly>
+    <members>
+        <member name="T:IeCoreInterfaces.AssetImporters.IAssetImporter">
+            <summary>
+            Serves for importing assets of all types.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.AssetImporters.IAssetImporter.AssetType">
+            <summary>
+            Determines type of asset.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.AssetImporters.IAssetImporter.FileExtensions">
+            <summary>
+            Array of possible file extensions for this type of asset.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.AssetImporters.IAssetImporter.Import(System.String)">
+            <summary>
+            Imports asset according to file path.
+            </summary>
+            <param name="file"></param>
+        </member>
+        <member name="T:IeCoreInterfaces.AssetImporters.IMaterialImporter">
+            <summary>
+            Load material assets.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.AssetImporters.IModelImporter">
+            <summary>
+            Loads model.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.Assets.IAssetManager">
+            <summary>
+            Contains all assets in one place, prevents loading of duplicate assets.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Assets.IAssetManager.AssetImporters">
+            <summary>
+            Dictionary of asset importers
+            which will be used in <see cref="M:IeCoreInterfaces.Assets.IAssetManager.RegisterFile``1(System.String)"/>.
+            Key - asset file extension.
+            Value - importer instance.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Assets.IAssetManager.RegisteredAssets">
+            <summary>
+            Dictionary of registered assets.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Assets.IAssetManager.RegisterFile``1(System.String)">
+            <summary>
+            Import asset from file.
+            </summary>
+            <typeparam name="T">asset type</typeparam>
+            <param name="file"></param>
+        </member>
+        <member name="M:IeCoreInterfaces.Assets.IAssetManager.Register(IeCoreEntites.Asset)">
+            <summary>
+            Registers asset to prevent duplication.
+            </summary>
+            <param name="asset"></param>
+        </member>
+        <member name="M:IeCoreInterfaces.Assets.IAssetManager.Retrieve``1(System.String)">
+            <summary>
+            Get asset by name.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.Assets.IAssetManager.RetrieveFile``1(System.String)">
+            <summary>
+            Get asset by file name.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="file"></param>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.Assets.IAssetManager.RetrieveAll``1">
+            <summary>
+            Get all assets of type.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:IeCoreInterfaces.EngineWindow.IWindow">
+            <summary>
+            Determines window which is opened during runtime.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.EngineWindow.IWindow.Run">
+            <summary>
+            Run window.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.EngineWindow.IWindow.UpdateRate">
+            <summary>
+            Set update rate.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.EngineWindow.IWindow.FrameRate">
+            <summary>
+            Set frame rate.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.EngineWindow.IWindowFactory">
+            <summary>
+            Factory for window creation
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.EngineWindow.IWindowFactory.Create">
+            <summary>
+            Creates new instance of window.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:IeCoreInterfaces.Core.IScene">
+            <summary>
+            Scene contains all scene objects.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Core.IScene.SceneObjects">
+            <summary>
+            Contains all the scene objects which are related to this scene.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.Core.ISceneObject">
+            <summary>
+            Base interface for all objects on scene.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Core.ISceneObject.Name">
+            <summary>
+            Name of scene object.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Core.ISceneObject.components">
+            <summary>
+            Components which are attached to this scene object.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Core.ISceneObject.AddComponent(IeCoreInterfaces.Core.ISceneObjectComponent)">
+            <summary>
+            Adds new component to this scene object.
+            </summary>
+            <param name="component"></param>
+        </member>
+        <member name="M:IeCoreInterfaces.Core.ISceneObject.RemoveComponent(System.String)">
+            <summary>
+            Removes component from this scene object.
+            </summary>
+            <param name="componentname"></param>
+        </member>
+        <member name="T:IeCoreInterfaces.Core.ISceneObjectComponent">
+            <summary>
+            Base interface for all components which are attached to <see cref="T:IeCoreInterfaces.Core.ISceneObject"/>
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Core.ISceneObjectComponent.Name">
+            <summary>
+            Name of scene object component
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.ISceneManager">
+            <summary>
+            Manages scenes during runtime
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.ISceneManager.Scene">
+            <summary>
+            Get current scene.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.Rendering.IRenderer">
+            <summary>
+            Renders all object on scene.
+            Encapsulates all the API calls to graphic library.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Rendering.IRenderer.SetViewPort(System.Int32,System.Int32)">
+            <summary>
+            Sets size of view port.
+            </summary>
+            <param name="width"></param>
+            <param name="height"></param>
+        </member>
+        <member name="T:IeCoreInterfaces.SceneObjectComponents.IMaterialComponent">
+            <summary>
+            Represents scene object component which responsible for materials.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.SceneObjectComponents.IMaterialComponent.materials">
+            <summary>
+            Dictionary of loaded materials which belong to this component
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.SceneObjectComponents.IMaterialComponent.ShaderProgram">
+            <summary>
+            Shader program which related to this component.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.SceneObjectComponents.IModelComponent">
+            <summary>
+            Represents scene object component which responsible for models.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.SceneObjectComponents.IModelComponent.Model">
+            <summary>
+            Get model which stored in this component.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVBODataOfModel">
+            <summary>
+            Return Vertex Buffer Object data from model.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:IeCoreInterfaces.Shaders.IShaderProgram">
+            <summary>
+            Shader program couples together materials, textures and shaders.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Shaders.IShaderProgram.ShaderProgramId">
+            <summary>
+            Id of shader program.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.LoadShaderFromString(System.String,System.String,IeCoreEntites.Shaders.ShaderType)">
+            <summary>
+            Uses provided shader code as a string a loads it to program.
+            </summary>
+            <param name="code"></param>
+            <param name="type">vertex, fragment etc.</param>
+            <param name="shaderName"></param>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.LoadShaderFromFile(System.String,System.String,IeCoreEntites.Shaders.ShaderType)">
+            <summary>
+            Get shader source from file and load it to program.
+            </summary>
+            <param name="filename"></param>
+            /// <param name="shaderName"></param>
+            <param name="type">vertex, fragment etc.</param>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.LinkShadersToProgram">
+            <summary>
+            Links compiled shader to program.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.UseProgram">
+            <summary>
+            Use current program for rendering.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.GenBuffers">
+            <summary>
+            Generate buffer object names;
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.EnableVertexAttribArrays">
+            <summary>
+            Enables generic vertex attribute arrays.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.DisableVertexAttribArrays">
+            <summary>
+            Disables generic vertex attribute arrays.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.GetAttributeAddress(System.String)">
+            <summary>
+            Gets attribute by name.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.GetUniform(System.String)">
+            <summary>
+            Gets uniform by name.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.GetBuffer(System.String)">
+            <summary>
+            Gets buffer by name.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="T:IIeCoreInterfaces.Behaviour.ILoadable">
+            <summary>
+            Determines that class should support loading behaviour.
+            </summary>
+        </member>
+        <member name="M:IIeCoreInterfaces.Behaviour.ILoadable.OnLoad">
+            <summary>
+            Calls on loading.
+            </summary>
+        </member>
+        <member name="M:IIeCoreInterfaces.Behaviour.ILoadable.OnUnload">
+            <summary>
+            calls on unloading,
+            </summary>
+        </member>
+        <member name="T:IIeCoreInterfaces.Behaviour.IRenderable">
+            <summary>
+            Determines that class should support rendering behaviour.
+            </summary>
+        </member>
+        <member name="M:IIeCoreInterfaces.Behaviour.IRenderable.OnRender">
+            <summary>
+            Calls on render.
+            </summary>
+        </member>
+        <member name="T:IIeCoreInterfaces.Behaviour.IResizable">
+            <summary>
+            Determines that class should support reszing behaviour.
+            </summary>
+        </member>
+        <member name="M:IIeCoreInterfaces.Behaviour.IResizable.OnResized">
+            <summary>
+            Calls on resize.
+            </summary>
+        </member>
+        <member name="T:IIeCoreInterfaces.Behaviour.IRotatable">
+            <summary>
+            Determines that class should support rotating behaviour.
+            </summary>
+        </member>
+        <member name="P:IIeCoreInterfaces.Behaviour.IRotatable.Rotation">
+            <summary>
+            Contains value of rotation.
+            </summary>
+        </member>
+        <member name="T:IIeCoreInterfaces.Behaviour.IScalable">
+            <summary>
+            Determines that class should support scale behaviour.
+            </summary>
+        </member>
+        <member name="P:IIeCoreInterfaces.Behaviour.IScalable.Scale">
+            <summary>
+            Conatins scale value.
+            </summary>
+        </member>
+        <member name="T:IIeCoreInterfaces.Behaviour.ITransformable">
+            <summary>
+            Determines that class should support transformations behaviour.
+            </summary>
+        </member>
+        <member name="P:IIeCoreInterfaces.Behaviour.ITransformable.Position">
+            <summary>
+            Contains position value.
+            </summary>
+        </member>
+        <member name="M:IIeCoreInterfaces.Behaviour.ITransformable.OnTransform">
+            <summary>
+            Calls on trasfor object.
+            </summary>
+        </member>
+        <member name="T:IIeCoreInterfaces.Behaviour.IUpdatable">
+            <summary>
+            /// <summary>
+            Determines that class should support update behaviour.
+            </summary>
+            </summary>
+        </member>
+        <member name="M:IIeCoreInterfaces.Behaviour.IUpdatable.OnUpdated">
+            <summary>
+            Calls on update.
+            </summary>
+        </member>
+    </members>
+</doc>

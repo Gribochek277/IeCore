@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# IDE0005: Using directive is unnecessary.
+dotnet_diagnostic.IDE0005.severity = error
+
+# CA1063: Implement IDisposable Correctly
+dotnet_diagnostic.CA1063.severity = error

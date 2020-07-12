@@ -3,17 +3,20 @@ using IrrationalEngineCore.Loaders.Interfaces;
 using IrrationalEngineCore.Loaders.Assimp.Extentions;
 using System;
 using System.Collections.Generic;
+using IrrationalEngineCore.Core.Entities;
+using Mesh = Assimp.Mesh;
+using Scene = Assimp.Scene;
 
 namespace IrrationalEngineCore.Loaders.Assimp
 {
     public class AssimpModelLoader : IModelLoader
     {
-        [Obsolete("Use Gltf2 implementation instead, for now assimp does not support animation")]
         List<Mesh> meshes = new List<Mesh>();
         public Core.Entities.Mesh LoadFromFile(string path)
         {
             AssimpContext context = new AssimpContext();
-            Scene loadedAssimpScene = context.ImportFile(path, PostProcessSteps.OptimizeMeshes | PostProcessSteps.Triangulate | PostProcessSteps.FlipUVs);
+            const PostProcessSteps ASSIMP_LOAD_FLAGS = PostProcessSteps.Triangulate | PostProcessSteps.GenerateSmoothNormals | PostProcessSteps.FlipUVs;
+            Scene loadedAssimpScene = context.ImportFile(path, ASSIMP_LOAD_FLAGS);
             if (loadedAssimpScene == null || loadedAssimpScene.SceneFlags == SceneFlags.Incomplete)
             {
                 Console.WriteLine("Scene error");

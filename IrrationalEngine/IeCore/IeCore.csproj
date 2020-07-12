@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IeCoreEntites\IeCoreEntites.csproj" />
+    <ProjectReference Include="..\IeCoreInterfaces\IeCoreInterfaces.csproj" />
+    <ProjectReference Include="..\IeCoreOpengl\IeCoreOpengl.csproj" />
+  </ItemGroup>
+
+</Project>

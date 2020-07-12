@@ -3,7 +3,6 @@ using System.IO;
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace IrrationalEngineCore.Core.Shaders
 {
