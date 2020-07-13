@@ -16,5 +16,5 @@ build:
         - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release -v n" 
 
 artifacts:
-    - "./IrrationalEngine/IeCore/bin/Release/netcoreapp3.1/*"
-    expire_in: 1 month
+    - ./IrrationalEngine/IeCore/bin/Release/netcoreapp3.1/*
+expire_in: 1 month
