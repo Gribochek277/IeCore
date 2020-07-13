@@ -4,7 +4,14 @@ stages:
     - build
 
 before_script:
-    - "dotnet restore ./IrrationalEngine -v d"
+    - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v d"
+    - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v d"
+    - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v d"
+    - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v d"
+    - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v d"
+    - "dotnet restore ./IrrationalEngine/IrrationalEngineCore/IrrationalEngineCore.csproj -v d"
+    - "dotnet restore ./IrrationalEngine/IrrationalEngineEditor/IrrationalEngineEditor.csproj -v d"
+    - "dotnet restore ./IrrationalEngine/IrrationalEndgineEditorWpfUi/IrrationalEndgineEditorWpfUi.csproj -v d"
 
 build:
     stage: build
