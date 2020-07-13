@@ -13,6 +13,7 @@ namespace IeCore.DefaultImplementations.ModelPrimitives
             TriangleDefaultModel = new Model("Triangle", "defaultTriangleFile");
             Mesh mesh = new Mesh();
             List<Vertex> vertices = new List<Vertex>();
+            List<int> elements = new List<int>() { 0, 1, 2 };
 
 
             vertices.Add(new Vertex() { Position = new Vector3(-0.5f, -0.5f, 0.0f) }); //Bottom-left vertex
@@ -22,6 +23,7 @@ namespace IeCore.DefaultImplementations.ModelPrimitives
             vertices.Add(new Vertex() { Position = new Vector3(0.5f, -0.5f, 0.0f) }); //Bottom-right vertex
           
             mesh.Vertices = vertices;
+            mesh.Elements = elements;
 
             TriangleDefaultModel.Meshes.Add(mesh);
         }
