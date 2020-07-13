@@ -3,9 +3,6 @@ image: microsoft/dotnet:latest
 stages:
     - build
 
-before_script:
-    - "dotnet restore ./IrrationalEngine"
-
 build:
     stage: build
     script:
