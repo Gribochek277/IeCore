@@ -6,4 +6,4 @@ stages:
 build:
     stage: build
     script:
-        - "dotnet build ./IrrationalEngine -c Release -v d" 
+        - "dotnet build ./IrrationalEngine -c Release -v n" 
