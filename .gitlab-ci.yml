@@ -13,4 +13,4 @@ before_script:
 build:
     stage: build
     script:
-        - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release|Any CPU -v n" 
+        - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release -v n" 
