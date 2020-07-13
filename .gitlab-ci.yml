@@ -4,7 +4,7 @@ stages:
     - build
 
 before_script:
-    - "dotnet restore"
+    - "dotnet restore ./IrrationalEngine"
 
 build:
     stage: build
