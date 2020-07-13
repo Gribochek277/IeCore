@@ -9,7 +9,7 @@ before_script:
     - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v n"
     - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
     - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"
-   \
+   
 build:
     stage: build
     script:
