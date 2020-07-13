@@ -2,6 +2,7 @@ image:  mcr.microsoft.com/dotnet/core/sdk:3.1
 
 stages:
     - build
+    -package
 
 before_script:
     - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v n"
@@ -15,6 +16,10 @@ build:
     script:
         - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release -v n" 
 
-artifacts:
-    - ./IrrationalEngine/IeCore/bin/Release/netcoreapp3.1/*
-expire_in: 1 month
+package:
+  stage: package
+  script: tar -cfz packaged.tar.bz2 ./IrrationalEngine/IeCore/bin/Release/netcoreapp3.1 
+  artifacts:
+    paths:
+    - packaged.tar.gz
+    expire_in: 1 month
