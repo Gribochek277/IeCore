@@ -4,16 +4,13 @@ stages:
     - build
 
 before_script:
-    - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v d"
-    - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v d"
-    - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v d"
-    - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v d"
-    - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v d"
-    - "dotnet restore ./IrrationalEngine/IrrationalEngineCore/IrrationalEngineCore.csproj -v d"
-    - "dotnet restore ./IrrationalEngine/IrrationalEngineEditor/IrrationalEngineEditor.csproj -v d"
-    - "dotnet restore ./IrrationalEngine/IrrationalEndgineEditorWpfUi/IrrationalEndgineEditorWpfUi.csproj -v d"
-
+    - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v n"
+    - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v n"
+    - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v n"
+    - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
+    - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"
+   \
 build:
     stage: build
     script:
-        - "dotnet build ./IrrationalEngine -c Release|Any CPU -v n" 
+        - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release|Any CPU -v n" 
