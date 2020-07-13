@@ -9,4 +9,4 @@ before_script:
 build:
     stage: build
     script:
-        - "dotnet build ./IrrationalEngine -c Release -v n" 
+        - "dotnet build ./IrrationalEngine -c Release|Any CPU -v n" 
