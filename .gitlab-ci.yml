@@ -19,8 +19,8 @@ build:
 package:
   stage: package
   script: 
-    - "tar -cfz packaged.tar.bz2 ./IrrationalEngine/IeCore/bin/Release/netcoreapp3.1"
+    - "tar -cfz packaged.tar.bz2 ./IrrationalEngine/IeCore/bin/Release/netcoreapp3.1"    
   artifacts:
     paths:
-    - "packaged.tar.gz"
-    expire_in: - "1 month"
+    - packaged.tar.gz
+    expire_in: 1 month
