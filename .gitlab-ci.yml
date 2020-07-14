@@ -19,7 +19,7 @@ build:
 package:
   stage: package
   script: 
-    - "tar -cfz packaged.tar.bz2 ./IrrationalEngine/IeCore/bin/Release/netcoreapp3.1"    
+    - "tar -cfz packaged.tar.bz2 ./IrrationalEngine/IeCore/bin/"    
   artifacts:
     paths:
     - packaged.tar.gz
