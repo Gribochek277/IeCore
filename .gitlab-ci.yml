@@ -2,7 +2,7 @@ image:  mcr.microsoft.com/dotnet/core/sdk:3.1
 
 stages:
     - build
-    - package
+    - cleanup
    
 build:  
     stage: build
@@ -18,3 +18,9 @@ build:
       paths: 
       - $bin_location
       expire_in: 1 month
+
+cleanup:
+  stage: cleanup
+  script:
+    - "rm -r ./IrrationalEngine"
+  when: always
