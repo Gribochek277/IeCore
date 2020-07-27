@@ -19,7 +19,7 @@ build:
 package:
   stage: package
   script: 
-    - "tar -cfz packaged.tar.bz2 ./IrrationalEngine/IeCore/bin/"    
+    - "tar -cfz packaged.tar.bz2 $env:bin_location"    
   artifacts:
     paths:
     - packaged.tar.gz
