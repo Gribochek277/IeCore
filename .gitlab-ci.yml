@@ -11,9 +11,10 @@ build:
       - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v n"
       - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v n"
       - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
-      - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"
-    artifacts:
-      paths: 
-      - "./IrrationalEngine/IeCore/"
+      - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"    
     script:
         - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release -v n" 
+    artifacts:
+      paths: 
+      - $bin_location
+      expire_in: 1 month
