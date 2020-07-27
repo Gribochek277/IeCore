@@ -26,5 +26,5 @@ cleanup:
   stage: cleanup
   script:
     - "rm -r ./IrrationalEngine"
-    - "ls ~/.nuget/packages"
+    - "dotnet nuget locals -l all"
   when: always
