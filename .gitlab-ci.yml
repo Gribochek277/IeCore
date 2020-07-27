@@ -13,23 +13,7 @@ build:
       - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
       - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"
     artifacts:
-      untracked: true
       paths: 
       - "./IrrationalEngine/IeCore/"
     script:
         - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release -v n" 
-
-package:
-  stage: package
-  script: 
-    - "ls" 
-    - "cd ./IrrationalEngine"
-    - "ls" 
-    - "cd ./IeCore"
-    - "ls"
-    - "tar -cfz packaged.tar.bz2 $bin_location"
-  dependencies: ["build"]
-  artifacts:
-    paths:
-    - packaged.tar.gz
-    expire_in: 1 month
