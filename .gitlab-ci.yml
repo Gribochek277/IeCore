@@ -8,7 +8,7 @@ build:
     stage: build
     cache:
       paths:
-        - "~/.local/share/NuGet/plugins-cache"
+        - "~/.nuget/packages"
     before_script:
       - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v n"
       - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v n"
@@ -26,5 +26,5 @@ cleanup:
   stage: cleanup
   script:
     - "rm -r ./IrrationalEngine"
-    - "ls ~/.local/share/NuGet/plugins-cache"
+    - "ls ~/.nuget/packages"
   when: always
