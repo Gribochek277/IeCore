@@ -6,8 +6,9 @@ stages:
    
 build:  
     stage: build
-    cache: 
-      - "~/.local/share/NuGet/plugins-cache"
+    cache:
+      paths:
+        - "~/.local/share/NuGet/plugins-cache"
     before_script:
       - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v n"
       - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v n"
