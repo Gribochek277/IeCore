@@ -19,7 +19,8 @@ build:
 package:
   stage: package
   script: 
-    - "tar -cfz packaged.tar.bz2 $env:bin_location"    
+    - "ls" 
+    - "tar -cfz packaged.tar.bz2 $bin_location"    
   artifacts:
     paths:
     - packaged.tar.gz
