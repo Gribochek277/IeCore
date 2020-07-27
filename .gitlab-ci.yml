@@ -12,11 +12,15 @@ build:
       - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v n"
       - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
       - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"
+    artifacts:
+      untracked: true
     script:
         - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release -v n" 
 
 package:
   stage: package
+   dependencies: 
+    - build
   script: 
     - "ls" 
     - "cd ./IrrationalEngine"
