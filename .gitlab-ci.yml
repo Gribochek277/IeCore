@@ -3,16 +3,15 @@ image:  mcr.microsoft.com/dotnet/core/sdk:3.1
 stages:
     - build
     - package
-
-before_script:
-    - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v n"
-    - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v n"
-    - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v n"
-    - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
-    - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"
    
-build:
+build:  
     stage: build
+    before_script:
+      - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v n"
+      - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v n"
+      - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v n"
+      - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
+      - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"
     script:
         - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release -v n" 
 
@@ -20,6 +19,10 @@ package:
   stage: package
   script: 
     - "ls" 
+    - "cd ./IrrationalEngine"
+    - "ls" 
+    - "cd ./IeCore"
+    - "ls"
     - "tar -cfz packaged.tar.bz2 $bin_location"    
   artifacts:
     paths:
