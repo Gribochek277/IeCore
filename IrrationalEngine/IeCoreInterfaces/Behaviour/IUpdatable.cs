@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// /// <summary>
-    /// Determines that class should support update behaviour.
+    /// Determines that class should support update behavior.
     /// </summary>
     /// </summary>
     public interface IUpdatable

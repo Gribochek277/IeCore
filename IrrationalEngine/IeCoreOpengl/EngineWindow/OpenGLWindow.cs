@@ -31,6 +31,7 @@ namespace IeCoreOpengl.EngineWindow
             AddListeners();
         }
 
+        //TODO: investigate how to rewrite into observable. RX library
         private void AddListeners()
         {
             _gameWindow.Load += (object o, EventArgs e) => { OnLoad(); };

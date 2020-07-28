@@ -1,23 +1,18 @@
-image: microsoft/dotnet:latest
+image:  mcr.microsoft.com/dotnet/core/sdk:3.1
 
 stages:
     - build
-    - test
 
-variables:
-    test: "Example.Test"
-
-before_script:
-    - "cd src"
-    - "dotnet restore"
-
-build:
+build:  
     stage: build
+    before_script:
+      - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v n"
+      - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v n"
+      - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v n"
+      - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
+      - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"    
     script:
-        - "dotnet build"
-
-test:
-    stage: test
-    script: 
-        - "cd $test"
-        - "dotnet test"
+        - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release -v n" 
+    artifacts:
+      paths: 
+      - $bin_location

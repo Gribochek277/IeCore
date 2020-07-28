@@ -19,6 +19,7 @@ namespace IeCore
         public static IServiceProvider ServiceProvider;
         static void Main(string[] args)
         {
+            //TODO: consider change it to builder or smth else
             RegisterServices();
             IWindow window = ServiceProvider.GetService<IWindowFactory>().Create();
             window.Run();
