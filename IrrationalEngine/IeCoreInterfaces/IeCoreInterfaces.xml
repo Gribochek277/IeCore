@@ -366,7 +366,7 @@
         <member name="T:IIeCoreInterfaces.Behaviour.IUpdatable">
             <summary>
             /// <summary>
-            Determines that class should support update behaviour.
+            Determines that class should support update behavior.
             </summary>
             </summary>
         </member>

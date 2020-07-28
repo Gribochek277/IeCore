@@ -170,7 +170,7 @@
         </member>
         <member name="P:IeCoreEntites.Model.Mesh.Elements">
             <summary>
-            Elements
+            Elements (some tutorials use indices's definition) 
             </summary>
         </member>
         <member name="P:IeCoreEntites.Model.Mesh.ElementOffset">
