@@ -6,17 +6,12 @@ stages:
    
 build:  
     stage: build
-    cache:
-      paths:
-        - "/root/.local/share/NuGet/v3-cache"
-        - "/root/.nuget/packages/"
-        - "/root/.local/share/NuGet/plugins-cache"
-    before_script:
-      - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v n"
-      - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v n"
-      - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v n"
-      - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
-      - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"    
+    #before_script:
+    #  - "dotnet restore ./IrrationalEngine/IeUtils/IeUtils.csproj -v n"
+    #  - "dotnet restore ./IrrationalEngine/IeCoreEntites/IeCoreEntites.csproj -v n"
+    #  - "dotnet restore ./IrrationalEngine/IeCoreInterfaces/IeCoreInterfaces.csproj -v n"
+    #  - "dotnet restore ./IrrationalEngine/IeCoreOpengl/IeCoreOpengl.csproj -v n"
+    #  - "dotnet restore ./IrrationalEngine/IeCore/IeCore.csproj -v n"    
     script:
         - "dotnet build ./IrrationalEngine/IeCore/IeCore.csproj -c Release -v n" 
     artifacts:
