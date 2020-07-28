@@ -23,7 +23,4 @@ cleanup:
   stage: cleanup
   script:
     - "rm -r ./IrrationalEngine"
-    - "ls /root/.local/share/NuGet/v3-cache"
-    - "ls /root/.nuget/packages/"
-    - "ls /root/.local/share/NuGet/plugins-cache"
   when: always
