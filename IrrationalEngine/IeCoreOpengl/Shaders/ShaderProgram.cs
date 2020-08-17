@@ -6,6 +6,7 @@ using IeUtils;
 using IeCoreInterfaces.Assets;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace IeCoreOpengl.Shaders
 {
@@ -13,6 +14,7 @@ namespace IeCoreOpengl.Shaders
     {
         private List<Shader> _storedShaders = new List<Shader>();
         private IAssetManager _assetmanager;
+        private ILogger<ShaderProgram> _logger;
 
         /// <summary>
         /// Dictionary of attribute info contained in shader.
@@ -28,10 +30,12 @@ namespace IeCoreOpengl.Shaders
 
         private bool disposedValue = false;
 
-        public ShaderProgram(IAssetManager assetmanager)
+        public ShaderProgram(IAssetManager assetmanager, ILogger<ShaderProgram> logger)
         {
             assetmanager.AssertNotNull(nameof(assetmanager));
+            logger.AssertNotNull(nameof(logger));
             _assetmanager = assetmanager;
+            _logger = logger;
             ShaderProgramId = GL.CreateProgram();
         }
 
@@ -152,9 +156,9 @@ namespace IeCoreOpengl.Shaders
 
                 string shaderInfo = GL.GetShaderInfoLog(shader.Id);
                 if (!string.IsNullOrEmpty(shaderInfo))
-                    Console.WriteLine(shaderInfo); //Log errors.
+                    _logger.LogError(shaderInfo); //Log errors.
                 else
-                    Console.WriteLine($"{shaderName} compiled correctly");
+                    _logger.LogInformation($"{shaderName} compiled correctly");
             }
             else
             {

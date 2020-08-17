@@ -1,13 +1,22 @@
 ﻿using IeCoreInterfaces.Shaders;
+using IeUtils;
+using Microsoft.Extensions.Logging;
 using OpenToolkit.Graphics.OpenGL;
 using OpenToolkit.Mathematics;
 using System;
 
 namespace IeCoreOpengl.Helpers
 {
-    static class UniformHelper
+    public class UniformHelper: IUniformHelper
     {
-        public static bool TryAddUniform(int value, string uniformName, IShaderProgram shader)
+        private ILogger<UniformHelper> _logger;
+
+        public UniformHelper(ILogger<UniformHelper> logger)
+        {
+            logger.AssertNotNull(nameof(logger));
+            _logger = logger;
+        }
+        public bool TryAddUniform(int value, string uniformName, IShaderProgram shader)
         {
             if (shader.GetUniformAddress(uniformName) != -1)
             {
@@ -20,7 +29,7 @@ namespace IeCoreOpengl.Helpers
             }
         }
 
-        public static bool TryAddUniform(float value, string uniformName, IShaderProgram shader)
+        public bool TryAddUniform(float value, string uniformName, IShaderProgram shader)
         {
             if (shader.GetUniformAddress(uniformName) != -1)
             {
@@ -33,7 +42,7 @@ namespace IeCoreOpengl.Helpers
             }
         }
 
-        public static bool TryAddUniform(double value, string uniformName, IShaderProgram shader)
+        public bool TryAddUniform(double value, string uniformName, IShaderProgram shader)
         {
             if (shader.GetUniformAddress(uniformName) != -1)
             {
@@ -46,7 +55,7 @@ namespace IeCoreOpengl.Helpers
             }
         }
 
-        public static bool TryAddUniform(Vector3 value, string uniformName, IShaderProgram shader)
+        public bool TryAddUniform(Vector3 value, string uniformName, IShaderProgram shader)
         {
             if (shader.GetUniformAddress(uniformName) != -1)
             {
@@ -59,7 +68,7 @@ namespace IeCoreOpengl.Helpers
             }
         }
 
-        public static bool TryAddUniform(Vector3[] value, string uniformName, IShaderProgram shader)
+        public bool TryAddUniform(Vector3[] value, string uniformName, IShaderProgram shader)
         {
             if (shader.GetUniformAddress(uniformName) != -1)
             {
@@ -77,7 +86,7 @@ namespace IeCoreOpengl.Helpers
                 catch (Exception e)
                 {
                     //Possible memmory error.
-                    Console.WriteLine(e.Message);
+                    _logger.LogError(e.Message);
                 }
 
                 return true;
@@ -88,7 +97,7 @@ namespace IeCoreOpengl.Helpers
             }
         }
 
-        public static bool TryAddUniform(Vector4 value, string uniformName, IShaderProgram shader)
+        public bool TryAddUniform(Vector4 value, string uniformName, IShaderProgram shader)
         {
             if (shader.GetUniformAddress(uniformName) != -1)
             {
@@ -101,7 +110,7 @@ namespace IeCoreOpengl.Helpers
             }
         }
 
-        public static bool TryAddUniformTexture2D(int textureID, string uniformName, IShaderProgram shader, TextureUnit unit)
+        public bool TryAddUniformTexture2D(int textureID, string uniformName, IShaderProgram shader, TextureUnit unit)
         {
             if (shader.GetUniformAddress(uniformName) != -1)
             {
@@ -116,7 +125,7 @@ namespace IeCoreOpengl.Helpers
             }
         }
 
-        public static bool TryAddUniformTextureCubemap(int textureID, string uniformName, IShaderProgram shader, TextureUnit unit)
+        public bool TryAddUniformTextureCubemap(int textureID, string uniformName, IShaderProgram shader, TextureUnit unit)
         {
             if (shader.GetUniformAddress(uniformName) != -1)
             {

@@ -32,7 +32,7 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 
         public void OnTransform()
         {
-            Console.WriteLine("Implement Transform of Models " + Name);
+            throw new NotImplementedException();
         }
 
         public float[] GetVBODataOfModel() //TODO: Add caching;
