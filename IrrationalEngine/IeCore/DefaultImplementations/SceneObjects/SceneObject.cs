@@ -35,7 +35,7 @@ namespace IeCore.DefaultImplementations.SceneObjects
         public void OnTransform()
         {
             foreach (string transformableComponentName in _transformableComponents)
-                Console.WriteLine("FIX TRANSORM " + transformableComponentName);
+                throw new NotImplementedException();   
         }
 
         public void OnUnload()

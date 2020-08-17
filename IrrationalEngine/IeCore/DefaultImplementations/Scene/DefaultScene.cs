@@ -1,5 +1,4 @@
 ﻿using IeCore.DefaultImplementations.Primitives;
-using IeCore.DefaultImplementations.SceneObjectComponents;
 using IeCore.DefaultImplementations.SceneObjects;
 using IeCoreInterfaces.Core;
 using System.Collections.Generic;

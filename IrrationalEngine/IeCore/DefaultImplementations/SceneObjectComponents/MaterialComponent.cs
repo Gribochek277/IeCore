@@ -3,7 +3,7 @@ using IeCoreEntites.Materials;
 using IeCoreEntites.Shaders;
 using IeCoreInterfaces.SceneObjectComponents;
 using IeCoreInterfaces.Shaders;
-using IeCoreOpengl.Shaders;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 
 namespace IeCore.DefaultImplementations.SceneObjectComponents
@@ -14,7 +14,7 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
         const string VertexShaderName = "DefaultVertexShader";
         public Dictionary<string, Material> materials { get; } = new Dictionary<string, Material>();
 
-        public IShaderProgram ShaderProgram { get; } = new ShaderProgram(Context.Assetmanager);
+        public IShaderProgram ShaderProgram { get; } = IrrationalEngine.ServiceProvider.GetService<IShaderProgram>();
 
         public string Name => "MaterialSceneObjectComponent";
 

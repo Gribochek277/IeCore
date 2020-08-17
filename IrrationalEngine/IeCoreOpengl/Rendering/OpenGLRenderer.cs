@@ -4,12 +4,12 @@ using IeCoreInterfaces.Rendering;
 using IeCoreInterfaces.SceneObjectComponents;
 using IeCoreOpengl.Extensions;
 using IeCoreOpengl.Helpers;
-using IeCoreOpengl.Shaders;
 using OpenToolkit.Graphics.OpenGL;
-using OpenToolkit.Mathematics;
 using System;
 using System.Linq;
 using System.Text;
+using IeUtils;
+using Microsoft.Extensions.Logging;
 
 namespace IeCoreOpengl.Rendering
 {
@@ -18,10 +18,17 @@ namespace IeCoreOpengl.Rendering
         private ISceneManager _sceneManager;
         private ISceneObjectComponent _materialObjectComponent;
         private ISceneObjectComponent _modelObjectComponent;
+        private IUniformHelper _uniformHelper;
+        private ILogger<OpenGLRenderer> _logger;
 
-        public OpenGLRenderer(ISceneManager sceneManager)
+        public OpenGLRenderer(ISceneManager sceneManager, IUniformHelper uniformHelper, ILogger<OpenGLRenderer> logger)
         {
+            sceneManager.AssertNotNull(nameof(sceneManager));
+            uniformHelper.AssertNotNull(nameof(uniformHelper));
+            logger.AssertNotNull(nameof(logger));
             _sceneManager = sceneManager;
+            _uniformHelper = uniformHelper;
+            _logger = logger;
         }
 
         private int _width, _height;
@@ -65,7 +72,7 @@ namespace IeCoreOpengl.Rendering
                             sb.Append(VBOData[i]);
                         }
                     }
-                    Console.WriteLine(sb.ToString());
+                    _logger.LogInformation(sb.ToString());
                     //Load model data to GPU.
                     GL.BufferData(BufferTarget.ArrayBuffer, VBOData.Length * sizeof(float), VBOData, BufferUsageHint.StaticDraw);
                     //Load indices data to GPU.
@@ -96,7 +103,7 @@ namespace IeCoreOpengl.Rendering
                     currentMaterialComponent.ShaderProgram.EnableVertexAttribArrays();
                     currentMaterialComponent.ShaderProgram.UseProgram();
 
-                    UniformHelper.TryAddUniform(currentMaterialComponent.materials.FirstOrDefault().Value.DiffuseColor.ConvertToOpenTKVector(),
+                    _uniformHelper.TryAddUniform(currentMaterialComponent.materials.FirstOrDefault().Value.DiffuseColor.ConvertToOpenTKVector(),
                         "Color",
                         currentMaterialComponent.ShaderProgram);
                 }

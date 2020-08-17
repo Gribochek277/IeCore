@@ -11,6 +11,8 @@ using IeCoreOpengl.Rendering;
 using IeCoreOpengl.Shaders;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Microsoft.Extensions.Logging;
+using IeCoreOpengl.Helpers;
 
 namespace IeCore
 {
@@ -30,6 +32,16 @@ namespace IeCore
         {
             ServiceCollection collection = new ServiceCollection();
 
+            collection.AddLogging(loggerBuilder =>
+            {
+                loggerBuilder.ClearProviders();
+#if DEBUG
+                loggerBuilder.AddConsole();
+                loggerBuilder.SetMinimumLevel(LogLevel.Trace);
+#endif
+            });
+
+            collection.AddScoped<IUniformHelper, UniformHelper>();
             collection.AddScoped<IRenderer, OpenGLRenderer>();
             collection.AddScoped<ISceneManager, SceneManager>();
             collection.AddScoped<IWindowFactory, WindowFactory>();
