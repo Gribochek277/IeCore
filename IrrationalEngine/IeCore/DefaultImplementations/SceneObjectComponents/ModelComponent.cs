@@ -35,9 +35,14 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
             Console.WriteLine("Implement Transform of Models " + Name);
         }
 
-        public float[] GetVBODataOfModel()
+        public float[] GetVBODataOfModel() //TODO: Add caching;
         {
             return Model.Meshes.SelectMany(meshes => meshes.Vertices).SelectMany(vertice => vertice.FloatArray()).ToArray();
+        }
+
+        public uint[] GetIndicesOfModel() //TODO: Add caching;
+        {
+            return Model.Meshes.SelectMany(meshes => meshes.Elements).ToArray();
         }
     }
 }

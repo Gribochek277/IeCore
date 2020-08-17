@@ -1,4 +1,4 @@
-﻿using IeCore.DefaultImplementations.ModelPrimitives;
+﻿using IeCore.DefaultImplementations.Primitives;
 using IeCore.DefaultImplementations.SceneObjectComponents;
 using IeCore.DefaultImplementations.SceneObjects;
 using IeCoreInterfaces.Core;
@@ -14,20 +14,10 @@ namespace IeCore.DefaultImplementations.Scene
         public IEnumerable<ISceneObject> SceneObjects { get { return _sceneObjects; } }
         // public SceneObject Camera { get { return _camera; } }
         public virtual void OnLoad()
-        {
-            //    _camera = new PlayerCamera();
-            //    if (_skybox == null)
-            //       _skybox = new Skybox();
-            // _camera.AddComponent(new Camera());
-            //    _sceneObjects.Add(_camera);
-            //   _sceneObjects.Add(_skybox);
-            Context.Assetmanager.Register(new Triangle().TriangleDefaultModel);
-            ModelComponent modelSceneObject = new ModelComponent("Triangle");
-            MaterialComponent materiaComponent = new MaterialComponent();
-            SceneObject sceneObject = new SceneObject();
-            sceneObject.AddComponent(modelSceneObject);
-            sceneObject.AddComponent(materiaComponent);
-            _sceneObjects.Add(sceneObject);
+        {           
+            _sceneObjects.Add(new Rectangle().RectangleSceneObject);
+            _sceneObjects.Add(new Triangle().TriangleSceneObject);
+
             foreach (SceneObject _sceneObject in _sceneObjects)
             {
                 _sceneObject.OnLoad();

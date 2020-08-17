@@ -7,7 +7,8 @@ using IeCoreInterfaces.Assets;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IeCoreOpengl.Shaders {
+namespace IeCoreOpengl.Shaders
+{
     public class ShaderProgram : IShaderProgram
     {
         private List<Shader> _storedShaders = new List<Shader>();
@@ -63,9 +64,9 @@ namespace IeCoreOpengl.Shaders {
             throw new NotImplementedException();
         }
 
-        public int GetUniform(string name)
+        public int GetUniformAddress(string name)
         {
-            throw new NotImplementedException();
+            return Uniforms[name].Address;
         }
 
         public void LinkShadersToProgram()
@@ -115,7 +116,7 @@ namespace IeCoreOpengl.Shaders {
                 GL.GetActiveUniform(shaderProgramId, i, 256, out int length, out info.Size, out ActiveUniformType type, out string name);
 
                 info.Name = name.ToString();
-                info.Address = GL.GetAttribLocation(shaderProgramId, info.Name);
+                info.Address = GL.GetUniformLocation(shaderProgramId, info.Name);
                 info.Type = (int)type;
                 uniforms.Add(name.ToString(), info);
             }
@@ -135,21 +136,30 @@ namespace IeCoreOpengl.Shaders {
 
         public void LoadShaderFromString(string code, string shaderName, IeCoreEntites.Shaders.ShaderType type)
         {
-            Shader shader = new Shader(shaderName, string.Concat("InMemmory shader ", Guid.NewGuid()), code, type);
-            _assetmanager.Register(shader);
-            _storedShaders.Add(shader);
+            Shader registeredShader = _assetmanager.Retrieve<Shader>(shaderName);
+            if (registeredShader == null)
+            {
+                Shader shader = new Shader(shaderName, string.Concat("InMemmory shader ", Guid.NewGuid()), code, type);
 
-            OpenToolkit.Graphics.OpenGL.ShaderType OGLEnum = Enum.Parse<OpenToolkit.Graphics.OpenGL.ShaderType>(shader.ShaderType.ToString());
+                _assetmanager.Register(shader);
+                _storedShaders.Add(shader);
 
-            shader.Id = GL.CreateShader(OGLEnum);
-            GL.ShaderSource(shader.Id, shader.ShaderCode);
-            GL.CompileShader(shader.Id);
+                OpenToolkit.Graphics.OpenGL.ShaderType OGLEnum = Enum.Parse<OpenToolkit.Graphics.OpenGL.ShaderType>(shader.ShaderType.ToString());
 
-            string shaderInfo = GL.GetShaderInfoLog(shader.Id);
-            if (!string.IsNullOrEmpty(shaderInfo))
-                Console.WriteLine(shaderInfo); //Log errors.
+                shader.Id = GL.CreateShader(OGLEnum);
+                GL.ShaderSource(shader.Id, shader.ShaderCode);
+                GL.CompileShader(shader.Id);
+
+                string shaderInfo = GL.GetShaderInfoLog(shader.Id);
+                if (!string.IsNullOrEmpty(shaderInfo))
+                    Console.WriteLine(shaderInfo); //Log errors.
+                else
+                    Console.WriteLine($"{shaderName} compiled correctly");
+            }
             else
-                Console.WriteLine($"{shaderName} compiled correctly");
+            {
+                _storedShaders.Add(registeredShader);
+            }
         }
 
 

@@ -221,6 +221,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetIndicesOfModel">
+            <summary>
+            Return Indices's data from model.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:IeCoreInterfaces.Shaders.IShaderProgram">
             <summary>
             Shader program couples together materials, textures and shaders.
@@ -279,7 +285,7 @@
             <param name="name"></param>
             <returns></returns>
         </member>
-        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.GetUniform(System.String)">
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.GetUniformAddress(System.String)">
             <summary>
             Gets uniform by name.
             </summary>

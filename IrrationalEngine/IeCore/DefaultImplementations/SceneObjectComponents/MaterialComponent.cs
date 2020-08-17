@@ -12,7 +12,7 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
     {
         const string FragmentShaderName = "DefaultFragmentShader";
         const string VertexShaderName = "DefaultVertexShader";
-        public Dictionary<string, Material> materials { get; }
+        public Dictionary<string, Material> materials { get; } = new Dictionary<string, Material>();
 
         public IShaderProgram ShaderProgram { get; } = new ShaderProgram(Context.Assetmanager);
 

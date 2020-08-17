@@ -14,8 +14,6 @@ namespace IeCoreOpengl.EngineWindow
         private IRenderer _renderer;
 
         public event EventHandler LoadingComplete;
-
-        public double Time { get; set; } = 0.0d;
         public int UpdateRate { private get; set; } = 30;
         public int FrameRate { private get; set; } = 60;
 
@@ -68,7 +66,6 @@ namespace IeCoreOpengl.EngineWindow
             _sceneManager.OnRender();
             _renderer.OnRender();
             _gameWindow.SwapBuffers();
-            Time += _gameWindow.RenderTime;
             _gameWindow.Title = _sceneManager.Scene.GetType().Name + " FPS: " + (1d / _gameWindow.RenderTime).ToString("0.");           
         }
 
