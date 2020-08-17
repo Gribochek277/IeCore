@@ -1,9 +1,9 @@
 ﻿using IeCoreInterfaces;
 using IeCoreInterfaces.EngineWindow;
 using IeCoreInterfaces.Rendering;
-using OpenTK;
-using OpenTK.Graphics;
+using OpenToolkit.Windowing.Desktop;
 using System;
+using OpenToolkit.Windowing.Common;
 
 namespace IeCoreOpengl.EngineWindow
 {
@@ -13,18 +13,21 @@ namespace IeCoreOpengl.EngineWindow
         private ISceneManager _sceneManager;
         private IRenderer _renderer;
 
-        public static Rectangle Bounds;
-
         public event EventHandler LoadingComplete;
-
-        public double Time { get; set; } = 0.0d;
         public int UpdateRate { private get; set; } = 30;
         public int FrameRate { private get; set; } = 60;
 
         public OpenGLWindow(int resX, int resY, string title, IRenderer renderer, ISceneManager sceneManager)
         {
-            _gameWindow = new GameWindow(resX, resY, GraphicsMode.Default, title, GameWindowFlags.Default, 
-                DisplayDevice.Default, 3,3, GraphicsContextFlags.Default);
+            GameWindowSettings gameWindowSettings = GameWindowSettings.Default;
+            gameWindowSettings.RenderFrequency = FrameRate;
+            gameWindowSettings.UpdateFrequency = UpdateRate;
+            NativeWindowSettings nativeWindowSettings = NativeWindowSettings.Default;
+            nativeWindowSettings.APIVersion = new Version(3, 2);
+            nativeWindowSettings.Size = new OpenToolkit.Mathematics.Vector2i(resX, resY);
+            nativeWindowSettings.StartVisible = true;
+            nativeWindowSettings.StartFocused = true;
+            _gameWindow = new GameWindow(gameWindowSettings, nativeWindowSettings);
          
             _renderer = renderer;
             _sceneManager = sceneManager;
@@ -34,27 +37,25 @@ namespace IeCoreOpengl.EngineWindow
         //TODO: investigate how to rewrite into observable. RX library
         private void AddListeners()
         {
-            _gameWindow.Load += (object o, EventArgs e) => { OnLoad(); };
-            _gameWindow.Unload += (object o, EventArgs e) => { OnUnload(); };
-            _gameWindow.RenderFrame += (object o, FrameEventArgs e) => { OnRender(); };
-            _gameWindow.UpdateFrame += (object o, FrameEventArgs e) => { OnUpdated(); };
-            _gameWindow.Resize += (object o, EventArgs e) => { OnResized(); };
+            _gameWindow.Load += () => { OnLoad(); };
+            _gameWindow.Unload += () => { OnUnload(); };
+            _gameWindow.RenderFrame += (FrameEventArgs args) => { OnRender(); };
+            _gameWindow.UpdateFrame += (FrameEventArgs args) => { OnUpdated(); };
         }
 
         private void RemoveListeners()
         {
-            _gameWindow.Load -= (object o, EventArgs e) => { OnLoad(); };
-            _gameWindow.Unload -= (object o, EventArgs e) => { OnUnload(); };
-            _gameWindow.RenderFrame -= (object o, FrameEventArgs e) => { OnRender(); };
-            _gameWindow.UpdateFrame -= (object o, FrameEventArgs e) => { OnUpdated(); };
-            _gameWindow.Resize -= (object o, EventArgs e) => { OnResized(); };
+            _gameWindow.Load -= () => { OnLoad(); };
+            _gameWindow.Unload -= () => { OnUnload(); };
+            _gameWindow.RenderFrame -= (FrameEventArgs args) => { OnRender(); };
+            _gameWindow.UpdateFrame -= (FrameEventArgs args) => { OnUpdated(); };
         }
         public void OnLoad()
         {
-            Bounds = _gameWindow.Bounds;
+            _gameWindow.MakeCurrent();
             _sceneManager.OnLoad();
             _renderer.OnLoad();
-            _renderer.SetViewPort(_gameWindow.ClientSize.Width, _gameWindow.ClientSize.Height);
+            _renderer.SetViewPort(_gameWindow.ClientSize.X, _gameWindow.ClientSize.Y);
             _gameWindow.Title = _sceneManager.Scene.GetType().Name;
             LoadingComplete?.Invoke(this, null);
         }
@@ -65,16 +66,11 @@ namespace IeCoreOpengl.EngineWindow
             _sceneManager.OnRender();
             _renderer.OnRender();
             _gameWindow.SwapBuffers();
-            Time += _gameWindow.RenderPeriod;
-            _gameWindow.Title = _sceneManager.Scene.GetType().Name + " FPS: " + (1d / _gameWindow.RenderPeriod).ToString("0.");           
+            _gameWindow.Title = _sceneManager.Scene.GetType().Name + " FPS: " + (1d / _gameWindow.RenderTime).ToString("0.");           
         }
 
         public void OnResized()
         {
-            Bounds = _gameWindow.Bounds;
-            _sceneManager.OnResized();
-            _renderer.OnResized();
-            _renderer.SetViewPort(_gameWindow.ClientSize.Width, _gameWindow.ClientSize.Height);
         }
 
         public void OnUpdated()
@@ -85,7 +81,7 @@ namespace IeCoreOpengl.EngineWindow
 
         public void Run()
         {
-            _gameWindow.Run(UpdateRate, FrameRate);
+            _gameWindow.Run();
         }
 
         public void OnUnload()

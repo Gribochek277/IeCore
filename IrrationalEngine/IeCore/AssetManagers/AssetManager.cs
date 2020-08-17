@@ -14,7 +14,7 @@ namespace IeCore.AssetManagers
 
         public void Register(Asset asset)
         {
-            RegisteredAssets.Add(asset.Name, asset);
+            RegisteredAssets.TryAdd(asset.Name, asset);
         }
 
         public void RegisterFile<T>(string file)
@@ -24,7 +24,8 @@ namespace IeCore.AssetManagers
 
         public T Retrieve<T>(string name) where T : Asset
         {
-            return (T)RegisteredAssets[name];
+            RegisteredAssets.TryGetValue(name, out Asset asset);
+            return (T)asset;
         }
 
         public IEnumerable<T> RetrieveAll<T>() where T : Asset

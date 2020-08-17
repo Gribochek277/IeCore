@@ -58,7 +58,7 @@ namespace IeCoreInterfaces.Shaders
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        int GetUniform(string name);
+        int GetUniformAddress(string name);
         /// <summary>
         /// Gets buffer by name.
         /// </summary>

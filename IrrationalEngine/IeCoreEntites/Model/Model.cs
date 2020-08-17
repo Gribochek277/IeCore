@@ -9,9 +9,17 @@ namespace IeCoreEntites.Model
     public class Model: Asset
     {
         /// <summary>
+        /// Id of VAO associated with this model.
+        /// </summary>
+        public int VertexArrayObjectId { get; set; } = -1;
+        /// <summary>
         /// Id of VBO associated with this model.
         /// </summary>
         public int VertexBufferObjectId { get; set; } = -1;
+        /// <summary>
+        /// Id of Element Buffer associated with this model.
+        /// </summary>
+        public int ElementBufferId { get; set; } = -1;
         /// <summary>
         /// TextureColor
         /// </summary>

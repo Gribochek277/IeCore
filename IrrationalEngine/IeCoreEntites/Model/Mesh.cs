@@ -21,9 +21,9 @@ namespace IeCoreEntites.Model
         /// </summary>
         public List<Vertex> Vertices { get; set; }
         /// <summary>
-        /// Elements
+        /// Elements (some tutorials use indices's definition) 
         /// </summary>
-        public List<int> Elements { get; set; }
+        public List<uint> Elements { get; set; }
 
         /// <summary>
         /// ElementOffset

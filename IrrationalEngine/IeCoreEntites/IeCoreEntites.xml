@@ -170,7 +170,7 @@
         </member>
         <member name="P:IeCoreEntites.Model.Mesh.Elements">
             <summary>
-            Elements
+            Elements (some tutorials use indices's definition) 
             </summary>
         </member>
         <member name="P:IeCoreEntites.Model.Mesh.ElementOffset">
@@ -199,9 +199,19 @@
             Determines Model asset.
             </summary>
         </member>
+        <member name="P:IeCoreEntites.Model.Model.VertexArrayObjectId">
+            <summary>
+            Id of VAO associated with this model.
+            </summary>
+        </member>
         <member name="P:IeCoreEntites.Model.Model.VertexBufferObjectId">
             <summary>
             Id of VBO associated with this model.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntites.Model.Model.ElementBufferId">
+            <summary>
+            Id of Element Buffer associated with this model.
             </summary>
         </member>
         <member name="F:IeCoreEntites.Model.Model.TextureColor">

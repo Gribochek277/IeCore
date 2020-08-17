@@ -19,5 +19,10 @@ namespace IeCoreInterfaces.SceneObjectComponents
         /// </summary>
         /// <returns></returns>
         float[] GetVBODataOfModel();
+        /// <summary>
+        /// Return Indices's data from model.
+        /// </summary>
+        /// <returns></returns>
+        uint[] GetIndicesOfModel();
     }
 }
