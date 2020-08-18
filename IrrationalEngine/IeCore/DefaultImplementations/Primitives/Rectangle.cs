@@ -2,8 +2,10 @@
 using IeCore.DefaultImplementations.SceneObjects;
 using IeCoreEntites.Materials;
 using IeCoreEntites.Model;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Numerics;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace IeCore.DefaultImplementations.Primitives
 {
@@ -43,7 +45,7 @@ namespace IeCore.DefaultImplementations.Primitives
             Context.Assetmanager.Register(material);
             material.DiffuseColor = new Vector4(0, 2, 0, 1);
             materiaComponent.materials.Add(material.Name, material);
-            RectangleSceneObject = new SceneObject();
+            RectangleSceneObject = new SceneObject(IrrationalEngine.ServiceProvider.GetService<ILogger<SceneObject>>());
             RectangleSceneObject.AddComponent(modelSceneObject);
             RectangleSceneObject.AddComponent(materiaComponent);
         }

@@ -1,5 +1,4 @@
-﻿using IeCore.DefaultImplementations.Scene;
-using IeCoreInterfaces;
+﻿using IeCoreInterfaces;
 using IeCoreInterfaces.Core;
 using System;
 
@@ -7,13 +6,11 @@ namespace IeCore
 {
     public class SceneManager : ISceneManager
     {
-        private IScene _defaultScene;
         public IScene Scene { get; private set; }
 
-        public SceneManager()
+        public SceneManager(IScene scene)
         {
-            _defaultScene = new DefaultScene();
-            Scene = _defaultScene;
+            Scene = scene;
         }
 
         public void OnLoad()

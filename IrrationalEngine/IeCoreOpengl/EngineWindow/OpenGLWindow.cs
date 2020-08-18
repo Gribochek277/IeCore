@@ -4,6 +4,7 @@ using IeCoreInterfaces.Rendering;
 using OpenToolkit.Windowing.Desktop;
 using System;
 using OpenToolkit.Windowing.Common;
+using System.Diagnostics;
 
 namespace IeCoreOpengl.EngineWindow
 {
@@ -12,14 +13,16 @@ namespace IeCoreOpengl.EngineWindow
         private GameWindow _gameWindow; //TODO: Wrap this class with own class
         private ISceneManager _sceneManager;
         private IRenderer _renderer;
+        private Stopwatch _watch = new Stopwatch();
 
         public event EventHandler LoadingComplete;
         public int UpdateRate { private get; set; } = 30;
         public int FrameRate { private get; set; } = 60;
 
-        public OpenGLWindow(int resX, int resY, string title, IRenderer renderer, ISceneManager sceneManager)
+        public OpenGLWindow(int resX, int resY, IRenderer renderer, ISceneManager sceneManager)
         {
             GameWindowSettings gameWindowSettings = GameWindowSettings.Default;
+            gameWindowSettings.IsMultiThreaded = false; //TODO: Investigate this option.
             gameWindowSettings.RenderFrequency = FrameRate;
             gameWindowSettings.UpdateFrequency = UpdateRate;
             NativeWindowSettings nativeWindowSettings = NativeWindowSettings.Default;
@@ -53,6 +56,7 @@ namespace IeCoreOpengl.EngineWindow
         public void OnLoad()
         {
             _gameWindow.MakeCurrent();
+            _gameWindow.VSync = VSyncMode.On;
             _sceneManager.OnLoad();
             _renderer.OnLoad();
             _renderer.SetViewPort(_gameWindow.ClientSize.X, _gameWindow.ClientSize.Y);
@@ -63,10 +67,13 @@ namespace IeCoreOpengl.EngineWindow
 
         public void OnRender()
         {
+            _watch.Start();
             _sceneManager.OnRender();
             _renderer.OnRender();
             _gameWindow.SwapBuffers();
-            _gameWindow.Title = _sceneManager.Scene.GetType().Name + " FPS: " + (1d / _gameWindow.RenderTime).ToString("0.");           
+            _watch.Stop();
+            _gameWindow.Title = _sceneManager.Scene.GetType().Name + " FPS: " + (1d / _watch.Elapsed.TotalSeconds).ToString("0.");
+            _watch.Reset();
         }
 
         public void OnResized()

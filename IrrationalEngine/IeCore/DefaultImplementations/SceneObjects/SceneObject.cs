@@ -1,5 +1,6 @@
 ﻿using IeCoreInterfaces.Core;
 using IIeCoreInterfaces.Behaviour;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -8,6 +9,11 @@ namespace IeCore.DefaultImplementations.SceneObjects
 {
     public class SceneObject : ISceneObject
     {
+        private ILogger<SceneObject> _logger;
+        public SceneObject(ILogger<SceneObject> logger)
+        {
+            _logger = logger;
+        }
         public string Name { get; set; } = "New SceneObject";
 
         public Dictionary<string, ISceneObjectComponent> components { get; private set; } = new Dictionary<string, ISceneObjectComponent>();
@@ -30,6 +36,8 @@ namespace IeCore.DefaultImplementations.SceneObjects
         {
             foreach (var component in components)
                 component.Value.OnLoad();
+
+            _logger.LogInformation(string.Format("SceneObject {0} is loaded", this.Name));
         }
 
         public void OnTransform()
