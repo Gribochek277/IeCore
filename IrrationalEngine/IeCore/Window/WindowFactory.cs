@@ -17,7 +17,7 @@ namespace IeCore.Window
         }
         public IWindow Create()
         {
-            return new OpenGLWindow(800, 600,  _renderer, _sceneManager);
+            return new OpenGLWindow(600, 600,  _renderer, _sceneManager);
         }
     }
 }

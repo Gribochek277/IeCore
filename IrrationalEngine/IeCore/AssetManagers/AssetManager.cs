@@ -3,6 +3,7 @@ using IeCoreInterfaces.AssetImporters;
 using IeCoreInterfaces.Assets;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IeCore.AssetManagers
 {
@@ -30,7 +31,7 @@ namespace IeCore.AssetManagers
 
         public IEnumerable<T> RetrieveAll<T>() where T : Asset
         {
-            throw new NotImplementedException();
+            return RegisteredAssets.Values.Where(asset => asset.GetType() == typeof(T)).Cast<T>();
         }
 
         public T RetrieveFile<T>(string file) where T : Asset
