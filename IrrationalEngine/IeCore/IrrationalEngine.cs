@@ -44,13 +44,13 @@ namespace IeCore
             });
 
             collection.AddScoped<IUniformHelper, UniformHelper>();
+            collection.AddScoped<IAssetManager, AssetManager>();
             collection.AddScoped<IRenderer, OpenGLRenderer>();
             collection.AddScoped<IScene, DefaultScene>();
             collection.AddScoped<ISceneManager, SceneManager>();
             collection.AddScoped<IWindowFactory, WindowFactory>();
             collection.AddScoped<IShaderProgram, ShaderProgram>();
             collection.AddScoped<IMaterialComponent, MaterialComponent>();
-            collection.AddScoped<IAssetManager, AssetManager>();
 
             Context.IsContextReady = true;
 

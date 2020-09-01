@@ -1,5 +1,6 @@
 ﻿using IeCore.DefaultImplementations.Primitives;
 using IeCore.DefaultImplementations.SceneObjects;
+using IeCore.DefaultImplementations.Textures;
 using IeCoreInterfaces.Core;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -19,10 +20,14 @@ namespace IeCore.DefaultImplementations.Scene
         public IEnumerable<ISceneObject> SceneObjects { get { return _sceneObjects; } }
         // public SceneObject Camera { get { return _camera; } }
         public virtual void OnLoad()
-        {     
+        {
+            //Generate and register in memory textures
+            //TODO: Consider of creating stage for generating and registering all default objects.
+            Context.Assetmanager.Register(DeafultTexture.CreateDefaultCheckerboard(2048, 512));
+
             for(int i=0; i<1; i++)
             { 
-                _sceneObjects.Add(new Rectangle().RectangleSceneObject);
+                _sceneObjects.Add(new Triangle().TriangleSceneObject);
                 _sceneObjects[i].Name = "Scene object #" + i;
                 _logger.LogInformation(i.ToString());
             }

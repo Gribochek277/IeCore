@@ -70,7 +70,8 @@ namespace IeCoreOpengl.Shaders
 
         public int GetUniformAddress(string name)
         {
-            return Uniforms[name].Address;
+            Uniforms.TryGetValue(name, out UniformInfo result);
+            return result != null ? result.Address : -1;
         }
 
         public void LinkShadersToProgram()

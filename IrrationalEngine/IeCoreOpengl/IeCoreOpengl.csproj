@@ -15,4 +15,8 @@
     <ProjectReference Include="..\IeUtils\IeUtils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AssertImporter\" />
+  </ItemGroup>
+
 </Project>

@@ -118,12 +118,53 @@
             Id of texture.
             </summary>
         </member>
+        <member name="P:IeCoreEntites.Materials.Texture.Bytes">
+            <summary>
+            Texture data.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntites.Materials.Texture.TextureSize">
+            <summary>
+            Texture resolution.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntites.Materials.Texture.PixelFormat">
+            <summary>
+            Texture pixel format.
+            </summary>
+        </member>
         <member name="M:IeCoreEntites.Materials.Texture.#ctor(System.String,System.String)">
             <summary>
             <inheritdoc cref="T:IeCoreEntites.Asset"/>
             </summary>
             <param name="name"></param>
             <param name="file"></param>
+        </member>
+        <member name="T:IeCoreEntites.Materials.TextureWrapping">
+            <summary>
+            Texture wrapping modes.
+            </summary>
+        </member>
+        <member name="F:IeCoreEntites.Materials.TextureWrapping.Repeat">
+            <summary>
+            The default behavior for textures. Repeats the texture image.
+            </summary>
+        </member>
+        <member name="F:IeCoreEntites.Materials.TextureWrapping.MirrorRepeat">
+            <summary>
+            Same as Repeat but mirrors the image with each repeat.
+            </summary>
+        </member>
+        <member name="F:IeCoreEntites.Materials.TextureWrapping.ClampToEdge">
+            <summary>
+            Clamps the coordinates between 0 and 1. 
+            The result is that higher coordinates become clamped to the edge, resulting in a stretched edge pattern.
+            </summary>
+        </member>
+        <member name="F:IeCoreEntites.Materials.TextureWrapping.ClampToBorder">
+            <summary>
+            Coordinates outside the range are now given a user-specified border color.
+            </summary>
         </member>
         <member name="T:IeCoreEntites.Model.Animation">
             <summary>
