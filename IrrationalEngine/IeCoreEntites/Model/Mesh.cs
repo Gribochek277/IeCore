@@ -40,6 +40,11 @@ namespace IeCoreEntites.Model
         public RenderMode RenderMode { get; set; } = RenderMode.Texture;
 
         /// <summary>
+        /// All transformation related data of mesh.
+        /// </summary>
+        public Transform Transform { get; set; } = new Transform();
+
+        /// <summary>
         /// <inheritdoc cref="object.ToString()"/>
         /// </summary>
         /// <returns></returns>

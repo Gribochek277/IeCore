@@ -109,6 +109,11 @@
             Set frame rate.
             </summary>
         </member>
+        <member name="P:IeCoreInterfaces.EngineWindow.IWindow.RenderDeltaTime">
+            <summary>
+            Returns time between rendered frames.
+            </summary>
+        </member>
         <member name="T:IeCoreInterfaces.EngineWindow.IWindowFactory">
             <summary>
             Factory for window creation
@@ -120,6 +125,32 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:IeCoreInterfaces.ICamera">
+            <summary>
+            Defines camera scene object.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.ICamera.Move(System.Single,System.Single,System.Single)">
+            <summary>
+            Move camera according to coordinates.
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+        </member>
+        <member name="M:IeCoreInterfaces.ICamera.AddRotation(System.Single,System.Single)">
+            <summary>
+            Rotate camera according to coordinates.
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+        </member>
+        <member name="M:IeCoreInterfaces.ICamera.GetViewMatrix">
+            <summary>
+            Returns view matrix calculated for camera.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:IeCoreInterfaces.Core.IScene">
             <summary>
             Scene contains all scene objects.
@@ -128,6 +159,11 @@
         <member name="P:IeCoreInterfaces.Core.IScene.SceneObjects">
             <summary>
             Contains all the scene objects which are related to this scene.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Core.IScene.MainCamera">
+            <summary>
+            Set main camera for scene.
             </summary>
         </member>
         <member name="T:IeCoreInterfaces.Core.ISceneObject">
@@ -352,21 +388,6 @@
         <member name="P:IIeCoreInterfaces.Behaviour.IScalable.Scale">
             <summary>
             Conatins scale value.
-            </summary>
-        </member>
-        <member name="T:IIeCoreInterfaces.Behaviour.ITransformable">
-            <summary>
-            Determines that class should support transformations behaviour.
-            </summary>
-        </member>
-        <member name="P:IIeCoreInterfaces.Behaviour.ITransformable.Position">
-            <summary>
-            Contains position value.
-            </summary>
-        </member>
-        <member name="M:IIeCoreInterfaces.Behaviour.ITransformable.OnTransform">
-            <summary>
-            Calls on trasfor object.
             </summary>
         </member>
         <member name="T:IIeCoreInterfaces.Behaviour.IUpdatable">

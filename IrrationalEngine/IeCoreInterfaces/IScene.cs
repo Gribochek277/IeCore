@@ -12,5 +12,9 @@ namespace IeCoreInterfaces.Core
         /// Contains all the scene objects which are related to this scene.
         /// </summary>
         IEnumerable<ISceneObject> SceneObjects { get; }
+        /// <summary>
+        /// Set main camera for scene.
+        /// </summary>
+        ISceneObject MainCamera { set; }
 }
 }

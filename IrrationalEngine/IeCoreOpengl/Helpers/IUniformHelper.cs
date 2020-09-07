@@ -1,6 +1,6 @@
 ﻿using IeCoreInterfaces.Shaders;
-using OpenToolkit.Graphics.OpenGL;
-using OpenToolkit.Mathematics;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 
 namespace IeCoreOpengl.Helpers
 {

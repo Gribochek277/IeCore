@@ -1,6 +1,6 @@
 ﻿using IeCoreEntites.Shaders;
 using IeCoreInterfaces.Shaders;
-using OpenToolkit.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL;
 using System;
 using IeUtils;
 using IeCoreInterfaces.Assets;
@@ -149,7 +149,7 @@ namespace IeCoreOpengl.Shaders
                 _assetmanager.Register(shader);
                 _storedShaders.Add(shader);
 
-                OpenToolkit.Graphics.OpenGL.ShaderType OGLEnum = Enum.Parse<OpenToolkit.Graphics.OpenGL.ShaderType>(shader.ShaderType.ToString());
+                OpenTK.Graphics.OpenGL.ShaderType OGLEnum = Enum.Parse<OpenTK.Graphics.OpenGL.ShaderType>(shader.ShaderType.ToString());
 
                 shader.Id = GL.CreateShader(OGLEnum);
                 GL.ShaderSource(shader.Id, shader.ShaderCode);

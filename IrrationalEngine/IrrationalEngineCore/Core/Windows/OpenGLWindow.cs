@@ -13,7 +13,7 @@ namespace IrrationalEngineCore.Core.Windows
         private ISceneManager _sceneManager;
         private IRenderer _renderer;
 
-        public static System.Drawing.Rectangle Bounds;
+        public static Rectangle Bounds;
 
         public event EventHandler LoadingComplete;
 

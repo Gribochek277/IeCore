@@ -1,8 +1,8 @@
 ﻿using IeCoreInterfaces.Shaders;
 using IeUtils;
 using Microsoft.Extensions.Logging;
-using OpenToolkit.Graphics.OpenGL;
-using OpenToolkit.Mathematics;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 using System;
 
 namespace IeCoreOpengl.Helpers
