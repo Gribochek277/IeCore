@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using IeCoreOpengl.Helpers;
 using IeCoreInterfaces.Core;
 using IeCore.DefaultImplementations.Scene;
+using IeCore.DefaultImplementations.SceneObjects;
 
 namespace IeCore
 {
@@ -26,6 +27,7 @@ namespace IeCore
             //TODO: consider change it to builder or smth else
             RegisterServices();
             IWindow window = ServiceProvider.GetService<IWindowFactory>().Create();
+            Context.windowContext = window;
             window.Run();
             DisposeServices();
         }
@@ -43,6 +45,7 @@ namespace IeCore
 #endif
             });
 
+            collection.AddScoped<ICamera, Camera>();
             collection.AddScoped<IUniformHelper, UniformHelper>();
             collection.AddScoped<IAssetManager, AssetManager>();
             collection.AddScoped<IRenderer, OpenGLRenderer>();

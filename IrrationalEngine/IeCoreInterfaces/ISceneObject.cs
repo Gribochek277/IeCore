@@ -6,7 +6,7 @@ namespace IeCoreInterfaces.Core
     /// <summary>
     /// Base interface for all objects on scene.
     /// </summary>
-    public interface ISceneObject: ILoadable, IScalable, IRotatable, ITransformable
+    public interface ISceneObject: ILoadable, IScalable, IRotatable
     {
         /// <summary>
         /// Name of scene object.

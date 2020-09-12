@@ -1,13 +1,12 @@
 ﻿using IeCoreEntites.Model;
 using IeCoreInterfaces.Core;
-using IIeCoreInterfaces.Behaviour;
 
 namespace IeCoreInterfaces.SceneObjectComponents
 {
     /// <summary>
     /// Represents scene object component which responsible for models.
     /// </summary>
-    public interface IModelComponent: ISceneObjectComponent, ITransformable //TODO: Will ITransformable be required for current implementation?
+    public interface IModelComponent: ISceneObjectComponent
     {
         /// <summary>
         /// Get model which stored in this component.

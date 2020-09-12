@@ -149,8 +149,9 @@ namespace IrrationalEngineCore.Core.Renderer.OpenGL
             {
                 MeshSceneObjectComponent meshComponent = (MeshSceneObjectComponent)_objects[i].components["MeshSceneObjectComponent"];
                 MaterialSceneObjectComponent materialComponent = (MaterialSceneObjectComponent)_objects[i].components["MaterialSceneObjectComponent"];
+                _objects[i].Rotation += new Vector3(0, 0, 0.3f);
 
-               
+
                 GL.UseProgram(materialComponent.ShaderImplementation.shaderProg.ProgramID);
                 materialComponent.ShaderImplementation.shaderProg.EnableVertexAttribArrays();
                

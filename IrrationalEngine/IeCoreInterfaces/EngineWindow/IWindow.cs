@@ -21,5 +21,10 @@ namespace IeCoreInterfaces.EngineWindow
         /// Set frame rate.
         /// </summary>
         int FrameRate { set; }
+
+        /// <summary>
+        /// Returns time between rendered frames.
+        /// </summary>
+        double RenderDeltaTime { get; }
     }
 }

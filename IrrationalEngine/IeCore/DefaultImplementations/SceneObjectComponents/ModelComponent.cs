@@ -1,8 +1,7 @@
 ﻿using IeCoreEntites.Model;
-using System;
 using System.Numerics;
-using IeCoreInterfaces.SceneObjectComponents;
 using System.Linq;
+using IeCoreInterfaces.SceneObjectComponents;
 
 namespace IeCore.DefaultImplementations.SceneObjectComponents
 {
@@ -28,11 +27,6 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
         public void OnUnload()
         {
             Model = null;
-        }
-
-        public void OnTransform()
-        {
-            throw new NotImplementedException();
         }
 
         public float[] GetVBODataOfModel() //TODO: Add caching;

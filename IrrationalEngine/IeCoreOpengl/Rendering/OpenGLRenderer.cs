@@ -4,7 +4,7 @@ using IeCoreInterfaces.Rendering;
 using IeCoreInterfaces.SceneObjectComponents;
 using IeCoreOpengl.Extensions;
 using IeCoreOpengl.Helpers;
-using OpenToolkit.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL;
 using System;
 using System.Linq;
 using System.Text;
@@ -12,6 +12,7 @@ using IeUtils;
 using Microsoft.Extensions.Logging;
 using IeCoreInterfaces.Assets;
 using IeCoreEntites.Materials;
+using OpenTK.Mathematics;
 
 namespace IeCoreOpengl.Rendering
 {
@@ -25,6 +26,9 @@ namespace IeCoreOpengl.Rendering
         private IUniformHelper _uniformHelper;
         private ILogger<OpenGLRenderer> _logger;
         private IAssetManager _assetManager;
+        private Matrix4 _projection;
+        private Matrix4 _view;
+        private ISceneObjectComponent _camera;
 
         public OpenGLRenderer(ISceneManager sceneManager, IUniformHelper uniformHelper, IAssetManager assetManager, ILogger<OpenGLRenderer> logger)
         {
@@ -38,7 +42,7 @@ namespace IeCoreOpengl.Rendering
             _assetManager = assetManager;
         }
 
-        private int _width, _height;
+        private int _width = 600, _height = 600;
         public void OnLoad()
         {           
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -123,6 +127,8 @@ namespace IeCoreOpengl.Rendering
                     GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 
                 }
+
+                _projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, (float)_width / (float)_height, 0.1f, 120.0f);
             }
         }
 
@@ -132,10 +138,17 @@ namespace IeCoreOpengl.Rendering
 
             foreach (ISceneObject sceneObject in _sceneManager.Scene.SceneObjects)
             {
+                if(sceneObject.components.TryGetValue("Camera", out _camera))
+                {
+                    ICamera camera = (ICamera)_camera;
+                    _view = camera.GetViewMatrix().ConvertToOpenTKMaxtrix4();
+                }
+                IMaterialComponent currentMaterialComponent = null;
+                IModelComponent currentModelComponent = null;
                 if (sceneObject.components.TryGetValue(MaterialObjectComponent, out _materialObjectComponent))
                 {
                     //Get material from scene object.
-                    IMaterialComponent currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
+                    currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
                     currentMaterialComponent.ShaderProgram.EnableVertexAttribArrays();
                     Texture texture = currentMaterialComponent.materials.FirstOrDefault().Value.DiffuseTexture;
 
@@ -150,9 +163,14 @@ namespace IeCoreOpengl.Rendering
                
                 //Get all vertices from model.
                 if (sceneObject.components.TryGetValue(ModelObjectComponent, out _modelObjectComponent))
-                {                   
+                {
                     //Get model from scene object.
-                    IModelComponent currentModelComponent = (IModelComponent)_modelObjectComponent;
+                    currentModelComponent = (IModelComponent)_modelObjectComponent;
+
+                    Matrix4 modelMatrix = currentModelComponent.Model.Meshes.FirstOrDefault().Transform.ModelMatrix.ConvertToOpenTKMaxtrix4();
+                    GL.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("model"), false, ref modelMatrix);
+                    GL.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("projection"), false, ref _projection);
+                    GL.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("view"), false, ref _view);
 
                     // Bind the VAO
                     GL.BindVertexArray(currentModelComponent.Model.VertexArrayObjectId);
