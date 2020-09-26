@@ -19,6 +19,7 @@ namespace IeCoreEntites.Model
         /// Stores scale.
         /// </summary>
         public Vector3 Scale { get; set; }
+
         private Matrix4x4 _modelMatrix;
         /// <summary>
         /// Stores model matrix.

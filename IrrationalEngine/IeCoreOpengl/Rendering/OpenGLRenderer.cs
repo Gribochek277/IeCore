@@ -44,7 +44,8 @@ namespace IeCoreOpengl.Rendering
 
         private int _width = 600, _height = 600;
         public void OnLoad()
-        {           
+        {
+            GL.Enable(EnableCap.DepthTest);
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             foreach (ISceneObject sceneObject in _sceneManager.Scene.SceneObjects)
             {
@@ -134,7 +135,7 @@ namespace IeCoreOpengl.Rendering
 
         public void OnRender()
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             foreach (ISceneObject sceneObject in _sceneManager.Scene.SceneObjects)
             {
