@@ -35,6 +35,7 @@ namespace IeCore.DefaultImplementations.Scene
             MainCamera = new SceneObject(IrrationalEngine.ServiceProvider.GetService<ILogger<SceneObject>>());
             MainCamera.AddComponent(new Camera());
             _sceneObjects.Add(MainCamera);
+
             for (int i=0; i<100; i++)
             {
                 _sceneObjects.Add(new Cube().CubeSceneObject);
@@ -45,6 +46,7 @@ namespace IeCore.DefaultImplementations.Scene
             foreach (SceneObject _sceneObject in _sceneObjects)
             {
                 _sceneObject.OnLoad();
+                _sceneObject.Scale *= new Vector3(0.3f, 0.3f, 0.3f);
             }
         }
 
@@ -67,10 +69,12 @@ namespace IeCore.DefaultImplementations.Scene
         {
             for (int i = 0; i < _sceneObjects.Count(); i ++)
             {
+
                 _sceneObjects[i].Rotation +=
                     new Vector3(0.03f * (float)Context.RendrerDeltaTime * new Random().Next(0, 10) * i,
                     0.03f * (float)Context.RendrerDeltaTime * new Random().Next(0, 10) * i,
                     0.03f * (float)Context.RendrerDeltaTime * new Random().Next(0, 10) * i);
+
             }
         }
     }

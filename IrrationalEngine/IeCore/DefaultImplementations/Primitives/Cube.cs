@@ -6,7 +6,10 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Numerics;
 using Microsoft.Extensions.DependencyInjection;
+<<<<<<< HEAD
 using System;
+=======
+>>>>>>> origin/develop
 
 namespace IeCore.DefaultImplementations.Primitives
 {
@@ -17,7 +20,11 @@ namespace IeCore.DefaultImplementations.Primitives
 
         public Cube()
         {
+<<<<<<< HEAD
             _cubeDefaultModel = new Model(string.Concat("Cube", Guid.NewGuid().ToString()), "defaultCubeFile");
+=======
+            _cubeDefaultModel = new Model("Cube", "defaultCubeFile");
+>>>>>>> origin/develop
             Mesh mesh = new Mesh();
             List<Vertex> vertices = new List<Vertex>();
             List<uint> elements = new List<uint>()
@@ -55,7 +62,8 @@ namespace IeCore.DefaultImplementations.Primitives
 
             vertices.Add(new Vertex() { Position = new Vector3(-0.5f, -0.5f, -0.5f), TextureCoordinates = new Vector2(0.0f, 0.0f) });
 
-            vertices.Add(new Vertex() { Position = new Vector3(-0.5f, 0.5f, -0.5f), TextureCoordinates = new Vector2(0.0f, 1.0f) });
+            vertices.Add(new Vertex() { Position = new Vector3(-0.5f, 0.5f, -0.5f), TextureCoordinates = new Vector2(0.0f, 1.0f) })
+
             mesh.Vertices = vertices;
             mesh.Elements = elements;
 

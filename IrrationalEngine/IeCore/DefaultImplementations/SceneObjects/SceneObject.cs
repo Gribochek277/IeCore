@@ -12,6 +12,7 @@ namespace IeCore.DefaultImplementations.SceneObjects
         private const string ModelSceneObjectComponentName = "ModelSceneObjectComponent";
         private ILogger<SceneObject> _logger;
         private Vector3 _rotation = Vector3.Zero;
+        private Vector3 _scale = Vector3.One;
         public SceneObject(ILogger<SceneObject> logger)
         {
             _logger = logger;
@@ -20,7 +21,7 @@ namespace IeCore.DefaultImplementations.SceneObjects
 
         public Dictionary<string, ISceneObjectComponent> components { get; private set; } = new Dictionary<string, ISceneObjectComponent>();
 
-        public Vector3 Scale { get; set; } = Vector3.One;
+        public Vector3 Scale { get { return _scale; } set { _scale = value; ApplyScale(); } }
         public Vector3 Rotation { get { return _rotation; } set { _rotation = value; ApplyRotation(); } } 
         public Vector3 Position { get; set; } = Vector3.Zero;
 
@@ -55,6 +56,15 @@ namespace IeCore.DefaultImplementations.SceneObjects
             {
                 IModelComponent modelComponent = (IModelComponent)sceneObjectModelComponent;
                 modelComponent.Model.Meshes.FirstOrDefault().Transform.Rotation = _rotation;
+            }
+        }
+
+        private void ApplyScale()
+        {
+            if (components.TryGetValue(ModelSceneObjectComponentName, out ISceneObjectComponent sceneObjectModelComponent))
+            {
+                IModelComponent modelComponent = (IModelComponent)sceneObjectModelComponent;
+                modelComponent.Model.Meshes.FirstOrDefault().Transform.Scale = _scale;
             }
         }
     }

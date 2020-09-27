@@ -19,6 +19,7 @@ namespace IeCoreEntites.Model
         /// <summary>
         /// Vertices
         /// </summary>
+        // TODO: Vertices includes texture coordinates now, consider to split this on two texture collections.
         public List<Vertex> Vertices { get; set; }
         /// <summary>
         /// Elements (some tutorials use indices's definition) 
