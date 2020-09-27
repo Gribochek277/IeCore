@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using System.Numerics;
+using System;
+using System.Linq;
 
 namespace IeCore.DefaultImplementations.Scene
 {
@@ -34,8 +36,8 @@ namespace IeCore.DefaultImplementations.Scene
             MainCamera.AddComponent(new Camera());
             _sceneObjects.Add(MainCamera);
             for (int i=0; i<100; i++)
-            { 
-                _sceneObjects.Add(new Triangle().TriangleSceneObject);
+            {
+                _sceneObjects.Add(new Cube().CubeSceneObject);
                 _sceneObjects[i].Name = "Scene object #" + i;
                 _logger.LogInformation(i.ToString());
             }
@@ -63,9 +65,12 @@ namespace IeCore.DefaultImplementations.Scene
 
         public void OnUpdated()
         {
-            foreach(var sceneobject in SceneObjects)
+            for (int i = 0; i < _sceneObjects.Count(); i ++)
             {
-                sceneobject.Rotation += new Vector3(0, 0, 0.03f * (float)Context.RendrerDeltaTime);
+                _sceneObjects[i].Rotation +=
+                    new Vector3(0.03f * (float)Context.RendrerDeltaTime * new Random().Next(0, 10) * i,
+                    0.03f * (float)Context.RendrerDeltaTime * new Random().Next(0, 10) * i,
+                    0.03f * (float)Context.RendrerDeltaTime * new Random().Next(0, 10) * i);
             }
         }
     }
