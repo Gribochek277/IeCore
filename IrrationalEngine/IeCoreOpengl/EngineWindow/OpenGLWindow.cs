@@ -4,7 +4,6 @@ using IeCoreInterfaces.Rendering;
 using OpenTK.Windowing.Desktop;
 using System;
 using OpenTK.Windowing.Common;
-using System.Diagnostics;
 
 namespace IeCoreOpengl.EngineWindow
 {
