@@ -2,7 +2,7 @@
 using IeCoreInterfaces.AssetImporters;
 using System;
 
-namespace IeCore.DefaultImplementations.Textures
+namespace IeCore.AssetImporters
 {
     public class TextureImporter : IMaterialImporter
     {

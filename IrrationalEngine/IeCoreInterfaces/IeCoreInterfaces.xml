@@ -42,10 +42,8 @@
         </member>
         <member name="P:IeCoreInterfaces.Assets.IAssetManager.AssetImporters">
             <summary>
-            Dictionary of asset importers
+            List of asset importers
             which will be used in <see cref="M:IeCoreInterfaces.Assets.IAssetManager.RegisterFile``1(System.String)"/>.
-            Key - asset file extension.
-            Value - importer instance.
             </summary>
         </member>
         <member name="P:IeCoreInterfaces.Assets.IAssetManager.RegisteredAssets">
@@ -58,6 +56,12 @@
             Import asset from file.
             </summary>
             <typeparam name="T">asset type</typeparam>
+            <param name="file"></param>
+        </member>
+        <member name="M:IeCoreInterfaces.Assets.IAssetManager.RegisterFile(System.String)">
+            <summary>
+            Import asset from file.
+            </summary>
             <param name="file"></param>
         </member>
         <member name="M:IeCoreInterfaces.Assets.IAssetManager.Register(IeCoreEntites.Asset)">

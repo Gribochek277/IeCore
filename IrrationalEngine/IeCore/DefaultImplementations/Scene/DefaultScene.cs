@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using System.Numerics;
+using IeCoreEntites.Model;
 
 namespace IeCore.DefaultImplementations.Scene
 {
@@ -30,6 +31,7 @@ namespace IeCore.DefaultImplementations.Scene
             //Generate and register in memory textures
             //TODO: Consider of creating stage for generating and registering all default objects.
             Context.Assetmanager.Register(DeafultTexture.CreateDefaultCheckerboard(2048, 512));
+            Context.Assetmanager.RegisterFile("./Resources/FBX/knight.fbx");
             MainCamera = new SceneObject(IrrationalEngine.ServiceProvider.GetService<ILogger<SceneObject>>());
             MainCamera.AddComponent(new Camera());
             _sceneObjects.Add(MainCamera);

@@ -10,12 +10,10 @@ namespace IeCoreInterfaces.Assets
     public interface IAssetManager
     {
         /// <summary>
-        /// Dictionary of asset importers
+        /// List of asset importers
         /// which will be used in <see cref="RegisterFile{T}(string)"/>.
-        /// Key - asset file extension.
-        /// Value - importer instance.
         /// </summary>
-        Dictionary<string, IAssetImporter> AssetImporters { get; }
+        List<IAssetImporter> AssetImporters { get; }
         /// <summary>
         /// Dictionary of registered assets.
         /// </summary>
@@ -26,6 +24,12 @@ namespace IeCoreInterfaces.Assets
         /// <typeparam name="T">asset type</typeparam>
         /// <param name="file"></param>
         void RegisterFile<T>(string file);
+
+        /// <summary>
+        /// Import asset from file.
+        /// </summary>
+        /// <param name="file"></param>
+        void RegisterFile(string file);
         /// <summary>
         /// Registers asset to prevent duplication.
         /// </summary>
