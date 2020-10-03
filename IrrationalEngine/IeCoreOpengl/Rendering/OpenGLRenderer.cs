@@ -136,6 +136,7 @@ namespace IeCoreOpengl.Rendering
         public void OnRender()
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.CullFace(CullFaceMode.Back);
 
             foreach (ISceneObject sceneObject in _sceneManager.Scene.SceneObjects)
             {

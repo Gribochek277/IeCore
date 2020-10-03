@@ -16,6 +16,7 @@ using IeCoreOpengl.Helpers;
 using IeCoreInterfaces.Core;
 using IeCore.DefaultImplementations.Scene;
 using IeCore.DefaultImplementations.SceneObjects;
+using AutoMapper;
 
 namespace IeCore
 {
@@ -35,6 +36,8 @@ namespace IeCore
         public static void RegisterServices()
         {
             ServiceCollection collection = new ServiceCollection();
+
+            collection.AddAutoMapper(typeof(IrrationalEngine));
 
             collection.AddLogging(loggerBuilder =>
             {

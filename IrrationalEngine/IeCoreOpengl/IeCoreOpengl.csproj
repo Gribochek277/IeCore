@@ -5,13 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IeCoreEntites\IeCoreEntites.csproj" />
-    <ProjectReference Include="..\IeCoreInterfaces\IeCoreInterfaces.csproj" />
-    <ProjectReference Include="..\IeUtils\IeUtils.csproj" />
+    <Compile Remove="AssertImporter\**" />
+    <EmbeddedResource Remove="AssertImporter\**" />
+    <None Remove="AssertImporter\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AssertImporter\" />
+    <ProjectReference Include="..\IeCoreEntites\IeCoreEntites.csproj" />
+    <ProjectReference Include="..\IeCoreInterfaces\IeCoreInterfaces.csproj" />
+    <ProjectReference Include="..\IeUtils\IeUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
