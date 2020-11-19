@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using System.Numerics;
-using IeCoreEntites.Model;
 
 namespace IeCore.DefaultImplementations.Scene
 {

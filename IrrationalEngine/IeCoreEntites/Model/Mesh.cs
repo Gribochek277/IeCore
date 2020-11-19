@@ -46,6 +46,11 @@ namespace IeCoreEntites.Model
         public Transform Transform { get; set; } = new Transform();
 
         /// <summary>
+        /// List of bones of this mesh.
+        /// </summary>
+        public List<Bone> Bones { get; set; } = new List<Bone>();
+
+        /// <summary>
         /// <inheritdoc cref="object.ToString()"/>
         /// </summary>
         /// <returns></returns>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IeCoreEntites.Model
 {
@@ -8,12 +9,17 @@ namespace IeCoreEntites.Model
     public class Animation: Asset
     {
         /// <summary>
-        /// Frame rate of animation
+        /// Frame rate of animation.
         /// </summary>
         public int FrameRate { get; set; }
 
         /// <summary>
-        /// Collection of animation keys
+        /// Animation length in ticks.
+        /// </summary>
+        public double Ticks { get; set; }
+
+        /// <summary>
+        /// Collection of animation keys.
         /// </summary>
         public List<Pose> Keys { get; set; } = new List<Pose>();
 
@@ -26,6 +32,13 @@ namespace IeCoreEntites.Model
         {           
         }
 
+        /// <summary>
+        /// <inheritdoc cref="Asset"/>
+        /// </summary>
+        //TODO: Make animation properly registered asset
+        public Animation() : base(Guid.NewGuid().ToString(), Guid.NewGuid().ToString())
+        {
+        }
         //TODO: write extensions to export poses and animations
     }
 }

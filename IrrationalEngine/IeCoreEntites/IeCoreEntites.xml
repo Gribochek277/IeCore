@@ -178,12 +178,17 @@
         </member>
         <member name="P:IeCoreEntites.Model.Animation.FrameRate">
             <summary>
-            Frame rate of animation
+            Frame rate of animation.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntites.Model.Animation.Ticks">
+            <summary>
+            Animation length in ticks.
             </summary>
         </member>
         <member name="P:IeCoreEntites.Model.Animation.Keys">
             <summary>
-            Collection of animation keys
+            Collection of animation keys.
             </summary>
         </member>
         <member name="M:IeCoreEntites.Model.Animation.#ctor(System.String,System.String)">
@@ -192,6 +197,34 @@
             </summary>
             <param name="name"></param>
             <param name="file"></param>
+        </member>
+        <member name="M:IeCoreEntites.Model.Animation.#ctor">
+            <summary>
+            <inheritdoc cref="T:IeCoreEntites.Asset"/>
+            </summary>
+        </member>
+        <member name="T:IeCoreEntites.Model.Bone">
+            <summary>
+            Bone entity.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntites.Model.Bone.Name">
+            <summary>
+            Name of a bone.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntites.Model.Bone.VertexWeights">
+            <summary>
+            List of vertexes to which this 
+            bone belongs and with which weight. 
+            Int32 element is a vertex ID.
+            Float element is weight.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntites.Model.Bone.OffsetMatrix">
+            <summary>
+            Offset matrix
+            </summary>
         </member>
         <member name="T:IeCoreEntites.Model.Mesh">
             <summary>
@@ -237,6 +270,11 @@
         <member name="P:IeCoreEntites.Model.Mesh.Transform">
             <summary>
             All transformation related data of mesh.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntites.Model.Mesh.Bones">
+            <summary>
+            List of bones of this mesh.
             </summary>
         </member>
         <member name="M:IeCoreEntites.Model.Mesh.ToString">
@@ -309,21 +347,28 @@
         </member>
         <member name="T:IeCoreEntites.Model.Pose">
             <summary>
-            Determines pose asset.
+            Determines pose.
             </summary>
         </member>
-        <member name="M:IeCoreEntites.Model.Pose.#ctor(System.String)">
+        <member name="P:IeCoreEntites.Model.Pose.TimeFrame">
             <summary>
-            Ctor. <inheritdoc cref="T:IeCoreEntites.Asset"/>
+            Time of animation at which this pose should be applied.
             </summary>
-            <param name="name"></param>
         </member>
-        <member name="M:IeCoreEntites.Model.Pose.Clone(System.String)">
+        <member name="P:IeCoreEntites.Model.Pose.BonePositions">
             <summary>
-            Clones Pose asset.
+            Contains position of each bone in current moment.
             </summary>
-            <param name="name"></param>
-            <returns></returns>
+        </member>
+        <member name="P:IeCoreEntites.Model.Pose.BoneScales">
+            <summary>
+            Contains scale of each bone in current moment.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntites.Model.Pose.BoneRotations">
+            <summary>
+            Contains rotation of each bone in current moment.
+            </summary>
         </member>
         <member name="T:IeCoreEntites.Model.RenderMode">
             <summary>

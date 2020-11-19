@@ -5,18 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Blender\" />
+    <Compile Remove="Resources\Blender\**" />
+    <EmbeddedResource Remove="Resources\Blender\**" />
+    <None Remove="Resources\Blender\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Resources\Blender\cube.blend">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\Blender\knight.blend">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Resources\FBX\knight.fbx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\FBX\knight1.fbx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

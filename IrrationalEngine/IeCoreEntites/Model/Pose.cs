@@ -1,24 +1,30 @@
-﻿namespace IeCoreEntites.Model
+﻿using System.Collections.Generic;
+using System.Numerics;
+
+namespace IeCoreEntites.Model
 {
     /// <summary>
-    /// Determines pose asset.
+    /// Determines pose.
     /// </summary>
-    public class Pose : Asset
+    public class Pose
     {
         /// <summary>
-        /// Ctor. <inheritdoc cref="Asset"/>
+        /// Time of animation at which this pose should be applied.
         /// </summary>
-        /// <param name="name"></param>
-        public Pose(string name):base(name, string.Empty)
-        { }
+        public double TimeFrame { get; set; }
         /// <summary>
-        /// Clones Pose asset.
+        /// Contains position of each bone in current moment.
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public virtual Pose Clone(string name)
-        {
-            return new Pose(name);
-        }
+        public Dictionary<string, Vector3> BonePositions { get; set; } = new Dictionary<string, Vector3>();
+
+        /// <summary>
+        /// Contains scale of each bone in current moment.
+        /// </summary>
+        public Dictionary<string, Vector3> BoneScales { get; set; } = new Dictionary<string, Vector3>();
+
+        /// <summary>
+        /// Contains rotation of each bone in current moment.
+        /// </summary>
+        public Dictionary<string, Quaternion> BoneRotations { get; set; } = new Dictionary<string, Quaternion>();
     }
 }

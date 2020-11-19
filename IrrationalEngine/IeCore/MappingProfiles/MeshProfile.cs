@@ -13,7 +13,7 @@ namespace IeCore.MappingProfiles
             CreateMap<Assimp.Mesh, Mesh>()
                 .ForMember(dest => dest.Vertices, opt => opt.MapFrom(src => MapVertices(src)))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Elements, opt => opt.MapFrom(src => src.Faces.SelectMany(face => face.Indices))) ;
+                .ForMember(dest => dest.Elements, opt => opt.MapFrom(src => src.Faces.SelectMany(face => face.Indices)));
         }
 
         private List<Vertex> MapVertices(Assimp.Mesh mesh)
