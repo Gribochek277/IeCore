@@ -1,42 +1,41 @@
-﻿using IeCoreEntites.Shaders;
-using IeCoreInterfaces.Shaders;
-using OpenTK.Graphics.OpenGL;
-using System;
-using IeUtils;
-using IeCoreInterfaces.Assets;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using IeCoreEntities.Shaders;
+using IeCoreInterfaces.Assets;
+using IeCoreInterfaces.Shaders;
+using IeUtils;
 using Microsoft.Extensions.Logging;
+using OpenTK.Graphics.OpenGL;
+using ShaderType = IeCoreEntities.Shaders.ShaderType;
 
 namespace IeCoreOpengl.Shaders
 {
     public class ShaderProgram : IShaderProgram
     {
-        private List<Shader> _storedShaders = new List<Shader>();
-        private IAssetManager _assetmanager;
-        private ILogger<ShaderProgram> _logger;
+        private readonly List<Shader> _storedShaders = new List<Shader>();
+        private readonly IAssetManager _assetManager;
+        private readonly ILogger<ShaderProgram> _logger;
 
-        /// <summary>
-        /// Dictionary of attribute info contained in shader.
-        /// </summary>
-        public Dictionary<string, AttributeInfo> AttributeInfos { get; private set; }
+        
+        private Dictionary<string, AttributeInfo> _attributeInfos;
 
-        /// <summary>
-        /// Dictionary of uniforms contained in shader.
-        /// </summary>
-        public Dictionary<string, UniformInfo> Uniforms { get; private set; }
+        
+        private readonly Dictionary<string, uint> _buffers = new Dictionary<string, uint>();
+
+        
+        private Dictionary<string, UniformInfo> _uniforms;
 
         public int ShaderProgramId { get; private set; } = -1;
 
-        private bool disposedValue = false;
+        private bool _disposedValue;
 
-        public ShaderProgram(IAssetManager assetmanager, ILogger<ShaderProgram> logger)
+        public ShaderProgram(IAssetManager assetManager, ILogger<ShaderProgram> logger)
         {
-            assetmanager.AssertNotNull(nameof(assetmanager));
+            assetManager.AssertNotNull(nameof(assetManager));
             logger.AssertNotNull(nameof(logger));
-            _assetmanager = assetmanager;
+            _assetManager = assetManager;
             _logger = logger;
-            ShaderProgramId = GL.CreateProgram();
         }
 
 
@@ -47,31 +46,45 @@ namespace IeCoreOpengl.Shaders
 
         public void EnableVertexAttribArrays()
         {
-            for (int i = 0; i < AttributeInfos.Count; i++)
+            foreach (var attributeInfo in _attributeInfos)
             {
-                GL.EnableVertexAttribArray(AttributeInfos.Values.ElementAt(i).Address);
+                GL.EnableVertexAttribArray(attributeInfo.Value.Address);
             }
         }
 
         public void GenBuffers()
         {
-            throw new NotImplementedException();
+            for (var i = 0; i < _attributeInfos.Count; i++)
+            {
+                if (_buffers.ContainsKey(_attributeInfos.Values.ElementAt(i).Name)) continue;
+                
+                GL.GenBuffers(1, out uint buffer);
+                _buffers.Add(_attributeInfos.Values.ElementAt(i).Name, buffer);
+            }
+
+            for (var i = 0; i < _uniforms.Count; i++)
+            {
+                if (_buffers.ContainsKey(_uniforms.Values.ElementAt(i).Name)) continue;
+                
+                GL.GenBuffers(1, out uint buffer);
+                _buffers.Add(_uniforms.Values.ElementAt(i).Name, buffer);
+            }
         }
 
         public int GetAttributeAddress(string name)
         {
-            return AttributeInfos[name].Address;
+            return _attributeInfos[name].Address;
         }
 
         public uint GetBuffer(string name)
         {
-            throw new NotImplementedException();
+            return _buffers.ContainsKey(name) ? _buffers[name] : 0;
         }
 
         public int GetUniformAddress(string name)
         {
-            Uniforms.TryGetValue(name, out UniformInfo result);
-            return result != null ? result.Address : -1;
+            _uniforms.TryGetValue(name, out UniformInfo result);
+            return result?.Address ?? -1;
         }
 
         public void LinkShadersToProgram()
@@ -83,8 +96,8 @@ namespace IeCoreOpengl.Shaders
 
             GL.LinkProgram(ShaderProgramId);
 
-            AttributeInfos = GetAttributesInformation(ShaderProgramId);
-            Uniforms = GetUniformsInformation(ShaderProgramId);
+            _attributeInfos = GetAttributesInformation(ShaderProgramId);
+            _uniforms = GetUniformsInformation(ShaderProgramId);
 
             //After linking program we can detach shaders.
             foreach (Shader storedShader in _storedShaders)
@@ -93,37 +106,37 @@ namespace IeCoreOpengl.Shaders
             }
         }
 
-        private Dictionary<string, AttributeInfo> GetAttributesInformation(int shaderProgramId)
+        private static Dictionary<string, AttributeInfo> GetAttributesInformation(int shaderProgramId)
         {
-            GL.GetProgram(shaderProgramId, GetProgramParameterName.ActiveAttributes, out int AttributeCount);
-            Dictionary<string, AttributeInfo> attributes = new Dictionary<string, AttributeInfo>();
-            for (int i = 0; i < AttributeCount; i++)
+            GL.GetProgram(shaderProgramId, GetProgramParameterName.ActiveAttributes, out int attributeCount);
+            var attributes = new Dictionary<string, AttributeInfo>();
+            for (var i = 0; i < attributeCount; i++)
             {
-                AttributeInfo info = new AttributeInfo();
+                var info = new AttributeInfo();
                 GL.GetActiveAttrib(shaderProgramId, i, 256, out int length, out info.Size, out ActiveAttribType type, out string name);
 
-                info.Name = name.ToString();
+                info.Name = name;
                 info.Address = GL.GetAttribLocation(shaderProgramId, info.Name);
                 info.Type = (int)type;
-                attributes.Add(name.ToString(), info);
+                attributes.Add(name, info);
             }
 
             return attributes;
         }
 
-        private Dictionary<string, UniformInfo> GetUniformsInformation(int shaderProgramId)
+        private static Dictionary<string, UniformInfo> GetUniformsInformation(int shaderProgramId)
         {
-            GL.GetProgram(shaderProgramId, GetProgramParameterName.ActiveUniforms, out int UniformCount);
-            Dictionary<string, UniformInfo> uniforms = new Dictionary<string, UniformInfo>();
-            for (int i = 0; i < UniformCount; i++)
+            GL.GetProgram(shaderProgramId, GetProgramParameterName.ActiveUniforms, out int uniformCount);
+            var uniforms = new Dictionary<string, UniformInfo>();
+            for (var i = 0; i < uniformCount; i++)
             {
-                UniformInfo info = new UniformInfo();
+                var info = new UniformInfo();
                 GL.GetActiveUniform(shaderProgramId, i, 256, out int length, out info.Size, out ActiveUniformType type, out string name);
 
-                info.Name = name.ToString();
+                info.Name = name;
                 info.Address = GL.GetUniformLocation(shaderProgramId, info.Name);
                 info.Type = (int)type;
-                uniforms.Add(name.ToString(), info);
+                uniforms.Add(name, info);
             }
 
             return uniforms;
@@ -134,24 +147,25 @@ namespace IeCoreOpengl.Shaders
             GL.UseProgram(ShaderProgramId);
         }
 
-        public void LoadShaderFromFile(string filename, string shaderName, IeCoreEntites.Shaders.ShaderType type)
+        public void LoadShaderFromFile(string filename, string shaderName, ShaderType type)
         {
             throw new NotImplementedException();
         }
 
-        public void LoadShaderFromString(string code, string shaderName, IeCoreEntites.Shaders.ShaderType type)
+        public void LoadShaderFromString(string code, string shaderName, ShaderType type)
         {
-            Shader registeredShader = _assetmanager.Retrieve<Shader>(shaderName);
+            ShaderProgramId = GL.CreateProgram();
+            var registeredShader = _assetManager.Retrieve<Shader>(shaderName);
             if (registeredShader == null)
             {
-                Shader shader = new Shader(shaderName, string.Concat("InMemmory shader ", Guid.NewGuid()), code, type);
+                var shader = new Shader(shaderName, string.Concat("InMemory shader ", Guid.NewGuid()), code, type);
 
-                _assetmanager.Register(shader);
+                _assetManager.Register(shader);
                 _storedShaders.Add(shader);
 
-                OpenTK.Graphics.OpenGL.ShaderType OGLEnum = Enum.Parse<OpenTK.Graphics.OpenGL.ShaderType>(shader.ShaderType.ToString());
+                var oglEnum = Enum.Parse<OpenTK.Graphics.OpenGL.ShaderType>(shader.ShaderType.ToString());
 
-                shader.Id = GL.CreateShader(OGLEnum);
+                shader.Id = GL.CreateShader(oglEnum);
                 GL.ShaderSource(shader.Id, shader.ShaderCode);
                 GL.CompileShader(shader.Id);
 
@@ -170,12 +184,10 @@ namespace IeCoreOpengl.Shaders
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
-            {
-                GL.DeleteProgram(ShaderProgramId);
+            if (_disposedValue) return;
+            GL.DeleteProgram(ShaderProgramId);
 
-                disposedValue = true;
-            }
+            _disposedValue = true;
         }
 
         public void Dispose()

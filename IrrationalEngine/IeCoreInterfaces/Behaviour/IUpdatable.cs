@@ -1,4 +1,4 @@
-﻿namespace IIeCoreInterfaces.Behaviour
+﻿namespace IeCoreInterfaces.Behaviour
 {
     /// <summary>
     /// /// <summary>

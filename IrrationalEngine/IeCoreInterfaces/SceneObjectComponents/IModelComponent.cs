@@ -1,5 +1,5 @@
-﻿using IeCoreEntites.Model;
-using IeCoreInterfaces.Core;
+﻿using System.Numerics;
+using IeCoreEntities.Model;
 
 namespace IeCoreInterfaces.SceneObjectComponents
 {
@@ -14,14 +14,28 @@ namespace IeCoreInterfaces.SceneObjectComponents
         Model Model { get; }
 
         /// <summary>
-        /// Return Vertex Buffer Object data from model.
+        /// Return Position Vertex Buffer Object data from model.
         /// </summary>
         /// <returns></returns>
-        float[] GetVBODataOfModel();
+        float[] GetVboPositionDataOfModel();
+
         /// <summary>
-        /// Return Indices's data from model.
+        /// Return Texture Vertex Buffer Object data from model.
+        /// </summary>
+        /// <returns></returns>
+        float[] GetVboTextureDataOfModel();
+
+        /// <summary>
+        /// Return Texture Vertex Buffer Object data from model.
+        /// </summary>
+        /// <returns></returns>
+        Matrix4x4[] GetVboBonesDataOfModel();
+
+        /// <summary>
+        /// Return Indices data from model.
         /// </summary>
         /// <returns></returns>
         uint[] GetIndicesOfModel();
+        
     }
 }

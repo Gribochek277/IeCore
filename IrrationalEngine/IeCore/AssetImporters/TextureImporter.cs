@@ -1,16 +1,17 @@
-﻿using IeCoreEntites.Materials;
+﻿using System;
+using IeCoreEntities;
+using IeCoreEntities.Materials;
 using IeCoreInterfaces.AssetImporters;
-using System;
 
 namespace IeCore.AssetImporters
 {
-    public class TextureImporter : IMaterialImporter
+    public class TextureImporter : ITextureImporter
     {
         public Type AssetType => typeof(Texture);
 
-        public string[] FileExtensions { get; } = new string[] { ".png", ".jpg", "jpeg" };
+        public string[] FileExtensions { get; } = { ".png", ".jpg", "jpeg" };
 
-        public void Import(string file)
+        public Asset Import(string file)
         {
             throw new NotImplementedException();
         }

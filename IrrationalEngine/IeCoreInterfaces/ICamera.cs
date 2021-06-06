@@ -1,6 +1,5 @@
-﻿using IeCoreInterfaces.Core;
-using IIeCoreInterfaces.Behaviour;
-using System.Numerics;
+﻿using System.Numerics;
+using IeCoreInterfaces.Behaviour;
 
 namespace IeCoreInterfaces
 {

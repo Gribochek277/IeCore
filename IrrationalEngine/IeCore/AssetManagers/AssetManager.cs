@@ -1,11 +1,10 @@
-﻿using IeCore.AssetImporters;
-using IeCoreEntites;
-using IeCoreInterfaces.AssetImporters;
-using IeCoreInterfaces.Assets;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using IeCoreEntities;
+using IeCoreInterfaces.AssetImporters;
+using IeCoreInterfaces.Assets;
 
 namespace IeCore.AssetManagers
 {
@@ -15,10 +14,10 @@ namespace IeCore.AssetManagers
 
         public Dictionary<string, Asset> RegisteredAssets { get; } = new Dictionary<string, Asset>();
 
-        public AssetManager()
+        public AssetManager(IFbxImporter fbxImporter, ITextureImporter textureImporter)
         {
-            AssetImporters.Add(new TextureImporter());
-            AssetImporters.Add(new FbxImporter());
+            AssetImporters.Add(textureImporter);
+            AssetImporters.Add(fbxImporter);
         }
 
         public void Register(Asset asset)
@@ -40,7 +39,7 @@ namespace IeCore.AssetManagers
                 {
                     if (importerFileExtention == fileExtention)
                     {
-                        importer.Import(file);
+                        Register(importer.Import(file));
                         return;
                     }
                 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using IeCoreEntities;
 
 namespace IeCoreInterfaces.AssetImporters
 {
@@ -19,6 +20,6 @@ namespace IeCoreInterfaces.AssetImporters
         /// Imports asset according to file path.
         /// </summary>
         /// <param name="file"></param>
-        void Import(string file);
+        Asset Import(string file);
     }
 }

@@ -1,6 +1,6 @@
-﻿using IIeCoreInterfaces.Behaviour;
+﻿using IeCoreInterfaces.Behaviour;
 
-namespace IeCoreInterfaces.Core
+namespace IeCoreInterfaces
 {
     /// <summary>
     /// Base interface for all components which are attached to <see cref="ISceneObject"/>

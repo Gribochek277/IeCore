@@ -1,5 +1,4 @@
-﻿using IeCoreInterfaces.Core;
-using IIeCoreInterfaces.Behaviour;
+﻿using IeCoreInterfaces.Behaviour;
 
 namespace IeCoreInterfaces
 {

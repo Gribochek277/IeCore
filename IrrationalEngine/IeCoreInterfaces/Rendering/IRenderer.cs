@@ -1,4 +1,4 @@
-﻿using IIeCoreInterfaces.Behaviour;
+﻿using IeCoreInterfaces.Behaviour;
 
 namespace IeCoreInterfaces.Rendering
 {

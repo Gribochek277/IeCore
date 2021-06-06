@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IeCoreEntites\IeCoreEntites.csproj" />
+    <ProjectReference Include="..\IeCoreEntities\IeCoreEntities.csproj" />
   </ItemGroup>
 
 </Project>
