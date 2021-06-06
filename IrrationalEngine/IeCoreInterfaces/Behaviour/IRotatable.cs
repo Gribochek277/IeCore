@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace IIeCoreInterfaces.Behaviour
+namespace IeCoreInterfaces.Behaviour
 {
     /// <summary>
     /// Determines that class should support rotating behaviour.

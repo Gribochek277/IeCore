@@ -25,6 +25,11 @@
             </summary>
             <param name="file"></param>
         </member>
+        <member name="T:IeCoreInterfaces.AssetImporters.IFbxImporter">
+            <summary>
+            Serves for importing assets of FBX type.
+            </summary>
+        </member>
         <member name="T:IeCoreInterfaces.AssetImporters.IMaterialImporter">
             <summary>
             Load material assets.
@@ -33,6 +38,11 @@
         <member name="T:IeCoreInterfaces.AssetImporters.IModelImporter">
             <summary>
             Loads model.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.AssetImporters.ITextureImporter">
+            <summary>
+            Load image assets.
             </summary>
         </member>
         <member name="T:IeCoreInterfaces.Assets.IAssetManager">
@@ -64,7 +74,7 @@
             </summary>
             <param name="file"></param>
         </member>
-        <member name="M:IeCoreInterfaces.Assets.IAssetManager.Register(IeCoreEntites.Asset)">
+        <member name="M:IeCoreInterfaces.Assets.IAssetManager.Register(IeCoreEntities.Asset)">
             <summary>
             Registers asset to prevent duplication.
             </summary>
@@ -93,6 +103,73 @@
             <typeparam name="T"></typeparam>
             <returns></returns>
         </member>
+        <member name="T:IeCoreInterfaces.Behaviour.ILoadable">
+            <summary>
+            Determines that class should support loading behaviour.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Behaviour.ILoadable.OnLoad">
+            <summary>
+            Calls on loading.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Behaviour.ILoadable.OnUnload">
+            <summary>
+            calls on unloading,
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.Behaviour.IRenderable">
+            <summary>
+            Determines that class should support rendering behaviour.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Behaviour.IRenderable.OnRender">
+            <summary>
+            Calls on render.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.Behaviour.IResizable">
+            <summary>
+            Determines that class should support reszing behaviour.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Behaviour.IResizable.OnResized">
+            <summary>
+            Calls on resize.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.Behaviour.IRotatable">
+            <summary>
+            Determines that class should support rotating behaviour.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Behaviour.IRotatable.Rotation">
+            <summary>
+            Contains value of rotation.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.Behaviour.IScalable">
+            <summary>
+            Determines that class should support scale behaviour.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.Behaviour.IScalable.Scale">
+            <summary>
+            Conatins scale value.
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.Behaviour.IUpdatable">
+            <summary>
+            /// <summary>
+            Determines that class should support update behavior.
+            </summary>
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Behaviour.IUpdatable.OnUpdated">
+            <summary>
+            Calls on update.
+            </summary>
+        </member>
         <member name="T:IeCoreInterfaces.EngineWindow.IWindow">
             <summary>
             Determines window which is opened during runtime.
@@ -113,9 +190,14 @@
             Set frame rate.
             </summary>
         </member>
-        <member name="P:IeCoreInterfaces.EngineWindow.IWindow.RenderDeltaTime">
+        <member name="P:IeCoreInterfaces.EngineWindow.IWindow.RenderFrameDeltaTime">
             <summary>
             Returns time between rendered frames.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.EngineWindow.IWindow.UpdateDeltaTime">
+            <summary>
+            Returns time between updates.
             </summary>
         </member>
         <member name="T:IeCoreInterfaces.EngineWindow.IWindowFactory">
@@ -155,56 +237,19 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:IeCoreInterfaces.Core.IScene">
+        <member name="T:IeCoreInterfaces.IScene">
             <summary>
             Scene contains all scene objects.
             </summary>
         </member>
-        <member name="P:IeCoreInterfaces.Core.IScene.SceneObjects">
+        <member name="P:IeCoreInterfaces.IScene.SceneObjects">
             <summary>
             Contains all the scene objects which are related to this scene.
             </summary>
         </member>
-        <member name="P:IeCoreInterfaces.Core.IScene.MainCamera">
+        <member name="P:IeCoreInterfaces.IScene.MainCamera">
             <summary>
             Set main camera for scene.
-            </summary>
-        </member>
-        <member name="T:IeCoreInterfaces.Core.ISceneObject">
-            <summary>
-            Base interface for all objects on scene.
-            </summary>
-        </member>
-        <member name="P:IeCoreInterfaces.Core.ISceneObject.Name">
-            <summary>
-            Name of scene object.
-            </summary>
-        </member>
-        <member name="P:IeCoreInterfaces.Core.ISceneObject.components">
-            <summary>
-            Components which are attached to this scene object.
-            </summary>
-        </member>
-        <member name="M:IeCoreInterfaces.Core.ISceneObject.AddComponent(IeCoreInterfaces.Core.ISceneObjectComponent)">
-            <summary>
-            Adds new component to this scene object.
-            </summary>
-            <param name="component"></param>
-        </member>
-        <member name="M:IeCoreInterfaces.Core.ISceneObject.RemoveComponent(System.String)">
-            <summary>
-            Removes component from this scene object.
-            </summary>
-            <param name="componentname"></param>
-        </member>
-        <member name="T:IeCoreInterfaces.Core.ISceneObjectComponent">
-            <summary>
-            Base interface for all components which are attached to <see cref="T:IeCoreInterfaces.Core.ISceneObject"/>
-            </summary>
-        </member>
-        <member name="P:IeCoreInterfaces.Core.ISceneObjectComponent.Name">
-            <summary>
-            Name of scene object component
             </summary>
         </member>
         <member name="T:IeCoreInterfaces.ISceneManager">
@@ -216,6 +261,66 @@
             <summary>
             Get current scene.
             </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.ISceneObject">
+            <summary>
+            Base interface for all objects on scene.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.ISceneObject.Name">
+            <summary>
+            Name of scene object.
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.ISceneObject.Components">
+            <summary>
+            Components which are attached to this scene object.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.ISceneObject.AddComponent(IeCoreInterfaces.ISceneObjectComponent)">
+            <summary>
+            Adds new component to this scene object.
+            </summary>
+            <param name="component"></param>
+        </member>
+        <member name="M:IeCoreInterfaces.ISceneObject.RemoveComponent(System.String)">
+            <summary>
+            Removes component from this scene object.
+            </summary>
+            <param name="componentName"></param>
+        </member>
+        <member name="T:IeCoreInterfaces.ISceneObjectComponent">
+            <summary>
+            Base interface for all components which are attached to <see cref="T:IeCoreInterfaces.ISceneObject"/>
+            </summary>
+        </member>
+        <member name="P:IeCoreInterfaces.ISceneObjectComponent.Name">
+            <summary>
+            Name of scene object component
+            </summary>
+        </member>
+        <member name="T:IeCoreInterfaces.Primitives.IPrimitvesFactory">
+            <summary>
+            Creates primitive SceneObjects such as Cube, Box etc.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.Primitives.IPrimitvesFactory.CreateCube">
+            <summary>
+            Creates cube instance. 
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.Primitives.IPrimitvesFactory.CreateRectangle">
+            <summary>
+            Creates rectangle instance.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.Primitives.IPrimitvesFactory.CreateTriangle">
+            <summary>
+            Creates triangle instance.
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:IeCoreInterfaces.Rendering.IRenderer">
             <summary>
@@ -230,12 +335,28 @@
             <param name="width"></param>
             <param name="height"></param>
         </member>
+        <member name="T:IeCoreInterfaces.SceneObjectComponents.IAnimationComponent">
+            <summary>
+            Represents scene object component which responsible for animation.
+            </summary>
+        </member>
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IAnimationComponent.ApplyPose(System.Int32)">
+            <summary>
+            Apply pose number
+            </summary>
+            <param name="posNum"></param>
+        </member>
+        <member name="P:IeCoreInterfaces.SceneObjectComponents.IAnimationComponent.ModelComponent">
+            <summary>
+            <see cref="T:IeCoreInterfaces.SceneObjectComponents.IModelComponent"/> Is a dependency for IAnimatioComponent
+            </summary>
+        </member>
         <member name="T:IeCoreInterfaces.SceneObjectComponents.IMaterialComponent">
             <summary>
             Represents scene object component which responsible for materials.
             </summary>
         </member>
-        <member name="P:IeCoreInterfaces.SceneObjectComponents.IMaterialComponent.materials">
+        <member name="P:IeCoreInterfaces.SceneObjectComponents.IMaterialComponent.Materials">
             <summary>
             Dictionary of loaded materials which belong to this component
             </summary>
@@ -255,15 +376,27 @@
             Get model which stored in this component.
             </summary>
         </member>
-        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVBODataOfModel">
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVboPositionDataOfModel">
             <summary>
-            Return Vertex Buffer Object data from model.
+            Return Position Vertex Buffer Object data from model.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVboTextureDataOfModel">
+            <summary>
+            Return Texture Vertex Buffer Object data from model.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVboBonesDataOfModel">
+            <summary>
+            Return Texture Vertex Buffer Object data from model.
             </summary>
             <returns></returns>
         </member>
         <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetIndicesOfModel">
             <summary>
-            Return Indices's data from model.
+            Return Indices data from model.
             </summary>
             <returns></returns>
         </member>
@@ -277,7 +410,7 @@
             Id of shader program.
             </summary>
         </member>
-        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.LoadShaderFromString(System.String,System.String,IeCoreEntites.Shaders.ShaderType)">
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.LoadShaderFromString(System.String,System.String,IeCoreEntities.Shaders.ShaderType)">
             <summary>
             Uses provided shader code as a string a loads it to program.
             </summary>
@@ -285,7 +418,7 @@
             <param name="type">vertex, fragment etc.</param>
             <param name="shaderName"></param>
         </member>
-        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.LoadShaderFromFile(System.String,System.String,IeCoreEntites.Shaders.ShaderType)">
+        <member name="M:IeCoreInterfaces.Shaders.IShaderProgram.LoadShaderFromFile(System.String,System.String,IeCoreEntities.Shaders.ShaderType)">
             <summary>
             Get shader source from file and load it to program.
             </summary>
@@ -338,73 +471,6 @@
             </summary>
             <param name="name"></param>
             <returns></returns>
-        </member>
-        <member name="T:IIeCoreInterfaces.Behaviour.ILoadable">
-            <summary>
-            Determines that class should support loading behaviour.
-            </summary>
-        </member>
-        <member name="M:IIeCoreInterfaces.Behaviour.ILoadable.OnLoad">
-            <summary>
-            Calls on loading.
-            </summary>
-        </member>
-        <member name="M:IIeCoreInterfaces.Behaviour.ILoadable.OnUnload">
-            <summary>
-            calls on unloading,
-            </summary>
-        </member>
-        <member name="T:IIeCoreInterfaces.Behaviour.IRenderable">
-            <summary>
-            Determines that class should support rendering behaviour.
-            </summary>
-        </member>
-        <member name="M:IIeCoreInterfaces.Behaviour.IRenderable.OnRender">
-            <summary>
-            Calls on render.
-            </summary>
-        </member>
-        <member name="T:IIeCoreInterfaces.Behaviour.IResizable">
-            <summary>
-            Determines that class should support reszing behaviour.
-            </summary>
-        </member>
-        <member name="M:IIeCoreInterfaces.Behaviour.IResizable.OnResized">
-            <summary>
-            Calls on resize.
-            </summary>
-        </member>
-        <member name="T:IIeCoreInterfaces.Behaviour.IRotatable">
-            <summary>
-            Determines that class should support rotating behaviour.
-            </summary>
-        </member>
-        <member name="P:IIeCoreInterfaces.Behaviour.IRotatable.Rotation">
-            <summary>
-            Contains value of rotation.
-            </summary>
-        </member>
-        <member name="T:IIeCoreInterfaces.Behaviour.IScalable">
-            <summary>
-            Determines that class should support scale behaviour.
-            </summary>
-        </member>
-        <member name="P:IIeCoreInterfaces.Behaviour.IScalable.Scale">
-            <summary>
-            Conatins scale value.
-            </summary>
-        </member>
-        <member name="T:IIeCoreInterfaces.Behaviour.IUpdatable">
-            <summary>
-            /// <summary>
-            Determines that class should support update behavior.
-            </summary>
-            </summary>
-        </member>
-        <member name="M:IIeCoreInterfaces.Behaviour.IUpdatable.OnUpdated">
-            <summary>
-            Calls on update.
-            </summary>
         </member>
     </members>
 </doc>

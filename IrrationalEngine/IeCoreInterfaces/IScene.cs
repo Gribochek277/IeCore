@@ -1,7 +1,7 @@
-﻿using IIeCoreInterfaces.Behaviour;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using IeCoreInterfaces.Behaviour;
 
-namespace IeCoreInterfaces.Core
+namespace IeCoreInterfaces
 {
     /// <summary>
     /// Scene contains all scene objects.

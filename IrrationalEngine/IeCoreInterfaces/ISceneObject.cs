@@ -1,7 +1,7 @@
-﻿using IIeCoreInterfaces.Behaviour;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using IeCoreInterfaces.Behaviour;
 
-namespace IeCoreInterfaces.Core
+namespace IeCoreInterfaces
 {
     /// <summary>
     /// Base interface for all objects on scene.
@@ -15,7 +15,7 @@ namespace IeCoreInterfaces.Core
         /// <summary>
         /// Components which are attached to this scene object.
         /// </summary>
-        Dictionary<string, ISceneObjectComponent> components { get; }
+        Dictionary<string, ISceneObjectComponent> Components { get; }
         /// <summary>
         /// Adds new component to this scene object.
         /// </summary>
@@ -24,7 +24,7 @@ namespace IeCoreInterfaces.Core
         /// <summary>
         /// Removes component from this scene object.
         /// </summary>
-        /// <param name="componentname"></param>
-        void RemoveComponent(string componentname);
+        /// <param name="componentName"></param>
+        void RemoveComponent(string componentName);
     }
 }

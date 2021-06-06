@@ -1,4 +1,4 @@
-﻿using IIeCoreInterfaces.Behaviour;
+﻿using IeCoreInterfaces.Behaviour;
 
 namespace IeCoreInterfaces.EngineWindow
 {
@@ -25,6 +25,11 @@ namespace IeCoreInterfaces.EngineWindow
         /// <summary>
         /// Returns time between rendered frames.
         /// </summary>
-        double RenderDeltaTime { get; }
+        double RenderFrameDeltaTime { get; }
+
+        /// <summary>
+        /// Returns time between updates.
+        /// </summary>
+        double UpdateDeltaTime { get; }
     }
 }

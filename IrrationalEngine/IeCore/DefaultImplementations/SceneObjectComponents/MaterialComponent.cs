@@ -1,30 +1,36 @@
-﻿using IeCore.DefaultImplementations.Shaders;
-using IeCoreEntites.Materials;
-using IeCoreEntites.Shaders;
+﻿using System.Collections.Generic;
+using IeCore.DefaultImplementations.Shaders;
+using IeCoreEntities.Materials;
+using IeCoreEntities.Shaders;
 using IeCoreInterfaces.SceneObjectComponents;
 using IeCoreInterfaces.Shaders;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 
 namespace IeCore.DefaultImplementations.SceneObjectComponents
 {
     public class MaterialComponent : IMaterialComponent
     {
-        const string FragmentShaderName = "DefaultFragmentShader";
-        const string VertexShaderName = "DefaultVertexShader";
-        public Dictionary<string, Material> materials { get; } = new Dictionary<string, Material>();
+        private const string FragmentShaderName = "DefaultFragmentShader";
+        private const string VertexShaderName = "DefaultVertexShader";
+        public Dictionary<string, Material> Materials { get; } = new Dictionary<string, Material>();
 
-        public IShaderProgram ShaderProgram { get; } = IrrationalEngine.ServiceProvider.GetService<IShaderProgram>();
+        public IShaderProgram ShaderProgram { get; }
+
 
         public string Name => "MaterialSceneObjectComponent";
 
+        public MaterialComponent(IShaderProgram shaderProgram)
+        {
+            ShaderProgram = shaderProgram;
+        }
 
         public void OnLoad()
         {
+            //TODO: implement shader variation possibility.
+            //TODO: encapsulate link and gen buffers.
            ShaderProgram.LoadShaderFromString(DefaultDiffuseShader.VertexShader, VertexShaderName, ShaderType.VertexShader);
            ShaderProgram.LoadShaderFromString(DefaultDiffuseShader.FragmentShader, FragmentShaderName, ShaderType.FragmentShader);
            ShaderProgram.LinkShadersToProgram();
-          
+           ShaderProgram.GenBuffers();
         }
 
         public void OnUnload()

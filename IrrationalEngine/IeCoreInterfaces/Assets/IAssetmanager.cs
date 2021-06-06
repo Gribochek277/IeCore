@@ -1,6 +1,6 @@
-﻿using IeCoreEntites;
+﻿using System.Collections.Generic;
+using IeCoreEntities;
 using IeCoreInterfaces.AssetImporters;
-using System.Collections.Generic;
 
 namespace IeCoreInterfaces.Assets
 {

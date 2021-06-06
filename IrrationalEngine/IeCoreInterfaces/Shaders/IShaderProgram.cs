@@ -1,6 +1,7 @@
 ﻿//TODO: Consider this interface to re-factor/remove taking into account other realizations of renderer. 
-using IeCoreEntites.Shaders;
+
 using System;
+using IeCoreEntities.Shaders;
 
 namespace IeCoreInterfaces.Shaders
 {

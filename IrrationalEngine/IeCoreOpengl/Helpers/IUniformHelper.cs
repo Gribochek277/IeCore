@@ -18,8 +18,8 @@ namespace IeCoreOpengl.Helpers
 
         bool TryAddUniform(Vector4 value, string uniformName, IShaderProgram shader);
 
-        bool TryAddUniformTexture2D(int textureID, string uniformName, IShaderProgram shader, TextureUnit unit);
+        bool TryAddUniformTexture2D(int textureId, string uniformName, IShaderProgram shader, TextureUnit unit);
 
-        bool TryAddUniformTextureCubemap(int textureID, string uniformName, IShaderProgram shader, TextureUnit unit);
+        bool TryAddUniformTextureCubemap(int textureId, string uniformName, IShaderProgram shader, TextureUnit unit);
     }
 }
