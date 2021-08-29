@@ -1,8 +1,8 @@
 ﻿namespace IeCore.DefaultImplementations.Shaders
 {
-    public class DefaultDiffuseShader
-    {
-        public const string VertexShader = @"#version 330
+	public class DefaultDiffuseShader
+	{
+		public const string VertexShader = @"#version 330
                                                layout(location = 0) in vec3 aPosition;
                                                layout(location = 1) in vec2 aTexCoord;
                                                uniform mat4 model;
@@ -15,7 +15,7 @@
                                                    gl_Position = projection * view * model * vec4(aPosition, 1.0);
                                                }";
 
-        public const string FragmentShader = @"#version 330
+		public const string FragmentShader = @"#version 330
                                                   out vec4 FragColor;
                                                   uniform vec4 Color;
                                                   uniform int isTextured;
@@ -26,5 +26,5 @@
                                                   {
                                                       FragColor = texture(texture0, texCoord);
                                                   }";
-    }
+	}
 }

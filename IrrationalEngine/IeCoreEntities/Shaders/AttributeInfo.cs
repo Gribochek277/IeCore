@@ -1,9 +1,9 @@
 ﻿namespace IeCoreEntities.Shaders
 {
-    /// <summary>
-    /// Contains information about shader attribute.
-    /// </summary>
-    public class AttributeInfo
+	/// <summary>
+	/// Contains information about shader attribute.
+	/// </summary>
+	public class AttributeInfo
 	{
 		/// <summary>
 		/// Attribute name.
@@ -17,9 +17,9 @@
 		/// Size of attribute.
 		/// </summary>
 		public int Size = 0;
-        /// <summary>
-        /// Code of attribute type as integer value.
-        /// </summary>
-        public int Type;
+		/// <summary>
+		/// Code of attribute type as integer value.
+		/// </summary>
+		public int Type;
 	}
 }

@@ -394,7 +394,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetIndicesOfModel">
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetIndexesOfModel">
             <summary>
             Return Indices data from model.
             </summary>

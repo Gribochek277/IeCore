@@ -1,9 +1,9 @@
 ﻿namespace IeCoreInterfaces.AssetImporters
 {
-    /// <summary>
-    /// Loads model.
-    /// </summary>
-    public interface IModelImporter: IAssetImporter
-    {
-    }
+	/// <summary>
+	/// Loads model.
+	/// </summary>
+	public interface IModelImporter : IAssetImporter
+	{
+	}
 }
