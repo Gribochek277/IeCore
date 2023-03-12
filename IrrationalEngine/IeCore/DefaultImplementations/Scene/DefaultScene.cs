@@ -58,7 +58,7 @@ namespace IeCore.DefaultImplementations.Scene
 
 			var animationComponent = new AnimationComponent();
 
-			customSceneObject.AddComponent(animationComponent);
+			//customSceneObject.AddComponent(animationComponent);
 			customSceneObject.AddComponent(modelSceneObject);
 			customSceneObject.AddComponent(materialComponent);
 
