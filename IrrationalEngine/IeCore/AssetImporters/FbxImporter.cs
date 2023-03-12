@@ -30,7 +30,7 @@ namespace IeCore.AssetImporters
 
 		public Asset Import(string file)
 		{
-			using (var context = new AssimpContext())
+			using (AssimpContext context = new AssimpContext())
 			{
 				const PostProcessSteps assimpLoadFlags = PostProcessSteps.Triangulate | PostProcessSteps.GenerateSmoothNormals | PostProcessSteps.FlipUVs;
 				Scene loadedAssimpScene = context.ImportFile(file, assimpLoadFlags);
@@ -39,7 +39,31 @@ namespace IeCore.AssetImporters
 					Console.WriteLine("Scene error");
 				}
 
-				var model = new Model(Path.GetFileName(file), file);
+				Model model = new Model(Path.GetFileName(file), file);
+
+				foreach (Mesh assimpMesh in loadedAssimpScene.Meshes)
+					model.Meshes.Add(
+						_mapper.Map<Mesh, IeCoreEntities.Model.Mesh>(assimpMesh, opt =>
+							{
+								opt.AfterMap((mappedAssimpMesh, dest) =>
+								{
+									//Initialize default values for bones;
+									//TODO: Consider extraction or another approach.
+									foreach (Vertex vertex in dest.Vertices)
+									{
+										for (int i = 0; i < Vertex.MaxBones; i++)
+										{
+											vertex.Weights[i] = 0.0f;
+											vertex.BoneIDs[i] = -1;
+										}
+									}
+									if (!mappedAssimpMesh.HasBones) return;
+									MapBones(mappedAssimpMesh, dest, loadedAssimpScene);
+									
+									dest.Skeleton.DrawInConsole();
+								});
+							})
+						);
 				if (loadedAssimpScene.HasAnimations)
 				{
 					foreach (Animation assimpAnimation in loadedAssimpScene.Animations)
@@ -55,18 +79,7 @@ namespace IeCore.AssetImporters
 						}));
 					}
 				}
-				foreach (Mesh assimpMesh in loadedAssimpScene.Meshes)
-					model.Meshes.Add(
-						_mapper.Map<Mesh, IeCoreEntities.Model.Mesh>(assimpMesh, opt =>
-							{
-								opt.AfterMap((mappedAssimpMesh, dest) =>
-								{
-									if (!mappedAssimpMesh.HasBones) return;
-									MapBones(mappedAssimpMesh, dest, loadedAssimpScene);
-									dest.Skeleton.DrawInConsole();
-								});
-							})
-						);
+				
 				//TODO: Possible animation with several meshes, should be linked. Investigate.
 				return model;
 			}
@@ -74,18 +87,35 @@ namespace IeCore.AssetImporters
 
 		private void MapBones(Mesh assimpMesh, IeCoreEntities.Model.Mesh destination, Scene loadedAssimpScene)
 		{
-			foreach (Bone bone in assimpMesh.Bones)
+			for (int i = 0; i<  assimpMesh.Bones.Count(); i++)
 			{
-				destination.Skeleton.Bones.Add(_mapper.Map<Bone, IeCoreEntities.Animation.Bone>(bone, opt =>
+				
+				destination.Skeleton.Bones.Add(_mapper.Map<Bone, IeCoreEntities.Animation.Bone>(assimpMesh.Bones[i], opt =>
 				{
 					opt.AfterMap((_, dest) =>
 					{
 						Node node = SearchNodeByName(loadedAssimpScene.RootNode, dest.Name);
 
+						dest.Id = i;
+						dest.NodeTransformMatrix =  node.Transform.ToNumericMatrix();
+						dest.ChildNames = node.Children.Select(x => x.Name).ToList();
+
+						foreach (VertexWeight vertexWeight in assimpMesh.Bones[i].VertexWeights)
+						{
+							Vertex vertex = destination.Vertices[vertexWeight.VertexID];
+							for (int j = 0; j < Vertex.MaxBones; j++)
+							{
+								if(vertex.BoneIDs[j] == -1) {
+									vertex.Weights[j] = vertexWeight.Weight;
+									vertex.BoneIDs[j] = dest.Id;
+									break;
+								}
+							}
+						}
+						
 						if (node.Parent != null)
 							dest.ParentName = node.Parent.Name;
 					});
-
 				}));
 			}
 
@@ -112,44 +142,47 @@ namespace IeCore.AssetImporters
 			}
 			return null;
 		}
-		private static List<AnimationKey> NodeAnimationChannelToPose(IReadOnlyCollection<NodeAnimationChannel> nodeAnimationChannels)
+		private static List<BoneAnimationKeys> NodeAnimationChannelToPose(IReadOnlyCollection<NodeAnimationChannel> nodeAnimationChannels)
 		{
-			var resultPoses = new List<AnimationKey>();
+			List<BoneAnimationKeys> resultPoses = new List<BoneAnimationKeys>();
 
-			var uniqueTimeFrames = nodeAnimationChannels.Select(nodeAnimationChannel => nodeAnimationChannel.PositionKeys.Select(key => key.Time)
-					.Union(nodeAnimationChannel.ScalingKeys.Select(vectorKey => vectorKey.Time))
-					.Union(nodeAnimationChannel.RotationKeys.Select(quaternionKey => quaternionKey.Time))).SelectMany(x => x).Distinct().ToList();
-
-			//Prepare list of poses
-			foreach (double timeFrame in uniqueTimeFrames)
-			{
-				var pose = new AnimationKey
-				{
-					TimeFrame = timeFrame
-				};
-				resultPoses.Add(pose);
-			}
 
 			//Enrich poses with data
 			foreach (NodeAnimationChannel nodeAnimationChannel in nodeAnimationChannels)
 			{
-				foreach (VectorKey key in nodeAnimationChannel.PositionKeys)
+				BoneAnimationKeys boneAnimationKeys = new BoneAnimationKeys();
+				boneAnimationKeys.BoneName = nodeAnimationChannel.NodeName;
+				if (nodeAnimationChannel.HasPositionKeys)
 				{
-					//TODO: Fix floating comparation
-					resultPoses.First(x => x.TimeFrame == key.Time).BonePositions.TryAdd(nodeAnimationChannel.NodeName, key.Value.ToVector3());
+					boneAnimationKeys.BonePositions = nodeAnimationChannel.PositionKeys.Select(x =>
+						new IeCoreEntities.Animation.VectorKey()
+						{
+							TimeFrame = x.Time,
+							Value = x.Value.ToVector3()
+						}).ToList();
 				}
-
-				foreach (VectorKey key in nodeAnimationChannel.ScalingKeys)
+				
+				if (nodeAnimationChannel.HasScalingKeys)
 				{
-					//TODO: Fix floating comparation
-					resultPoses.First(x => x.TimeFrame == key.Time).BoneScales.TryAdd(nodeAnimationChannel.NodeName, key.Value.ToVector3());
+					boneAnimationKeys.BoneScales = nodeAnimationChannel.ScalingKeys.Select(x =>
+						new IeCoreEntities.Animation.VectorKey()
+						{
+							TimeFrame = x.Time,
+							Value = x.Value.ToVector3()
+						}).ToList();
 				}
-
-				foreach (QuaternionKey key in nodeAnimationChannel.RotationKeys)
+				
+				if (nodeAnimationChannel.HasPositionKeys)
 				{
-					//TODO: Fix floating comparation
-					resultPoses.First(x => x.TimeFrame == key.Time).BoneRotations.TryAdd(nodeAnimationChannel.NodeName, key.Value.ToQuaternion());
+					boneAnimationKeys.BoneRotations = nodeAnimationChannel.RotationKeys.Select(x =>
+						new IeCoreEntities.Animation.QuaternionKey()
+						{
+							TimeFrame = x.Time,
+							Value = x.Value.ToQuaternion()
+						}).ToList();
 				}
+				
+				resultPoses.Add(boneAnimationKeys);
 			}
 
 			return resultPoses;

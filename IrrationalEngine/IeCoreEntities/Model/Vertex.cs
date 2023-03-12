@@ -8,6 +8,10 @@ namespace IeCoreEntities.Model
 	public class Vertex
 	{
 		/// <summary>
+		/// Constant to set maximum bones per vertex;
+		/// </summary>
+		public const uint MaxBones = 4;
+		/// <summary>
 		/// Stores position of vertex.
 		/// </summary>
 		public Vector3 Position = Vector3.Zero;
@@ -21,6 +25,16 @@ namespace IeCoreEntities.Model
 		public Vector2 TextureCoordinates = Vector2.Zero;
 
 		/// <summary>
+		/// Contains bone ids which connected to this vertex;
+		/// </summary>
+		public int[] BoneIDs = new int[MaxBones];
+
+		/// <summary>
+		/// Contains weights which related to this bone;
+		/// </summary>
+		public float[] Weights = new float[MaxBones];
+
+		/// <summary>
 		/// Converts vertex to float array.
 		/// </summary>
 		/// <returns></returns>
@@ -29,6 +43,8 @@ namespace IeCoreEntities.Model
 			return new[] {
 					Position.X, Position.Y, Position.Z,
 					TextureCoordinates.X, TextureCoordinates.Y
+					,BoneIDs[0], BoneIDs[1], BoneIDs[2], BoneIDs[3]
+					,Weights[0], Weights[1], Weights[2], Weights[3]
 			};
 		}
 

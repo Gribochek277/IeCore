@@ -10,9 +10,9 @@ using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IeCoreOpengl.EngineWindow;
 
 namespace IeCoreOpengl.Rendering
 {
@@ -60,118 +60,122 @@ namespace IeCoreOpengl.Rendering
 				//Find model component in scene object.
 				if (sceneObject.Components.TryGetValue(ModelObjectComponent, out _modelObjectComponent))
 				{
-					//Get model from scene object.
-					var currentModelComponent = (IModelComponent)_modelObjectComponent;
-					//Generate VAO on OGL side and assign id of that buffer to model.
-					currentModelComponent.Model.VertexArrayObjectId = GL.GenVertexArray();
-					GL.BindVertexArray(currentModelComponent.Model.VertexArrayObjectId);
-					//Generate buffer on OGL side and assign id of that buffer to model.
-					currentModelComponent.Model.VertexBufferObjectId = GL.GenBuffer();
-					//Generate buffer on OGL side and assign id of that buffer to model.
-					currentModelComponent.Model.ElementBufferId = GL.GenBuffer();
+						//Get model from scene object.
+						var currentModelComponent = (IModelComponent)_modelObjectComponent;
+						//Generate VAO on OGL side and assign id of that buffer to model.
+						currentModelComponent.Model.VertexArrayObjectId = GL.GenVertexArray();
+					 
+						GL.BindVertexArray(Convert.ToUInt32(currentModelComponent.Model.VertexArrayObjectId));
+						//Generate buffer on OGL side and assign id of that buffer to model.
+						currentModelComponent.Model.VertexBufferObjectId = GL.GenBuffer();
 
-					//Get all vertices from model.
-					float[] vboPositionData = currentModelComponent.GetVboPositionDataOfModel();
-					uint[] indexes = currentModelComponent.GetIndexesOfModel();
+						//Generate buffer on OGL side and assign id of that buffer to model.
+						currentModelComponent.Model.ElementBufferId = GL.GenBuffer();
 
-					var sb = new StringBuilder("Vertex coordinates: ");
-					sb.Append(currentModelComponent.Model.Name);
-					foreach (float posData in vboPositionData)
-					{
-						sb.Append(' ');
-						sb.Append(posData);
-					}
-					_logger.LogTrace(sb.ToString());
-					//Load indices data to GPU.
-					GL.BindBuffer(BufferTarget.ElementArrayBuffer, currentModelComponent.Model.ElementBufferId);
-					GL.BufferData(BufferTarget.ElementArrayBuffer, indexes.Length * sizeof(uint), indexes, BufferUsageHint.StaticDraw);
-
-
-					if (sceneObject.Components.TryGetValue(MaterialObjectComponent, out _materialObjectComponent))
-					{
-						//Get material from scene object.
-						var currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
-						Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
-
-						GL.BindTexture(TextureTarget.Texture2D, texture.Id);
-
-						GL.TexImage2D(TextureTarget.Texture2D,
-						   0,
-						   PixelInternalFormat.Srgb8,
-						   (int)texture.TextureSize.X,
-						   (int)texture.TextureSize.Y,
-						   0,
-						   PixelFormat.Bgra,
-						   PixelType.UnsignedByte,
-						   texture.Bytes);
-
-						GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-
-
-						//Bind created buffer to ArrayBuffer target.
-						GL.BindBuffer(BufferTarget.ArrayBuffer, currentModelComponent.Model.VertexBufferObjectId);
-
-						//Load model data to GPU.
-						GL.BufferData(BufferTarget.ArrayBuffer, vboPositionData.Length * sizeof(float), vboPositionData, BufferUsageHint.StaticDraw);
-
-						GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("aPosition"),
-							3, VertexAttribPointerType.Float, false, 0, 0);
-
-						//TODO: use strategy because here will be added normals and other stuff
-						if (currentMaterialComponent.ShaderProgram.GetAttributeAddress("aTexCoord") != -1)
+						//Get all vertices from model.
+						float[] vboPositionData = currentModelComponent.GetVboPositionDataOfModel();
+						uint[] indexes = currentModelComponent.GetIndexesOfModel();
+	
+						_logger.LogDebug("VBO Position count is: {$VboData}", vboPositionData.Length.ToString());
+						_logger.LogDebug("VBO Indexes count is: {$indexesData}", indexes.Length.ToString());
+						
+						var sb = new StringBuilder("Vertex coordinates: ");
+						sb.Append(currentModelComponent.Model.Name);
+						foreach (float posData in vboPositionData)
 						{
-							float[] vboTextureData = currentModelComponent.GetVboTextureDataOfModel();
-							GL.BindBuffer(BufferTarget.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("aTexCoord"));
-							GL.BufferData(BufferTarget.ArrayBuffer, vboTextureData.Length * sizeof(float), vboTextureData, BufferUsageHint.StaticDraw);
-							GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("aTexCoord"), 2, VertexAttribPointerType.Float, false, 0, 0);
+							sb.Append(' ');
+							sb.Append(posData);
 						}
-						if (sceneObject.Components.TryGetValue(AnimationSceneObjectComponent, out _animationObjectComponent))
+						_logger.LogTrace(sb.ToString());
+						//Load indices data to GPU.
+						GL.BindBuffer(BufferTarget.ElementArrayBuffer, Convert.ToUInt32(currentModelComponent.Model.ElementBufferId));
+				
+						GL.BufferData(BufferTarget.ElementArrayBuffer, indexes.Length * sizeof(uint), indexes, BufferUsageHint.StaticDraw);
+
+						if (sceneObject.Components.TryGetValue(MaterialObjectComponent, out _materialObjectComponent))
 						{
-							IAnimationComponent currentAnimationComponent = (IAnimationComponent)_animationObjectComponent;
-							List<Tuple<int, float>>[] weights = currentModelComponent.Model.Meshes[0].Skeleton.Bones.Select(x => x.VertexWeights).ToArray();
-							//Flatten weights according to indices.
-							List<float> flattenedWeights = new List<float>();
-							List<int> boneIds = new List<int>();
-							
-							for (int i = 0; i < indexes.Length; i++)
+							//Get material from scene object.
+							var currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
+							Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
+
+							GL.BindTexture(TextureTarget.Texture2D, (uint)texture.Id);
+
+
+								GL.TexImage2D(TextureTarget.Texture2D,
+									0,
+									PixelInternalFormat.Srgb8,
+									(int)texture.TextureSize.X,
+									(int)texture.TextureSize.Y,
+									0,
+									PixelFormat.Rgba,
+									PixelType.UnsignedByte,
+									ref texture.Bytes[0]);
+
+								GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+
+							//Bind created buffer to ArrayBuffer target.
+							GL.BindBuffer(BufferTarget.ArrayBuffer, (uint)currentModelComponent.Model.VertexBufferObjectId);
+
+							//Load model data to GPU.
+								GL.BufferData(BufferTarget.ArrayBuffer, vboPositionData.Length * sizeof(float), vboPositionData, BufferUsageHint.StaticDraw);
+						
+						
+							GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("aPosition"),
+								3, VertexAttribPointerType.Float, false, 0, 0);
+
+							//TODO: use strategy because here will be added normals and other stuff
+							if (currentMaterialComponent.ShaderProgram.GetAttributeAddress("aTexCoord") != -1)
 							{
-								for (int j = 0; j < currentModelComponent.Model.Meshes[0].Skeleton.Bones.Count; j++)
+								float[] vboTextureData = currentModelComponent.GetVboTextureDataOfModel();
+							
+								_logger.LogDebug("VBO Texture data count is: {$textureData}", vboTextureData.Length.ToString());
+								uint bufferId = currentMaterialComponent.ShaderProgram.GetBuffer("aTexCoord");
+								GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
+									GL.BufferData(BufferTarget.ArrayBuffer,vboTextureData.Length * sizeof(float), vboTextureData, BufferUsageHint.StaticDraw);
+								
+								GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("aTexCoord"), 
+									2, VertexAttribPointerType.Float, false, 0, 0);
+							}
+						
+							//Load animations and bones
+							if (sceneObject.Components.TryGetValue(AnimationSceneObjectComponent, out _animationObjectComponent))
+							{
+								IAnimationComponent currentAnimationComponent = (IAnimationComponent)_animationObjectComponent;
+
+								//Load bones ids to GPU
+								if (currentMaterialComponent.ShaderProgram.GetAttributeAddress("Weights") != -1)
 								{
-									foreach (Tuple<int, float> vertexWeight in currentModelComponent.Model.Meshes[0].Skeleton.Bones[j].VertexWeights)
-									{
-										if (vertexWeight.Item1 == indexes[i])
-										{
-											flattenedWeights.Add(vertexWeight.Item2);
-											boneIds.Add(j);
-										}
-									}
+									float[] vboBoneWeightsData = currentModelComponent.GetVboWeightsDataOfModel();
+								
+									_logger.LogDebug("VBO Bone wieignts count is: {$weightsData}", vboBoneWeightsData.Length.ToString());
+									uint bufferId = currentMaterialComponent.ShaderProgram.GetBuffer("Weights");
+									GL.BindBuffer(BufferTarget.ArrayBuffer, bufferId);
+										GL.BufferData(BufferTarget.ArrayBuffer, vboBoneWeightsData.Length * sizeof(float),
+											vboBoneWeightsData, BufferUsageHint.DynamicDraw);
+									GL.VertexAttribPointer(
+										currentMaterialComponent.ShaderProgram.GetAttributeAddress("Weights"), 4,
+										VertexAttribPointerType.Float, false, 0, 0);
 								}
-								//_logger.LogDebug(i.ToString() + "-" + weights.SelectMany(x => x).Select(x => x.Item1).Where(y => y == indexes[i]).ToArray().Length.ToString());
+
+								//Load bones ids to GPU
+								if (currentMaterialComponent.ShaderProgram.GetAttributeAddress("boneIds") != -1)
+								{
+									float[] vboBoneIdsData = currentModelComponent.GetVboBoneIdsDataOfModel().Select(x=>(float)x).ToArray();
+								
+									_logger.LogDebug("VBO Bone Ids count is: {$boneesData}", vboBoneIdsData.Length.ToString());
+									uint bufferId = currentMaterialComponent.ShaderProgram.GetBuffer("boneIds");
+									GL.BindBuffer(BufferTarget.ArrayBuffer,bufferId);
+										GL.BufferData(BufferTarget.ArrayBuffer,vboBoneIdsData.Length * sizeof(float),
+											vboBoneIdsData, BufferUsageHint.DynamicDraw);
+									GL.VertexAttribPointer(
+										currentMaterialComponent.ShaderProgram.GetAttributeAddress("boneIds"), 4,
+										VertexAttribPointerType.Float, false, 0, 0);
+								}
 							}
 
-							Matrix4[] offsetmatrix = currentModelComponent.Model.Meshes[0].Skeleton.Bones.Select(x => x.OffsetMatrix.ConvertToOpenTkMatrix4()).ToArray();
-							_uniformHelper.TryAddUniform(offsetmatrix, "Bones", currentMaterialComponent.ShaderProgram);
 
-							//Load bones ids to GPU
-							var flattenedWeightsArray = flattenedWeights.ToArray();
-							GL.BindBuffer(BufferTarget.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("Weights"));
-							GL.BufferData(BufferTarget.ArrayBuffer, flattenedWeightsArray.Length * sizeof(float), flattenedWeightsArray, BufferUsageHint.StaticDraw);
-
-							GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("Weights"),
-								4, VertexAttribPointerType.Float, false, 0, 0);
-
-							//Load bones ids to GPU
-							var boneIdsArray = boneIds.ToArray();
-
-							GL.BindBuffer(BufferTarget.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("BoneIDs"));
-							GL.BufferData(BufferTarget.ArrayBuffer, boneIdsArray.Length * sizeof(uint), boneIdsArray, BufferUsageHint.StaticDraw);
-
-							GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("BoneIDs"),
-								4, VertexAttribPointerType.UnsignedInt, false, 0, 0);
 						}
-
-
-					}
 				}
 
 				_projection = Matrix4.CreatePerspectiveFieldOfView(1.3f, _width / (float)_height, 0.1f, 120.0f);
@@ -180,6 +184,7 @@ namespace IeCoreOpengl.Rendering
 
 		public void OnRender()
 		{
+			
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			GL.CullFace(CullFaceMode.Back);
 
@@ -214,14 +219,26 @@ namespace IeCoreOpengl.Rendering
 					//Get model from scene object.
 					var currentModelComponent = (IModelComponent)_modelObjectComponent;
 
-					GL.BindVertexArray(currentModelComponent.Model.VertexArrayObjectId);
+					GL.BindVertexArray((uint)currentModelComponent.Model.VertexArrayObjectId);
 					GL.BindBuffer(BufferTarget.ElementArrayBuffer, currentModelComponent.Model.ElementBufferId);
 
 
 					Matrix4 modelMatrix = currentModelComponent.Model.Meshes.FirstOrDefault().Transform.ModelMatrix.ConvertToOpenTkMatrix4();
-					GL.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("model"), false, ref modelMatrix);
+					GL.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("model"),false, ref modelMatrix);
 					GL.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("projection"), false, ref _projection);
 					GL.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("view"), false, ref _view);
+
+					if (sceneObject.Components.TryGetValue(AnimationSceneObjectComponent, out _animationObjectComponent))
+					{
+						IAnimationComponent currentAnimationComponent = (IAnimationComponent)_animationObjectComponent;
+						
+						currentAnimationComponent.UpdateAnimation((float)OpenGlWindow.RenderFrameDeltaTime);
+
+						Matrix4[] offsetMatrices = currentAnimationComponent.FinalBonesMatrices.Select(x => x.ConvertToOpenTkMatrix4()).ToArray();
+						
+						_uniformHelper.TryAddUniform(offsetMatrices, "finalBonesMatrices[0]", currentMaterialComponent.ShaderProgram);
+						
+					}
 
 					// Bind the VAO
 					GL.BindVertexArray(currentModelComponent.Model.VertexArrayObjectId);

@@ -1,6 +1,6 @@
 ﻿namespace IeCore.DefaultImplementations.Shaders
 {
-	public class DefaultDiffuseShader
+	public static class DefaultDiffuseShader
 	{
 		public const string VertexShader = @"#version 330
                                                layout(location = 0) in vec3 aPosition;

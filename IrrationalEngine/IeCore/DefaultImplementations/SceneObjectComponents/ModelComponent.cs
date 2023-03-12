@@ -1,9 +1,7 @@
-﻿using IeCoreEntities.Animation;
-using IeCoreEntities.Model;
+﻿using IeCoreEntities.Model;
 using IeCoreInterfaces.SceneObjectComponents;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace IeCore.DefaultImplementations.SceneObjectComponents
 {
@@ -17,7 +15,8 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 		private uint[] _indexes;
 		private float[] _vboTextureData;
 		private float[] _vboPositionData;
-		private Matrix4x4[] _vboBonesDataOfModel;
+		private float[] _vboWeightData;
+		private int[] _vboBoneIdsData;
 
 		public ModelComponent(Model model)
 		{
@@ -33,10 +32,10 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 			Model = null;
 		}
 
-		public float[] GetVboPositionDataOfModel() //TODO: Add caching;
+		public float[] GetVboPositionDataOfModel()
 		{
 			if (_vboPositionData != null) return _vboPositionData;
-			var positionData = new List<float>();
+			List<float> positionData = new List<float>();
 			foreach (Mesh mesh in Model.Meshes)
 			{
 				foreach (Vertex vertex in mesh.Vertices)
@@ -52,11 +51,11 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 			return _vboPositionData;
 		}
 
-		public float[] GetVboTextureDataOfModel() //TODO: Add caching;
+		public float[] GetVboTextureDataOfModel()
 		{
 			if (_vboTextureData != null) return _vboTextureData;
 
-			var textureData = new List<float>();
+			List<float> textureData = new List<float>();
 			foreach (Mesh mesh in Model.Meshes)
 			{
 				foreach (Vertex vertex in mesh.Vertices)
@@ -70,29 +69,54 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 
 			return _vboTextureData;
 		}
-
-		public Matrix4x4[] GetVboBonesDataOfModel() //TODO: Add caching;
+		
+		public float[] GetVboWeightsDataOfModel()
 		{
-			if (_vboBonesDataOfModel != null) return _vboBonesDataOfModel;
+			if (_vboWeightData != null) return _vboWeightData;
 
-			var bonesData = new List<Matrix4x4>();
+			List<float> weightData = new List<float>();
 			foreach (Mesh mesh in Model.Meshes)
 			{
-				foreach (Bone bone in mesh.Skeleton.Bones)
+				foreach (Vertex vertex in mesh.Vertices)
 				{
-					bonesData.Add(bone.OffsetMatrix);
+					weightData.Add(vertex.Weights[0]);
+					weightData.Add(vertex.Weights[1]);
+					weightData.Add(vertex.Weights[2]);
+					weightData.Add(vertex.Weights[3]);
 				}
 			}
 
-			_vboBonesDataOfModel = bonesData.ToArray();
-			return _vboBonesDataOfModel;
+			_vboWeightData = weightData.ToArray();
+
+			return _vboWeightData;
+		}
+		
+		public int[] GetVboBoneIdsDataOfModel()
+		{
+			if (_vboBoneIdsData != null) return _vboBoneIdsData;
+
+			List<int> boneIdData = new List<int>();
+			foreach (Mesh mesh in Model.Meshes)
+			{
+				foreach (Vertex vertex in mesh.Vertices)
+				{
+					boneIdData.Add(vertex.BoneIDs[0]);
+					boneIdData.Add(vertex.BoneIDs[1]);
+					boneIdData.Add(vertex.BoneIDs[2]);
+					boneIdData.Add(vertex.BoneIDs[3]);
+				}
+			}
+
+			_vboBoneIdsData = boneIdData.ToArray();
+
+			return _vboBoneIdsData;
 		}
 
 		public uint[] GetIndexesOfModel() //TODO: Add caching;
 		{
 			if (_indexes != null) return _indexes;
 
-			var indexes = new List<uint>();
+			List<uint> indexes = new List<uint>();
 			foreach (Mesh mesh in Model.Meshes)
 			{
 				indexes.AddRange(mesh.Elements.ToList());

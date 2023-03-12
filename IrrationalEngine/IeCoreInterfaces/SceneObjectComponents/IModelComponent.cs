@@ -1,5 +1,4 @@
 ﻿using IeCoreEntities.Model;
-using System.Numerics;
 
 namespace IeCoreInterfaces.SceneObjectComponents
 {
@@ -25,11 +24,6 @@ namespace IeCoreInterfaces.SceneObjectComponents
 		/// <returns></returns>
 		float[] GetVboTextureDataOfModel();
 
-		/// <summary>
-		/// Return Texture Vertex Buffer Object data from model.
-		/// </summary>
-		/// <returns></returns>
-		Matrix4x4[] GetVboBonesDataOfModel();
 
 		/// <summary>
 		/// Return Indices data from model.
@@ -37,5 +31,16 @@ namespace IeCoreInterfaces.SceneObjectComponents
 		/// <returns></returns>
 		uint[] GetIndexesOfModel();
 
+		/// <summary>
+		/// Returns weight for bone in each vertex.
+		/// </summary>
+		/// <returns></returns>
+		public float[] GetVboWeightsDataOfModel();
+
+		/// <summary>
+		/// Returns bone id's which belong to each vertex.
+		/// </summary>
+		/// <returns></returns>
+		public int[] GetVboBoneIdsDataOfModel();
 	}
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 
 namespace IeCoreEntities.Animation
@@ -9,6 +8,11 @@ namespace IeCoreEntities.Animation
 	/// </summary>
 	public class Bone
 	{
+		/// <summary>
+		/// Bone index in offset matrix
+		/// </summary>
+		public int Id { get; set; }
+
 		/// <summary>
 		/// Name of a bone.
 		/// </summary>
@@ -20,16 +24,18 @@ namespace IeCoreEntities.Animation
 		public string ParentName { get; set; }
 
 		/// <summary>
-		/// List of vertexes to which this 
-		/// bone belongs and with which weight. 
-		/// Int32 element is a vertex ID.
-		/// Float element is weight.
+		/// Contains collections of names of child bones.
 		/// </summary>
-		public List<Tuple<int, float>> VertexWeights { get; set; } = new List<Tuple<int, float>>();
+		public List<string> ChildNames { get; set; }
 
 		/// <summary>
 		/// Offset matrix
 		/// </summary>
 		public Matrix4x4 OffsetMatrix { get; set; }
+
+		/// <summary>
+		/// Transform matrix of node.
+		/// </summary>
+		public Matrix4x4 NodeTransformMatrix { get; set; }
 	}
 }

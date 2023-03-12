@@ -21,14 +21,14 @@ namespace IeCoreOpengl.EngineWindow
 		public int UpdateRate { private get; set; } = 0;
 		public int FrameRate { private get; set; } = 0;
 
-		public double RenderFrameDeltaTime { get; private set; }
+		public static double RenderFrameDeltaTime { get; private set; }
 
 		public double UpdateDeltaTime { get; private set; }
 
 		private readonly Stopwatch _renderFrameStopwatch = new Stopwatch();
 
 		private readonly Stopwatch _updateStopwatch = new Stopwatch();
-		public OpenGlWindow(int resX, int resY, IRenderer renderer, ISceneManager sceneManager, ILogger<OpenGlWindow> logger)
+		public OpenGlWindow(int resX, int resY,int posX, int posY, IRenderer renderer, ISceneManager sceneManager, ILogger<OpenGlWindow> logger)
 		{
 			GameWindowSettings gameWindowSettings = GameWindowSettings.Default;
 			gameWindowSettings.IsMultiThreaded = false; //TODO: Investigate this option.
@@ -39,10 +39,12 @@ namespace IeCoreOpengl.EngineWindow
 			nativeWindowSettings.Size = new Vector2i(resX, resY);
 			nativeWindowSettings.StartVisible = true;
 			nativeWindowSettings.StartFocused = true;
+			nativeWindowSettings.Location = new Vector2i(posX, posY);
 			_gameWindow = new GameWindow(gameWindowSettings, nativeWindowSettings)
 			{
 				VSync = VSyncMode.Off
 			};
+			
 
 			_logger = logger;
 			_renderer = renderer;

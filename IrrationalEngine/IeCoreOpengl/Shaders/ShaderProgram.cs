@@ -164,7 +164,7 @@ namespace IeCoreOpengl.Shaders
 			var registeredShader = _assetManager.Retrieve<Shader>(shaderName);
 			if (registeredShader == null)
 			{
-				var shader = new Shader(shaderName, string.Concat("InMemory shader ", Guid.NewGuid()), code, type);
+				var shader = new Shader(shaderName, string.Concat("InMemory shader ", Guid.NewGuid().ToString()), code, type);
 
 				_assetManager.Register(shader);
 				_storedShaders.Add(shader);

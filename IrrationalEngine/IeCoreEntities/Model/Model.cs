@@ -45,7 +45,7 @@ namespace IeCoreEntities.Model
 		/// <summary>
 		/// Contains collection of poses which belongs to this model.
 		/// </summary>
-		public List<AnimationKey> Poses { get; private set; } = new List<AnimationKey>();
+		public List<BoneAnimationKeys> Poses { get; private set; } = new List<BoneAnimationKeys>();
 		/// <summary>
 		/// Contains collection of animations which belong to this model.
 		/// </summary>

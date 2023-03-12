@@ -190,16 +190,6 @@
             Set frame rate.
             </summary>
         </member>
-        <member name="P:IeCoreInterfaces.EngineWindow.IWindow.RenderFrameDeltaTime">
-            <summary>
-            Returns time between rendered frames.
-            </summary>
-        </member>
-        <member name="P:IeCoreInterfaces.EngineWindow.IWindow.UpdateDeltaTime">
-            <summary>
-            Returns time between updates.
-            </summary>
-        </member>
         <member name="T:IeCoreInterfaces.EngineWindow.IWindowFactory">
             <summary>
             Factory for window creation
@@ -351,6 +341,17 @@
             <see cref="T:IeCoreInterfaces.SceneObjectComponents.IModelComponent"/> Is a dependency for IAnimatioComponent
             </summary>
         </member>
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IAnimationComponent.UpdateAnimation(System.Single)">
+            <summary>
+            Update animation
+            </summary>
+            <param name="deltaTime"></param>
+        </member>
+        <member name="P:IeCoreInterfaces.SceneObjectComponents.IAnimationComponent.FinalBonesMatrices">
+            <summary>
+            Returns final bone matrices
+            </summary>
+        </member>
         <member name="T:IeCoreInterfaces.SceneObjectComponents.IMaterialComponent">
             <summary>
             Represents scene object component which responsible for materials.
@@ -388,15 +389,21 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVboBonesDataOfModel">
-            <summary>
-            Return Texture Vertex Buffer Object data from model.
-            </summary>
-            <returns></returns>
-        </member>
         <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetIndexesOfModel">
             <summary>
             Return Indices data from model.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVboWeightsDataOfModel">
+            <summary>
+            Returns weight for bone in each vertex.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVboBoneIdsDataOfModel">
+            <summary>
+            Returns bone id's which belong to each vertex.
             </summary>
             <returns></returns>
         </member>

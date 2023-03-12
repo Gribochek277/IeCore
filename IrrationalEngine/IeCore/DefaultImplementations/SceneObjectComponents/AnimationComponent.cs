@@ -3,46 +3,80 @@ using IeCoreEntities.Model;
 using IeCoreInterfaces.SceneObjectComponents;
 using System;
 using System.Linq;
+using System.Numerics;
+using IeCoreEntities.Extensions;
 
 namespace IeCore.DefaultImplementations.SceneObjectComponents
 {
 	public class AnimationComponent : IAnimationComponent
 	{
-		public IModelComponent ModelComponent { private get; set; }
+		private float  _currentTime = 0f;
+		private Animation _currentAnimation;
+		private Matrix4x4[] _finalBonesMatrices = new Matrix4x4[100];
+		private float _deltaTime = 0f;
 		private Model _model;
-
-		public string Name => "AnimationSceneObjectComponent";
-
+		public Matrix4x4[] FinalBonesMatrices => _finalBonesMatrices;
+		
 		public void ApplyPose(int posNum)
 		{
-			Animation animation = _model.Animations[0];
-			AnimationKey animationKey = animation.Keys[posNum];
-
-			Mesh mesh = _model.Meshes[0];
-			Bone rootBone = mesh.Skeleton.Bones.Find(x => x.ParentName == string.Empty);
-			ApplyMatrices(rootBone, mesh.Skeleton, animationKey);
+			//throw new NotImplementedException();
 		}
 
-		private static void ApplyMatrices(Bone bone, Skeleton skeleton, AnimationKey animationKey)
+		public IModelComponent ModelComponent { private get; set; }
+		public string Name => "AnimationSceneObjectComponent";
+		
+		public void UpdateAnimation(float deltaTime)
 		{
-			var childrenBones = skeleton.Bones.Where(x => x.ParentName == bone.Name).ToList();
-			Console.WriteLine(bone.Name);
-			for (var i = 0; i < childrenBones.Count; i++)
+			_deltaTime = deltaTime;
+			if (_currentAnimation != null)
 			{
-				ApplyMatrices(childrenBones[i], skeleton, animationKey);
-				animationKey.BonePositions[bone.Name] = animationKey.BonePositions[bone.Name] * animationKey.BonePositions[childrenBones[i].Name];
-
-				animationKey.BoneRotations[bone.Name] = animationKey.BoneRotations[bone.Name] * animationKey.BoneRotations[childrenBones[i].Name];
-
-				animationKey.BoneScales[bone.Name] = animationKey.BoneScales[bone.Name] * animationKey.BoneScales[childrenBones[i].Name];
+				_currentTime += _currentAnimation.TicksPerSecond * _deltaTime;
+				_currentTime = _currentTime % (float)_currentAnimation.DurationInTicks;
+				CalculateBoneTransform(_model.Meshes.FirstOrDefault().Skeleton.GetRootBoneInfo(), Matrix4x4.Identity);
 			}
 		}
+
+		private void CalculateBoneTransform(Bone bone, Matrix4x4 parentTransform)
+		{
+			if(bone == null)
+				return;
+
+			
+			Matrix4x4 transform = bone.NodeTransformMatrix;
+			BoneAnimationKeys boneKey = _currentAnimation.Keys.FirstOrDefault(x => x.BoneName == bone.Name);
+
+			if (boneKey != null)
+			{
+				boneKey.Update(_currentTime);
+				transform = boneKey.LocalTransform;
+			}
+
+
+			Matrix4x4 globalTransformation = parentTransform * transform;
+
+			int index = bone.Id;
+
+			 Matrix4x4.Invert(bone.OffsetMatrix, out var offsetMatrix);
+
+
+			_finalBonesMatrices[index] = Matrix4x4.Multiply(globalTransformation,offsetMatrix);
+			
+			foreach (string boneInfoChildName in bone.ChildNames)
+			{
+				CalculateBoneTransform(_model.Meshes[0].Skeleton.Bones.FirstOrDefault(x=>x.Name == boneInfoChildName), globalTransformation);
+			}
+		}
+
 
 		public void OnLoad()
 		{
 			//throw new System.NotImplementedException();
 			_model = ModelComponent.Model;
-			ApplyPose(0);
+			_currentAnimation = _model.Animations.FirstOrDefault();
+			for (int i = 0; i < _finalBonesMatrices.Length; i++)
+			{
+				_finalBonesMatrices[i] = Matrix4x4.Identity;
+			}
 		}
 
 		public void OnUnload()

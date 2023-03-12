@@ -9,12 +9,12 @@
             Determines animation asset.
             </summary>
         </member>
-        <member name="P:IeCoreEntities.Animation.Animation.FrameRate">
+        <member name="P:IeCoreEntities.Animation.Animation.TicksPerSecond">
             <summary>
             Frame rate of animation.
             </summary>
         </member>
-        <member name="P:IeCoreEntities.Animation.Animation.Ticks">
+        <member name="P:IeCoreEntities.Animation.Animation.DurationInTicks">
             <summary>
             Animation length in ticks.
             </summary>
@@ -36,34 +36,55 @@
             <inheritdoc cref="T:IeCoreEntities.Asset"/>
             </summary>
         </member>
-        <member name="T:IeCoreEntities.Animation.AnimationKey">
+        <member name="T:IeCoreEntities.Animation.BoneAnimationKeys">
             <summary>
             Determines pose.
             </summary>
         </member>
-        <member name="P:IeCoreEntities.Animation.AnimationKey.TimeFrame">
+        <member name="P:IeCoreEntities.Animation.BoneAnimationKeys.Id">
             <summary>
-            Time of animation at which this pose should be applied.
+            Bone id.
             </summary>
         </member>
-        <member name="P:IeCoreEntities.Animation.AnimationKey.BonePositions">
+        <member name="P:IeCoreEntities.Animation.BoneAnimationKeys.BoneName">
             <summary>
-            Contains position of each bone in current moment.
+            Bone name.
             </summary>
         </member>
-        <member name="P:IeCoreEntities.Animation.AnimationKey.BoneScales">
+        <member name="P:IeCoreEntities.Animation.BoneAnimationKeys.BonePositions">
             <summary>
-            Contains scale of each bone in current moment.
+            Contains position of bone in provided moment.
             </summary>
         </member>
-        <member name="P:IeCoreEntities.Animation.AnimationKey.BoneRotations">
+        <member name="P:IeCoreEntities.Animation.BoneAnimationKeys.BoneScales">
             <summary>
-            Contains rotation of each bone in current moment.
+            Contains scale of bone in provided moment.
             </summary>
+        </member>
+        <member name="P:IeCoreEntities.Animation.BoneAnimationKeys.BoneRotations">
+            <summary>
+            Contains rotation of bone in provided moment.
+            </summary>
+        </member>
+        <member name="F:IeCoreEntities.Animation.BoneAnimationKeys.LocalTransform">
+            <summary>
+            Local transform matrix
+            </summary>
+        </member>
+        <member name="M:IeCoreEntities.Animation.BoneAnimationKeys.Update(System.Single)">
+            <summary>
+            Update bone state.
+            </summary>
+            <param name="animationTime"></param>
         </member>
         <member name="T:IeCoreEntities.Animation.Bone">
             <summary>
             Bone entity.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntities.Animation.Bone.Id">
+            <summary>
+            Bone index in offset matrix
             </summary>
         </member>
         <member name="P:IeCoreEntities.Animation.Bone.Name">
@@ -76,17 +97,34 @@
             Parent bone name.
             </summary>
         </member>
-        <member name="P:IeCoreEntities.Animation.Bone.VertexWeights">
+        <member name="P:IeCoreEntities.Animation.Bone.ChildNames">
             <summary>
-            List of vertexes to which this 
-            bone belongs and with which weight. 
-            Int32 element is a vertex ID.
-            Float element is weight.
+            Contains collections of names of child bones.
             </summary>
         </member>
         <member name="P:IeCoreEntities.Animation.Bone.OffsetMatrix">
             <summary>
             Offset matrix
+            </summary>
+        </member>
+        <member name="P:IeCoreEntities.Animation.Bone.NodeTransformMatrix">
+            <summary>
+            Transform matrix of node.
+            </summary>
+        </member>
+        <member name="T:IeCoreEntities.Animation.QuaternionKey">
+            <summary>
+            Represents Quaternion value in time
+            </summary>
+        </member>
+        <member name="F:IeCoreEntities.Animation.QuaternionKey.TimeFrame">
+            <summary>
+            Time frame of a key.
+            </summary>
+        </member>
+        <member name="F:IeCoreEntities.Animation.QuaternionKey.Value">
+            <summary>
+            Value of key at this moment.
             </summary>
         </member>
         <member name="T:IeCoreEntities.Animation.Skeleton">
@@ -97,6 +135,21 @@
         <member name="P:IeCoreEntities.Animation.Skeleton.Bones">
             <summary>
             List of bones of this mesh.
+            </summary>
+        </member>
+        <member name="T:IeCoreEntities.Animation.VectorKey">
+            <summary>
+            Represents vector3 value in time
+            </summary>
+        </member>
+        <member name="F:IeCoreEntities.Animation.VectorKey.TimeFrame">
+            <summary>
+            Time frame of a key.
+            </summary>
+        </member>
+        <member name="F:IeCoreEntities.Animation.VectorKey.Value">
+            <summary>
+            Value of key at this moment.
             </summary>
         </member>
         <member name="T:IeCoreEntities.Asset">
@@ -131,6 +184,13 @@
             Draw in console skeleton bone hierarchy.
             </summary>
             <param name="skeleton"></param>
+        </member>
+        <member name="M:IeCoreEntities.Extensions.Skeleton.GetRootBoneInfo(IeCoreEntities.Animation.Skeleton)">
+            <summary>
+            Return root bone in skeleton
+            </summary>
+            <param name="skeleton"></param>
+            <returns></returns>
         </member>
         <member name="T:IeCoreEntities.Materials.Material">
             <summary>
@@ -476,6 +536,11 @@
             Determines vertex value.
             </summary>
         </member>
+        <member name="F:IeCoreEntities.Model.Vertex.MaxBones">
+            <summary>
+            Constant to set maximum bones per vertex;
+            </summary>
+        </member>
         <member name="F:IeCoreEntities.Model.Vertex.Position">
             <summary>
             Stores position of vertex.
@@ -489,6 +554,16 @@
         <member name="F:IeCoreEntities.Model.Vertex.TextureCoordinates">
             <summary>
             Stores texture coordinates for this vertex.
+            </summary>
+        </member>
+        <member name="F:IeCoreEntities.Model.Vertex.BoneIDs">
+            <summary>
+            Contains bone ids which connected to this vertex;
+            </summary>
+        </member>
+        <member name="F:IeCoreEntities.Model.Vertex.Weights">
+            <summary>
+            Contains weights which related to this bone;
             </summary>
         </member>
         <member name="M:IeCoreEntities.Model.Vertex.FloatArray">

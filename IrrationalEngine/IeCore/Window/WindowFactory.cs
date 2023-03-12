@@ -20,7 +20,7 @@ namespace IeCore.Window
 		}
 		public IWindow Create()
 		{
-			return new OpenGlWindow(600, 600, _renderer, _sceneManager, _logger);
+			return new OpenGlWindow(1920, 1009, IrrationalEngine.initialPosX, IrrationalEngine.initialPosY, _renderer, _sceneManager, _logger);
 		}
 	}
 }

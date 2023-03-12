@@ -26,14 +26,22 @@ namespace IeCore
 	public class IrrationalEngine
 	{
 		private static IServiceProvider _serviceProvider;
+		public static int initialPosX = 0;  
+		
+		public static int initialPosY = 0;  
 
-		private static void Main()
+		private static void Main(string[] args)
 		{
+			if(args.Length == 2) {
+				int.TryParse(args[0], out initialPosX);
+				int.TryParse(args[1], out initialPosY);
+			}
 			//TODO: consider change it to builder or smth else
 			RegisterServices();
 			IWindow window = _serviceProvider.GetService<IWindowFactory>()?.Create();
 			window?.Run();
 			DisposeServices();
+			Console.ReadLine();
 		}
 
 		private static void RegisterServices()

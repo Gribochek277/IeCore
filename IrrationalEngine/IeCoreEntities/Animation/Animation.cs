@@ -11,17 +11,17 @@ namespace IeCoreEntities.Animation
 		/// <summary>
 		/// Frame rate of animation.
 		/// </summary>
-		public int FrameRate { get; set; }
+		public int TicksPerSecond { get; set; }
 
 		/// <summary>
 		/// Animation length in ticks.
 		/// </summary>
-		public double Ticks { get; set; }
+		public double DurationInTicks { get; set; }
 
 		/// <summary>
 		/// Collection of animation keys.
 		/// </summary>
-		public List<AnimationKey> Keys { get; set; } = new List<AnimationKey>();
+		public List<BoneAnimationKeys> Keys { get; set; } = new List<BoneAnimationKeys>();
 
 		/// <summary>
 		/// <inheritdoc cref="Asset"/>
@@ -39,6 +39,6 @@ namespace IeCoreEntities.Animation
 		public Animation() : base(Guid.NewGuid().ToString(), Guid.NewGuid().ToString())
 		{
 		}
-		//TODO: write extensions to export poses and animations
+		
 	}
 }

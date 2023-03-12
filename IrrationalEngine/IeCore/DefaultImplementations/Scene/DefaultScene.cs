@@ -42,12 +42,12 @@ namespace IeCore.DefaultImplementations.Scene
 			//TODO: Consider of creating stage for generating and registering all default objects.
 			_assetManager.Register(DefaultTexture.CreateDefaultCheckerboard(2048, 512));
 			Console.WriteLine(Environment.CurrentDirectory);
-			_assetManager.RegisterFile("Resources\\FBX\\knight.fbx");
+			_assetManager.RegisterFile("./Resources/FBX/3bones.fbx");
 
 			var customSceneObject = new SceneObject { Name = "Knight" };
 
 
-			var modelSceneObject = new ModelComponent(_assetManager.Retrieve<Model>("knight.fbx"));
+			var modelSceneObject = new ModelComponent(_assetManager.Retrieve<Model>("3bones.fbx"));
 			var materialComponent = new MaterialComponent(_shaderProgram);
 			var material = new Material("Knight", "knightFile");
 			_assetManager.Register(material);
@@ -64,8 +64,12 @@ namespace IeCore.DefaultImplementations.Scene
 
 
 			MainCamera = new SceneObject();
-			MainCamera.AddComponent(new Camera());
+			Camera cam = new Camera();
+			MainCamera.AddComponent(cam);
 			_sceneObjects.Add(MainCamera);
+			
+			cam.Position += new Vector3(0, 0.5f, .5f);
+			
 			for (var i = 0; i < 1; i++)
 			{
 				//_sceneObjects.Add(_primitiveFactory.CreateCube());
@@ -77,7 +81,8 @@ namespace IeCore.DefaultImplementations.Scene
 			foreach (ISceneObject sceneObject in _sceneObjects)
 			{
 				sceneObject.OnLoad();
-				sceneObject.Scale *= new Vector3(0.3f, 0.3f, 0.3f);
+				sceneObject.Scale *= new Vector3(0.1f, 0.1f, 0.1f);
+				
 			}
 		}
 
@@ -100,10 +105,14 @@ namespace IeCore.DefaultImplementations.Scene
 		{
 			foreach (ISceneObject sceneobject in SceneObjects)
 			{
-				sceneobject.Rotation +=
+				/*sceneobject.Rotation +=
 					new Vector3(0.0003f,
-					0.00003f,
-					0.000003f);
+					0.0003f,
+					0.0003f);*/
+				
+				
+
+				//sceneobject.Scale *= new Vector3(0.3f, 0.3f, 0.3f);
 			}
 		}
 	}

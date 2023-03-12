@@ -21,6 +21,16 @@ namespace IeCoreEntities.Extensions
 			PrintPretty("", rootBone, skeleton, true);
 		}
 
+		/// <summary>
+		/// Return root bone in skeleton
+		/// </summary>
+		/// <param name="skeleton"></param>
+		/// <returns></returns>
+		public static Bone GetRootBoneInfo(this IeCoreEntities.Animation.Skeleton skeleton)
+		{
+			return skeleton.Bones.Find(x => x.ParentName == string.Empty);
+		}
+
 		private static void PrintPretty(string indent, Bone bone, IeCoreEntities.Animation.Skeleton skeleton, bool isLast)
 		{
 			Console.WriteLine(indent + "+- " + bone.Name);

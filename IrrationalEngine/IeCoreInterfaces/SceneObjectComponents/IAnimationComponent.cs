@@ -1,4 +1,6 @@
-﻿namespace IeCoreInterfaces.SceneObjectComponents
+﻿using System.Numerics;
+
+namespace IeCoreInterfaces.SceneObjectComponents
 {
 	/// <summary>
 	/// Represents scene object component which responsible for animation.
@@ -15,5 +17,16 @@
 		/// <see cref="IModelComponent"/> Is a dependency for IAnimatioComponent
 		/// </summary>
 		public IModelComponent ModelComponent { set; }
+
+		/// <summary>
+		/// Update animation
+		/// </summary>
+		/// <param name="deltaTime"></param>
+		void UpdateAnimation(float deltaTime);
+
+		/// <summary>
+		/// Returns final bone matrices
+		/// </summary>
+		Matrix4x4[] FinalBonesMatrices { get; }
 	}
 }
