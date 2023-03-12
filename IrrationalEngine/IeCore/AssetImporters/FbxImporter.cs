@@ -13,8 +13,6 @@ using System.Linq;
 using Animation = Assimp.Animation;
 using Bone = Assimp.Bone;
 using Mesh = Assimp.Mesh;
-using QuaternionKey = Assimp.QuaternionKey;
-using VectorKey = Assimp.VectorKey;
 
 namespace IeCore.AssetImporters
 {
