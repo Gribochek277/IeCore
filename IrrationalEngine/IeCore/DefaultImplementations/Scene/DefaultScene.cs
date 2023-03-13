@@ -58,7 +58,7 @@ namespace IeCore.DefaultImplementations.Scene
 
 			var animationComponent = new AnimationComponent();
 
-			//customSceneObject.AddComponent(animationComponent);
+			customSceneObject.AddComponent(animationComponent);
 			customSceneObject.AddComponent(modelSceneObject);
 			customSceneObject.AddComponent(materialComponent);
 
@@ -68,7 +68,7 @@ namespace IeCore.DefaultImplementations.Scene
 			MainCamera.AddComponent(cam);
 			_sceneObjects.Add(MainCamera);
 			
-			cam.Position += new Vector3(0, 0.5f, .5f);
+			cam.Position += new Vector3(0, 1f, 1f);
 			
 			for (var i = 0; i < 1; i++)
 			{
@@ -81,7 +81,7 @@ namespace IeCore.DefaultImplementations.Scene
 			foreach (ISceneObject sceneObject in _sceneObjects)
 			{
 				sceneObject.OnLoad();
-				sceneObject.Scale *= new Vector3(0.1f, 0.1f, 0.1f);
+				sceneObject.Scale *= new Vector3(0.05f, 0.05f, 0.05f);
 				
 			}
 		}
@@ -105,10 +105,10 @@ namespace IeCore.DefaultImplementations.Scene
 		{
 			foreach (ISceneObject sceneobject in SceneObjects)
 			{
-				/*sceneobject.Rotation +=
+				sceneobject.Rotation +=
 					new Vector3(0.0003f,
 					0.0003f,
-					0.0003f);*/
+					0.0003f);
 				
 				
 

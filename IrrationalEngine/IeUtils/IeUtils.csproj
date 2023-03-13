@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <None Update="Resources\FBX\knight.fbx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\FBX\knight1.fbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

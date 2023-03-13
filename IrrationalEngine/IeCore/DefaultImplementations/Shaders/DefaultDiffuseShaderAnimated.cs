@@ -19,7 +19,7 @@
 		public const string VertexShader = @"#version 420
                                                layout(location = 0) in vec3 aPosition;
                                                layout(location = 1) in vec2 aTexCoord;
-                                               layout(location = 2) in vec4 boneIds;
+                                               layout(location = 2) in ivec4 boneIds;
                                                layout(location = 3) in vec4 Weights;
                         
                                                const int MAX_BONES = 100;
@@ -49,9 +49,9 @@
  												             newPosition = vec4(aPosition,1.0f);
  												             break;
  												         }
- 												         vec4 localPosition = finalBonesMatrices[int(boneIds[i])] * vec4(aPosition,1.0f);
+ 												         vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(aPosition,1.0f);
  												         newPosition += localPosition * Weights[i];
- 												         vec3 localNormal = mat3(finalBonesMatrices[int(boneIds[i])]) * vec3(1.0f,1.0f,1.0f);
+ 												         //vec4 localNormal = finalBonesMatrices[boneIds[i]] * vec4(1.0f,1.0f,1.0f, 0.0)* Weights[i];
 														 
  												   }
 

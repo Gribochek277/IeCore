@@ -161,13 +161,13 @@ namespace IeCoreOpengl.Rendering
 								//Load bones ids to GPU
 								if (currentMaterialComponent.ShaderProgram.GetAttributeAddress("boneIds") != -1)
 								{
-									float[] vboBoneIdsData = currentModelComponent.GetVboBoneIdsDataOfModel().Select(x=>(float)x).ToArray();
+									//float[] vboBoneIdsData = currentModelComponent.GetVboBoneIdsDataOfModel().Select(x=>(float)x).ToArray();
 								
-									_logger.LogDebug("VBO Bone Ids count is: {$boneesData}", vboBoneIdsData.Length.ToString());
+									//_logger.LogDebug("VBO Bone Ids count is: {$boneesData}", vboBoneIdsData.Length.ToString());
 									uint bufferId = currentMaterialComponent.ShaderProgram.GetBuffer("boneIds");
 									GL.BindBuffer(BufferTarget.ArrayBuffer,bufferId);
-										GL.BufferData(BufferTarget.ArrayBuffer,vboBoneIdsData.Length * sizeof(float),
-											vboBoneIdsData, BufferUsageHint.DynamicDraw);
+										GL.BufferData(BufferTarget.ArrayBuffer,currentModelComponent.GetVboBoneIdsDataOfModel().Length * sizeof(int),
+											currentModelComponent.GetVboBoneIdsDataOfModel(), BufferUsageHint.DynamicDraw);
 									GL.VertexAttribPointer(
 										currentMaterialComponent.ShaderProgram.GetAttributeAddress("boneIds"), 4,
 										VertexAttribPointerType.Float, false, 0, 0);

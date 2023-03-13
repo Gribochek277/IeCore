@@ -29,12 +29,12 @@ namespace IeCoreEntities.Animation
 		public List<string> ChildNames { get; set; }
 
 		/// <summary>
-		/// Offset matrix
+		/// Offset matrix, animated transform
 		/// </summary>
 		public Matrix4x4 OffsetMatrix { get; set; }
 
 		/// <summary>
-		/// Transform matrix of node.
+		/// Transform matrix of node. Local space transform
 		/// </summary>
 		public Matrix4x4 NodeTransformMatrix { get; set; }
 	}

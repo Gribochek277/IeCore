@@ -47,11 +47,11 @@ namespace IeCoreEntities.Animation
 			Matrix4x4 translation = InterpolatePosition(animationTime);
 			Matrix4x4 rotation = InterpolateRotation(animationTime);
 			Matrix4x4 scale = InterpolateScaling(animationTime);
-			Matrix4x4.Invert(translation, out Matrix4x4 invertedTranslation);
-			
-			Matrix4x4.Invert(rotation, out Matrix4x4 invertedRotation);
-			
-			Matrix4x4.Invert(scale, out Matrix4x4 invertedScale);
+			//Matrix4x4.Invert(translation, out Matrix4x4 invertedTranslation);
+			//
+			//Matrix4x4.Invert(rotation, out Matrix4x4 invertedRotation);
+			//
+			//Matrix4x4.Invert(scale, out Matrix4x4 invertedScale);
 			LocalTransform = translation * rotation * scale;
 		}
 		

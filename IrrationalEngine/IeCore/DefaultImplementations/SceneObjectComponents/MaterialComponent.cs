@@ -27,8 +27,8 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 		{
 			//TODO: implement shader variation possibility.
 			//TODO: encapsulate link and gen buffers.
-			ShaderProgram.LoadShaderFromString(DefaultDiffuseShader.VertexShader, VertexShaderName, ShaderType.VertexShader);
-			ShaderProgram.LoadShaderFromString(DefaultDiffuseShader.FragmentShader, FragmentShaderName, ShaderType.FragmentShader);
+			ShaderProgram.LoadShaderFromString(DefaultDiffuseShaderAnimated.VertexShader, VertexShaderName, ShaderType.VertexShader);
+			ShaderProgram.LoadShaderFromString(DefaultDiffuseShaderAnimated.FragmentShader, FragmentShaderName, ShaderType.FragmentShader);
 			ShaderProgram.LinkShadersToProgram();
 			ShaderProgram.GenBuffers();
 		}

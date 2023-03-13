@@ -104,12 +104,12 @@
         </member>
         <member name="P:IeCoreEntities.Animation.Bone.OffsetMatrix">
             <summary>
-            Offset matrix
+            Offset matrix, animated transform
             </summary>
         </member>
         <member name="P:IeCoreEntities.Animation.Bone.NodeTransformMatrix">
             <summary>
-            Transform matrix of node.
+            Transform matrix of node. Local space transform
             </summary>
         </member>
         <member name="T:IeCoreEntities.Animation.QuaternionKey">

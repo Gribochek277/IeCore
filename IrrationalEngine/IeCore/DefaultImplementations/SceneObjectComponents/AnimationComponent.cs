@@ -42,7 +42,7 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 				return;
 
 			
-			Matrix4x4 transform = bone.NodeTransformMatrix;
+			Matrix4x4 transform = bone.OffsetMatrix;
 			BoneAnimationKeys boneKey = _currentAnimation.Keys.FirstOrDefault(x => x.BoneName == bone.Name);
 
 			if (boneKey != null)
@@ -51,15 +51,17 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 				transform = boneKey.LocalTransform;
 			}
 
-
-			Matrix4x4 globalTransformation = parentTransform * transform;
+		//	Matrix4x4.Invert(transform, out  Matrix4x4 invertedTransform);
+		    //Matrix4x4 s = Matrix4x4.Multiply(transform, bone.OffsetMatrix);
+			Matrix4x4 globalTransformation = Matrix4x4.Multiply(parentTransform, transform);
+			//Matrix4x4.Invert(globalTransformation, out Matrix4x4 invertedGlobal);
 
 			int index = bone.Id;
 
-			 Matrix4x4.Invert(bone.OffsetMatrix, out var offsetMatrix);
+			//Matrix4x4.Invert(bone.OffsetMatrix, out var offsetMatrix);
 
 
-			_finalBonesMatrices[index] = Matrix4x4.Multiply(globalTransformation,offsetMatrix);
+			_finalBonesMatrices[index] = globalTransformation;//Matrix4x4.Multiply(globalTransformation,bone.OffsetMatrix);
 			
 			foreach (string boneInfoChildName in bone.ChildNames)
 			{
@@ -77,6 +79,8 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 			{
 				_finalBonesMatrices[i] = Matrix4x4.Identity;
 			}
+
+			//UpdateAnimation(0);
 		}
 
 		public void OnUnload()
