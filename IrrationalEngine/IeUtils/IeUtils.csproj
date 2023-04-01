@@ -8,6 +8,9 @@
     <Compile Remove="Resources\Blender\**" />
     <EmbeddedResource Remove="Resources\Blender\**" />
     <None Remove="Resources\Blender\**" />
+    <None Update="Resources\Textures\checkerboard.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

@@ -89,21 +89,6 @@
             Offset matrix
             </summary>
         </member>
-        <member name="T:IeCoreEntities.Animation.QuaternionKey">
-            <summary>
-            Represents Quaternion value in time
-            </summary>
-        </member>
-        <member name="F:IeCoreEntities.Animation.QuaternionKey.TimeFrame">
-            <summary>
-            Time frame of a key.
-            </summary>
-        </member>
-        <member name="F:IeCoreEntities.Animation.QuaternionKey.Value">
-            <summary>
-            Value of key at this moment.
-            </summary>
-        </member>
         <member name="T:IeCoreEntities.Animation.Skeleton">
             <summary>
             Determines hierarchy of bones in skeleton.
@@ -112,21 +97,6 @@
         <member name="P:IeCoreEntities.Animation.Skeleton.Bones">
             <summary>
             List of bones of this mesh.
-            </summary>
-        </member>
-        <member name="T:IeCoreEntities.Animation.VectorKey">
-            <summary>
-            Represents vector3 value in time
-            </summary>
-        </member>
-        <member name="F:IeCoreEntities.Animation.VectorKey.TimeFrame">
-            <summary>
-            Time frame of a key.
-            </summary>
-        </member>
-        <member name="F:IeCoreEntities.Animation.VectorKey.Value">
-            <summary>
-            Value of key at this moment.
             </summary>
         </member>
         <member name="T:IeCoreEntities.Asset">

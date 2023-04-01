@@ -1,10 +1,7 @@
 ﻿using IeCoreEntities.Materials;
-using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Numerics;
-using System.Runtime.InteropServices;
+using SixLabors.ImageSharp;
 
 namespace IeCore.DefaultImplementations.Textures
 {
@@ -36,45 +33,27 @@ namespace IeCore.DefaultImplementations.Textures
 		Color color1,
 		Color color2)
 		{
-			using (var bmp = new Bitmap(maxXCells * cellSize, maxYCells * cellSize))
-			{
-				using (Graphics g = Graphics.FromImage(bmp))
-				{
-					using (var blackBrush = new SolidBrush(color1))
-					using (var whiteBrush = new SolidBrush(color2))
-					{
-						for (var i = 0; i < maxXCells; i++)
-						{
-							for (var j = 0; j < maxYCells; j++)
-							{
-								if ((j % 2 == 0 && i % 2 == 0) || (j % 2 != 0 && i % 2 != 0))
-									g.FillRectangle(blackBrush, i * cellSize, j * cellSize, cellSize, cellSize);
-								else if ((j % 2 == 0 && i % 2 != 0) || (j % 2 != 0 && i % 2 == 0))
-									g.FillRectangle(whiteBrush, i * cellSize, j * cellSize, cellSize, cellSize);
-							}
-						}
-					}
-				}
-				Texture result = null;
+
+			Image image = Image.Load($"Resources{Path.DirectorySeparatorChar}Textures{Path.DirectorySeparatorChar}checkerboard.png");
+			
+			Texture result = null;
 
 				using (var memStream = new MemoryStream())
 				{
-					bmp.Save(memStream, ImageFormat.Png);
-					BitmapData bitmapData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+					image.SaveAsPng(memStream);
+					
+					
+					//	BitmapData bitmapData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 					result = new Texture(
 						$"CheckerboardTexture_resolution_{maxXCells * cellSize}x{maxYCells * cellSize}", InMemoryFileName)
 					{
 						TextureSize = new Vector2(maxXCells * cellSize, maxYCells * cellSize)
 					};
 
-					var data = new byte[Math.Abs(bitmapData.Stride * bitmapData.Height)];
-					Marshal.Copy(bitmapData.Scan0, data, 0, data.Length);
-					result.Bytes = data;
-					bmp.UnlockBits(bitmapData);
+					result.Bytes = memStream.ToArray();
 				}
 
 				return result;
 			}
 		}
 	}
-}

@@ -10,6 +10,7 @@ using IeCoreInterfaces.Shaders;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 
 namespace IeCore.DefaultImplementations.Scene
@@ -42,7 +43,7 @@ namespace IeCore.DefaultImplementations.Scene
 			//TODO: Consider of creating stage for generating and registering all default objects.
 			_assetManager.Register(DefaultTexture.CreateDefaultCheckerboard(2048, 512));
 			Console.WriteLine(Environment.CurrentDirectory);
-			_assetManager.RegisterFile("Resources\\FBX\\knight.fbx");
+			_assetManager.RegisterFile($"Resources{Path.DirectorySeparatorChar}FBX{Path.DirectorySeparatorChar}knight.fbx");
 
 			var customSceneObject = new SceneObject { Name = "Knight" };
 

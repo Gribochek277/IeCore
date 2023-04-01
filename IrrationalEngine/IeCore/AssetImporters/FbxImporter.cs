@@ -35,7 +35,8 @@ namespace IeCore.AssetImporters
 			using (var context = new AssimpContext())
 			{
 				const PostProcessSteps assimpLoadFlags = PostProcessSteps.Triangulate | PostProcessSteps.GenerateSmoothNormals | PostProcessSteps.FlipUVs;
-				Scene loadedAssimpScene = context.ImportFile(file, assimpLoadFlags);
+				
+				Scene loadedAssimpScene = context.ImportFile(Path.Combine(Environment.CurrentDirectory,file), assimpLoadFlags);
 				if (loadedAssimpScene == null || loadedAssimpScene.SceneFlags == SceneFlags.Incomplete)
 				{
 					Console.WriteLine("Scene error");
