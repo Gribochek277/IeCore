@@ -10,6 +10,6 @@ public class ModelImporter: IModelImporter
 	public string[] FileExtensions { get; }
 	public Asset Import(string file)
 	{
-		throw new NotImplementedException();
+		return null;
 	}
 }
