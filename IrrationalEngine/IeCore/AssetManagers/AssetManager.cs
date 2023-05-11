@@ -28,10 +28,10 @@ namespace IeCore.AssetManagers
 		{
 			if (RegisteredAssets.TryAdd(asset.Name, asset))
 			{
-				_logger.LogDebug($"---------------------------------\nNew asset registered {asset.Name}");
+				_logger.LogDebug("---------------------------------\\nNew asset registered {AssetName}", asset.Name);
 				foreach (var registeredAsset in RegisteredAssets)
 				{
-					_logger.LogDebug($"-- Registered asset:{registeredAsset.Key} is type of {registeredAsset.Value.GetType()}");
+					_logger.LogDebug("-- Registered asset:{RegisteredAssetKey} is type of {Type}", registeredAsset.Key, registeredAsset.Value.GetType());
 				}
 			}
 		}

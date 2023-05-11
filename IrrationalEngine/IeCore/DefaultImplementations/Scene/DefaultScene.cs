@@ -43,7 +43,7 @@ namespace IeCore.DefaultImplementations.Scene
 			//TODO: Consider of creating stage for generating and registering all default objects.
 			_assetManager.Register(DefaultTexture.CreateDefaultCheckerboard(2048, 512));
 			Console.WriteLine(Environment.CurrentDirectory);
-			_assetManager.RegisterFile($"Resources{Path.DirectorySeparatorChar}FBX{Path.DirectorySeparatorChar}knight.fbx");
+			_assetManager.RegisterFile($"Resources{Path.DirectorySeparatorChar}Json{Path.DirectorySeparatorChar}knight.json");
 
 			var customSceneObject = new SceneObject { Name = "Knight" };
 

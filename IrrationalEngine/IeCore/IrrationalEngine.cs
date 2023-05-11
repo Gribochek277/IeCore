@@ -31,8 +31,8 @@ namespace IeCore
 		{
 			//TODO: consider change it to builder or smth else
 			RegisterServices();
-			IWindow window = _serviceProvider.GetService<IWindowFactory>()?.Create();
-			window?.Run();
+			IWindow window = _serviceProvider.GetService<IWindowFactory>().Create();
+			window.Run();
 			DisposeServices();
 		}
 
