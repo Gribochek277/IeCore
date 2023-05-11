@@ -26,7 +26,8 @@ namespace IeCore.DefaultImplementations.Textures
 		{
 			return CreateDefaultCheckerboard(maxXCells, maxYCells, cellSize, Color.White, Color.Purple);
 		}
-		public static Texture CreateDefaultCheckerboard(
+
+		private static Texture CreateDefaultCheckerboard(
 		int maxXCells,
 		int maxYCells,
 		int cellSize,
@@ -34,26 +35,29 @@ namespace IeCore.DefaultImplementations.Textures
 		Color color2)
 		{
 
-			Image image = Image.Load($"Resources{Path.DirectorySeparatorChar}Textures{Path.DirectorySeparatorChar}checkerboard.png");
-			
 			Texture result = null;
-
+			using (Image image =
+			       Image.Load(
+				       $"Resources{Path.DirectorySeparatorChar}Textures{Path.DirectorySeparatorChar}checkerboard.png"))
+			{
 				using (var memStream = new MemoryStream())
 				{
 					image.SaveAsPng(memStream);
-					
-					
+
+
 					//	BitmapData bitmapData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 					result = new Texture(
-						$"CheckerboardTexture_resolution_{maxXCells * cellSize}x{maxYCells * cellSize}", InMemoryFileName)
+						$"CheckerboardTexture_resolution_{maxXCells * cellSize}x{maxYCells * cellSize}",
+						InMemoryFileName)
 					{
 						TextureSize = new Vector2(maxXCells * cellSize, maxYCells * cellSize)
 					};
 
 					result.Bytes = memStream.ToArray();
 				}
-
-				return result;
+				
 			}
+			return result;
+		}
 		}
 	}
