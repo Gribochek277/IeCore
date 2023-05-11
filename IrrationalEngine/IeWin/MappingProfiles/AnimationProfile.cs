@@ -1,10 +1,16 @@
 ﻿using Assimp;
 using AutoMapper;
 
-namespace IeCore.MappingProfiles
+namespace IeWin.MappingProfiles
 {
+	/// <summary>
+	/// Mapping profile for animation
+	/// </summary>
 	public class AnimationProfile : Profile
 	{
+		/// <summary>
+		/// Ctor
+		/// </summary>
 		public AnimationProfile()
 		{
 			CreateMap<Animation, IeCoreEntities.Animation.Animation>()

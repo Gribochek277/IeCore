@@ -25,11 +25,6 @@
             </summary>
             <param name="file"></param>
         </member>
-        <member name="T:IeCoreInterfaces.AssetImporters.IFbxImporter">
-            <summary>
-            Serves for importing assets of FBX type.
-            </summary>
-        </member>
         <member name="T:IeCoreInterfaces.AssetImporters.IMaterialImporter">
             <summary>
             Load material assets.

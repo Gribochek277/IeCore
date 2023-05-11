@@ -1,14 +1,18 @@
-﻿using AutoMapper;
+﻿using System.Numerics;
+using AutoMapper;
 using IeCoreEntities.Model;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 using Mesh = Assimp.Mesh;
 
-namespace IeCore.MappingProfiles
+namespace IeWin.MappingProfiles
 {
+	/// <summary>
+	/// Mesh mapping profile
+	/// </summary>
 	public class MeshProfile : Profile
 	{
+		/// <summary>
+		/// Ctor
+		/// </summary>
 		public MeshProfile()
 		{
 			CreateMap<Mesh, IeCoreEntities.Model.Mesh>()

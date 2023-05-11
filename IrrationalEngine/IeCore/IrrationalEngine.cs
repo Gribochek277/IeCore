@@ -53,7 +53,7 @@ namespace IeCore
 
 			collection.AddScoped<ICamera, Camera>();
 			collection.AddScoped<IUniformHelper, UniformHelper>();
-			collection.AddScoped<IFbxImporter, FbxImporter>();
+			collection.AddScoped<IModelImporter, ModelImporter>();
 			collection.AddScoped<ITextureImporter, TextureImporter>();
 			collection.AddScoped<IAssetManager, AssetManager>();
 			collection.AddScoped<IRenderer, OpenGlRenderer>();

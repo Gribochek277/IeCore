@@ -17,10 +17,10 @@ namespace IeCore.AssetManagers
 
 		private readonly ILogger<AssetManager> _logger;
 
-		public AssetManager(IFbxImporter fbxImporter, ITextureImporter textureImporter, ILogger<AssetManager> logger)
+		public AssetManager(IModelImporter modelImporter, ITextureImporter textureImporter, ILogger<AssetManager> logger)
 		{
 			AssetImporters.Add(textureImporter);
-			AssetImporters.Add(fbxImporter);
+			AssetImporters.Add(modelImporter);
 			_logger = logger;
 		}
 

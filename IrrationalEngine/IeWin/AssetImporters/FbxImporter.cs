@@ -1,35 +1,41 @@
 ﻿using Assimp;
 using AutoMapper;
-using IeCore.Extensions;
 using IeCoreEntities;
 using IeCoreEntities.Animation;
 using IeCoreEntities.Extensions;
 using IeCoreEntities.Model;
-using IeCoreInterfaces.AssetImporters;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using IeWin.Extensions;
 using Animation = Assimp.Animation;
 using Bone = Assimp.Bone;
 using Mesh = Assimp.Mesh;
 using QuaternionKey = Assimp.QuaternionKey;
 using VectorKey = Assimp.VectorKey;
 
-namespace IeCore.AssetImporters
+namespace IeWin.AssetImporters
 {
+	/// <summary>
+	/// Importer for FBX model which depends on Assimp library.
+	/// </summary>
 	public class FbxImporter : IFbxImporter
 	{
 		private readonly IMapper _mapper;
+
+		/// <inheritdoc />
 		public Type AssetType => typeof(Model);
 
+		/// <inheritdoc />
 		public string[] FileExtensions => new[] { ".fbx" };
 
+		/// <summary>
+		/// Ctor.
+		/// </summary>
+		/// <param name="mapper"></param>
 		public FbxImporter(IMapper mapper)
 		{
 			_mapper = mapper;
 		}
 
+		/// <inheritdoc />
 		public Asset Import(string file)
 		{
 			using (var context = new AssimpContext())
@@ -43,7 +49,7 @@ namespace IeCore.AssetImporters
 				}
 
 				var model = new Model(Path.GetFileName(file), file);
-				if (loadedAssimpScene.HasAnimations)
+				if (loadedAssimpScene != null && loadedAssimpScene.HasAnimations)
 				{
 					foreach (Animation assimpAnimation in loadedAssimpScene.Animations)
 					{
@@ -58,9 +64,11 @@ namespace IeCore.AssetImporters
 						}));
 					}
 				}
-				foreach (Mesh assimpMesh in loadedAssimpScene.Meshes)
-					model.Meshes.Add(
-						_mapper.Map<Mesh, IeCoreEntities.Model.Mesh>(assimpMesh, opt =>
+
+				if (loadedAssimpScene != null)
+					foreach (Mesh assimpMesh in loadedAssimpScene.Meshes)
+						model.Meshes.Add(
+							_mapper.Map<Mesh, IeCoreEntities.Model.Mesh>(assimpMesh, opt =>
 							{
 								opt.AfterMap((mappedAssimpMesh, dest) =>
 								{
@@ -83,9 +91,9 @@ namespace IeCore.AssetImporters
 				{
 					opt.AfterMap((_, dest) =>
 					{
-						Node node = SearchNodeByName(loadedAssimpScene.RootNode, dest.Name);
+						Node? node = SearchNodeByName(loadedAssimpScene.RootNode, dest.Name);
 
-						if (node.Parent != null)
+						if (node != null && node.Parent != null)
 							dest.ParentName = node.Parent.Name;
 					});
 
@@ -101,18 +109,19 @@ namespace IeCore.AssetImporters
 
 		}
 
-		private static Node SearchNodeByName(Node node, string nodeName)
+		private static Node? SearchNodeByName(Node node, string nodeName)
 		{
 			if (!node.HasChildren)
 				return null;
 			if (node.Name == nodeName)
 				return node;
-			foreach (Node child in node.Children)
+			foreach (Node? child in node.Children)
 			{
-				Node result = SearchNodeByName(child, nodeName);
+				Node? result = SearchNodeByName(child, nodeName);
 				if (result != null)
 					return result;
 			}
+
 			return null;
 		}
 		private static List<AnimationKey> NodeAnimationChannelToPose(IReadOnlyCollection<NodeAnimationChannel> nodeAnimationChannels)

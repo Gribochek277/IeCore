@@ -1,13 +1,17 @@
 ﻿using Assimp;
 using AutoMapper;
-using IeCore.Extensions;
-using System;
-using System.Collections.Generic;
+using IeWin.Extensions;
 
-namespace IeCore.MappingProfiles
+namespace IeWin.MappingProfiles
 {
+	/// <summary>
+	/// Mapping profile for bones
+	/// </summary>
 	public class BoneProfile : Profile
 	{
+		/// <summary>
+		/// Ctor
+		/// </summary>
 		public BoneProfile()
 		{
 			CreateMap<Bone, IeCoreEntities.Animation.Bone>()
