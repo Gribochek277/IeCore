@@ -38,8 +38,8 @@ namespace IeCore
 			}
 			//TODO: consider change it to builder or smth else
 			RegisterServices();
-			IWindow window = _serviceProvider.GetService<IWindowFactory>()?.Create();
-			window?.Run();
+			IWindow window = _serviceProvider.GetService<IWindowFactory>().Create();
+			window.Run();
 			DisposeServices();
 			Console.ReadLine();
 		}
@@ -61,7 +61,7 @@ namespace IeCore
 
 			collection.AddScoped<ICamera, Camera>();
 			collection.AddScoped<IUniformHelper, UniformHelper>();
-			collection.AddScoped<IFbxImporter, FbxImporter>();
+			collection.AddScoped<IModelImporter, ModelImporter>();
 			collection.AddScoped<ITextureImporter, TextureImporter>();
 			collection.AddScoped<IAssetManager, AssetManager>();
 			collection.AddScoped<IRenderer, OpenGlRenderer>();
