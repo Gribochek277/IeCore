@@ -3,7 +3,6 @@ using IeCore.AssetImporters;
 using IeCore.AssetManagers;
 using IeCore.DefaultImplementations.Primitives.Factory;
 using IeCore.DefaultImplementations.Scene;
-using IeCore.DefaultImplementations.SceneObjectComponents;
 using IeCore.DefaultImplementations.SceneObjects;
 using IeCore.Window;
 using IeCoreInterfaces;
@@ -12,14 +11,14 @@ using IeCoreInterfaces.Assets;
 using IeCoreInterfaces.EngineWindow;
 using IeCoreInterfaces.Primitives;
 using IeCoreInterfaces.Rendering;
-using IeCoreInterfaces.SceneObjectComponents;
-using IeCoreInterfaces.Shaders;
-using IeCoreOpengl.Helpers;
-using IeCoreOpengl.Rendering;
-using IeCoreOpengl.Shaders;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using IeCore.DefaultImplementations.SceneObjectComponents;
+using IeCoreInterfaces.SceneObjectComponents;
+using IeCoreInterfaces.Shaders;
+using IeCoreSilkNetOpenGl.Rendering;
+using IeCoreSilkNetOpenGl.Shaders;
 
 namespace IeCore
 {
@@ -52,11 +51,11 @@ namespace IeCore
 			});
 
 			collection.AddScoped<ICamera, Camera>();
-			collection.AddScoped<IUniformHelper, UniformHelper>();
+			//collection.AddScoped<IUniformHelper, UniformHelper>();
 			collection.AddScoped<IModelImporter, ModelImporter>();
 			collection.AddScoped<ITextureImporter, TextureImporter>();
 			collection.AddScoped<IAssetManager, AssetManager>();
-			collection.AddScoped<IRenderer, OpenGlRenderer>();
+			collection.AddScoped<IRenderer, Renderer>();
 			collection.AddScoped<IPrimitvesFactory, PrimitvesFactory>();
 			collection.AddScoped<IScene, DefaultScene>();
 			collection.AddScoped<ISceneManager, SceneManager>();

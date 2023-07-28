@@ -323,6 +323,13 @@
             Encapsulates all the API calls to graphic library.
             </summary>
         </member>
+        <member name="M:IeCoreInterfaces.Rendering.IRenderer.SetContext``1(``0)">
+            <summary>
+            Set all required context for renderer.
+            </summary>
+            <param name="context"></param>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="M:IeCoreInterfaces.Rendering.IRenderer.SetViewPort(System.Int32,System.Int32)">
             <summary>
             Sets size of view port.

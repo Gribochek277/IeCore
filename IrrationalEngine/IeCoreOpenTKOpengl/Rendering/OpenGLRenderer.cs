@@ -3,8 +3,7 @@ using IeCoreInterfaces;
 using IeCoreInterfaces.Assets;
 using IeCoreInterfaces.Rendering;
 using IeCoreInterfaces.SceneObjectComponents;
-using IeCoreOpengl.Extensions;
-using IeCoreOpengl.Helpers;
+using IeCoreOpenTKOpengl.Extensions;
 using IeUtils;
 using Microsoft.Extensions.Logging;
 using OpenTK.Graphics.OpenGL;
@@ -13,8 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using IeCoreOpenTKOpengl.Helpers;
 
-namespace IeCoreOpengl.Rendering
+namespace IeCoreOpenTKOpengl.Rendering
 {
 	public class OpenGlRenderer : IRenderer
 	{
@@ -248,6 +248,11 @@ namespace IeCoreOpengl.Rendering
 		public void OnUpdated()
 		{
 			//throw new NotImplementedException();
+		}
+
+		public void SetContext<T>(T context)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void SetViewPort(int width, int height)

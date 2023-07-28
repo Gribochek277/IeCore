@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ShaderType = IeCoreEntities.Shaders.ShaderType;
 
-namespace IeCoreOpengl.Shaders
+namespace IeCoreOpenTKOpengl.Shaders
 {
 	public class ShaderProgram : IShaderProgram
 	{

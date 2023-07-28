@@ -8,7 +8,7 @@ using OpenTK.Windowing.Desktop;
 using System;
 using System.Diagnostics;
 
-namespace IeCoreOpengl.EngineWindow
+namespace IeCoreOpenTKOpengl.EngineWindow
 {
 	public class OpenGlWindow : IWindow
 	{

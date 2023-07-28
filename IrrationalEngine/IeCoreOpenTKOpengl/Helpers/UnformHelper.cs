@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
 
-namespace IeCoreOpengl.Helpers
+namespace IeCoreOpenTKOpengl.Helpers
 {
 	public class UniformHelper : IUniformHelper
 	{

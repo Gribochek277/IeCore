@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using System.Numerics;
 
-namespace IeCoreOpengl.Extensions
+namespace IeCoreOpenTKOpengl.Extensions
 {
 	public static class Matrix
 	{

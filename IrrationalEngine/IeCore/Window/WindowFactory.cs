@@ -1,7 +1,7 @@
 ﻿using IeCoreInterfaces;
 using IeCoreInterfaces.EngineWindow;
 using IeCoreInterfaces.Rendering;
-using IeCoreOpengl.EngineWindow;
+using IeCoreSilkNetOpenGl.EngineWindow;
 using Microsoft.Extensions.Logging;
 
 namespace IeCore.Window

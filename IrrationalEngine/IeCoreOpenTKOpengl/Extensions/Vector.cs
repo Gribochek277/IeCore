@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace IeCoreOpengl.Extensions
+namespace IeCoreOpenTKOpengl.Extensions
 {
 	public static class Vector
 	{

@@ -24,7 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\IeCoreEntities\IeCoreEntities.csproj" />
     <ProjectReference Include="..\IeCoreInterfaces\IeCoreInterfaces.csproj" />
-    <ProjectReference Include="..\IeCoreOpengl\IeCoreOpengl.csproj" />
+    <ProjectReference Include="..\IeCoreSilkNetOpenGl\IeCoreSilkNetOpenGl.csproj" />
   </ItemGroup>
 
 </Project>
