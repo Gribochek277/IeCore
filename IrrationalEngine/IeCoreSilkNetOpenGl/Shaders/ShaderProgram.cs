@@ -1,12 +1,42 @@
 using IeCoreEntities.Shaders;
+using IeCoreInterfaces.Assets;
 using IeCoreInterfaces.Shaders;
+using IeUtils;
+using Microsoft.Extensions.Logging;
+using Silk.NET.OpenGL;
+using Shader = IeCoreEntities.Shaders.Shader;
+using ShaderType = IeCoreEntities.Shaders.ShaderType;
 
 namespace IeCoreSilkNetOpenGl.Shaders;
 
 public class ShaderProgram: IShaderProgram
 {
+	private readonly List<Shader> _storedShaders = new List<Shader>();
+	private readonly IAssetManager _assetManager;
+	private readonly ILogger<ShaderProgram> _logger;
+
+
+	private Dictionary<string, AttributeInfo> _attributeInfos;
+
+
+	private readonly Dictionary<string, uint> _buffers = new Dictionary<string, uint>();
+
+
+	private Dictionary<string, UniformInfo> _uniforms;
+
+	public int ShaderProgramId { get; private set; } = -1;
 	
+	private static GL Gl;
 	private bool _disposedValue;
+	
+	public ShaderProgram(IAssetManager assetManager, ILogger<ShaderProgram> logger)
+	{
+		assetManager.AssertNotNull(nameof(assetManager));
+		logger.AssertNotNull(nameof(logger));
+		_assetManager = assetManager;
+		_logger = logger;
+	}
+
 	protected virtual void Dispose(bool disposing)
 	{
 		if (_disposedValue) return;
@@ -21,20 +51,57 @@ public class ShaderProgram: IShaderProgram
 		GC.SuppressFinalize(this);
 	}
 
-	public int ShaderProgramId { get; }
 	public void LoadShaderFromString(string code, string shaderName, ShaderType type)
 	{
-		//throw new NotImplementedException();
+		ShaderProgramId = (int)Gl.CreateProgram();
+		Shader? registeredShader = _assetManager.Retrieve<Shader>(shaderName);
+		if (registeredShader == null)
+		{
+			Shader shader = new Shader(shaderName, string.Concat("InMemory shader ", Guid.NewGuid()), code, type);
+
+			_assetManager.Register(shader);
+			_storedShaders.Add(shader);
+
+			Silk.NET.OpenGL.ShaderType oglEnum = Enum.Parse<Silk.NET.OpenGL.ShaderType>(shader.ShaderType.ToString());
+
+			shader.Id = (int)Gl.CreateShader(oglEnum);
+			Gl.ShaderSource((uint)shader.Id, shader.ShaderCode);
+			Gl.CompileShader((uint)shader.Id);
+
+			string shaderInfo = Gl.GetShaderInfoLog((uint)shader.Id);
+			if (!string.IsNullOrEmpty(shaderInfo))
+				_logger.LogError("Shader error {ShaderInfo}", shaderInfo); //Log errors.
+			else
+				_logger.LogInformation("{ShaderName} compiled correctly", shaderName);
+		}
+		else
+		{
+			_storedShaders.Add(registeredShader);
+		}
 	}
 
 	public void LoadShaderFromFile(string filename, string shaderName, ShaderType type)
 	{
-		//throw new NotImplementedException();
+		throw new NotImplementedException();
 	}
 
 	public void LinkShadersToProgram()
 	{
-		//throw new NotImplementedException();
+		foreach (Shader storedShader in _storedShaders)
+		{
+			Gl.AttachShader((uint)ShaderProgramId, (uint)storedShader.Id);
+		}
+
+		Gl.LinkProgram((uint)ShaderProgramId);
+
+		_attributeInfos = GetAttributesInformation((uint)ShaderProgramId);
+		_uniforms = GetUniformsInformation((uint)ShaderProgramId);
+
+		//After linking program we can detach shaders.
+		foreach (Shader storedShader in _storedShaders)
+		{
+			Gl.DetachShader((uint)ShaderProgramId, (uint)storedShader.Id);
+		}
 	}
 
 	public void UseProgram()
@@ -44,12 +111,29 @@ public class ShaderProgram: IShaderProgram
 
 	public void GenBuffers()
 	{
-		//throw new NotImplementedException();
+		for (int i = 0; i < _attributeInfos.Count; i++)
+		{
+			if (_buffers.ContainsKey(_attributeInfos.Values.ElementAt(i).Name)) continue;
+
+			Gl.GenBuffers(1, out uint buffer);
+			_buffers.Add(_attributeInfos.Values.ElementAt(i).Name, buffer);
+		}
+
+		for (int i = 0; i < _uniforms.Count; i++)
+		{
+			if (_buffers.ContainsKey(_uniforms.Values.ElementAt(i).Name)) continue;
+
+			Gl.GenBuffers(1, out uint buffer);
+			_buffers.Add(_uniforms.Values.ElementAt(i).Name, buffer);
+		}
 	}
 
 	public void EnableVertexAttribArrays()
 	{
-		//throw new NotImplementedException();
+		foreach (KeyValuePair<string, AttributeInfo> attributeInfo in _attributeInfos)
+		{
+			Gl.EnableVertexAttribArray((uint)attributeInfo.Value.Address);
+		}
 	}
 
 	public void DisableVertexAttribArrays()
@@ -59,19 +143,59 @@ public class ShaderProgram: IShaderProgram
 
 	public int GetAttributeAddress(string name)
 	{
-		throw new NotImplementedException();
+		try { 
+			return _attributeInfos[name].Address;
+		}
+		catch 
+		{ 
+			return -1; 
+		}
 	}
 
 	public int GetUniformAddress(string name)
 	{
-		
-		return 1;
-		//throw new NotImplementedException();
+		_uniforms.TryGetValue(name, out UniformInfo result);
+		return result?.Address ?? -1;
 	}
 
 	public uint GetBuffer(string name)
 	{
-		return 1;
-		//throw new NotImplementedException();
+		return _buffers.ContainsKey(name) ? _buffers[name] : 0;
+	}
+	
+	private static Dictionary<string, AttributeInfo> GetAttributesInformation(uint shaderProgramId)
+	{
+		Gl.GetProgram(shaderProgramId, GLEnum.ActiveAttributes, out int attributeCount);
+		Dictionary<string, AttributeInfo> attributes = new Dictionary<string, AttributeInfo>();
+		for (uint i = 0; i < attributeCount; i++)
+		{
+			AttributeInfo info = new AttributeInfo();
+			Gl.GetActiveAttrib(shaderProgramId, i, 256, out uint length, out info.Size, out AttributeType type, out string name);
+
+			info.Name = name;
+			info.Address = Gl.GetAttribLocation(shaderProgramId, info.Name);
+			info.Type = (int)type;
+			attributes.Add(name, info);
+		}
+
+		return attributes;
+	}
+
+	private static Dictionary<string, UniformInfo> GetUniformsInformation(uint shaderProgramId)
+	{
+		Gl.GetProgram(shaderProgramId, GLEnum.ActiveUniforms, out int uniformCount);
+		Dictionary<string, UniformInfo> uniforms = new Dictionary<string, UniformInfo>();
+		for (uint i = 0; i < uniformCount; i++)
+		{
+			UniformInfo info = new UniformInfo();
+			Gl.GetActiveUniform(shaderProgramId, i, 256, out uint length, out info.Size, out UniformType type, out string name);
+
+			info.Name = name;
+			info.Address = Gl.GetUniformLocation(shaderProgramId, info.Name);
+			info.Type = (int)type;
+			uniforms.Add(name, info);
+		}
+
+		return uniforms;
 	}
 }

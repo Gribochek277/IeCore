@@ -44,7 +44,6 @@ public class OpenGlWindow : IWindow
 		AddListeners();
 	}
 
-	//TODO: investigate how to rewrite into observable. RX library
 	private void AddListeners()
 	{
 		window.Load += OnLoad;
