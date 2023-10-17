@@ -1,5 +1,13 @@
+using System.Numerics;
+using System.Text;
+using IeCoreInterfaces;
+using IeCoreInterfaces.Assets;
 using IeCoreInterfaces.Rendering;
+using IeCoreInterfaces.SceneObjectComponents;
+using IeUtils;
+using Microsoft.Extensions.Logging;
 using Silk.NET.Core.Contexts;
+using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 
@@ -8,7 +16,7 @@ namespace IeCoreSilkNetOpenGl.Rendering;
 
 public class Renderer: IRenderer
 {
-	private static GL Gl;
+	private static GL _gl;
 	
 	private static uint Vbo;
 	private static uint Ebo;
@@ -16,7 +24,35 @@ public class Renderer: IRenderer
 	private static uint Shader;
 
 	public IWindow window;
+	
+	private const string ModelObjectComponent = "ModelSceneObjectComponent";
+	private const string MaterialObjectComponent = "MaterialSceneObjectComponent";
+	private const string AnimationSceneObjectComponent = "AnimationSceneObjectComponent";
+	private readonly ISceneManager _sceneManager;
+	private ISceneObjectComponent _materialObjectComponent;
+	private ISceneObjectComponent _modelObjectComponent;
+	private ISceneObjectComponent _animationObjectComponent;
+	private readonly IAssetManager _assetManager;
+	private readonly ILogger<Renderer> _logger;
+	
+	private Matrix4X4<float> _projection;
+	private Matrix4X4<float> _view;
+	private ISceneObjectComponent _camera;
+	
+	private int _width = 600, _height = 600;
 
+
+	public Renderer(ISceneManager sceneManager, IAssetManager assetManager, ILogger<Renderer> logger)
+	{
+		sceneManager.AssertNotNull(nameof(sceneManager));
+		logger.AssertNotNull(nameof(logger));
+		assetManager.AssertNotNull(nameof(assetManager));
+		_sceneManager = sceneManager;
+		_logger = logger;
+		_assetManager = assetManager;
+	}
+
+	/*
 	//Vertex shaders are run on each vertex.
 	private static readonly string VertexShaderSource = @"
         #version 330 core //Using version GLSL version 3.3
@@ -54,13 +90,107 @@ public class Renderer: IRenderer
 	{
 		0, 1, 3,
 		1, 2, 3
-	};
+	};*/
 	
 	
         public unsafe void OnLoad()
         {   
+			_gl.Enable(EnableCap.DepthTest);
+			_gl.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			
+			//Generate textures
+			foreach (IeCoreEntities.Materials.Texture texture in _assetManager.RetrieveAll<IeCoreEntities.Materials.Texture>())
+			{
+				texture.Id = (int)_gl.GenTexture();
+			}
 
-            //Creating a vertex array.
+			foreach (ISceneObject sceneObject in _sceneManager.Scene.SceneObjects)
+			{
+				//Get model from scene object.
+				IModelComponent currentModelComponent = (IModelComponent)_modelObjectComponent;
+				//Generate VAO on OGL side and assign id of that buffer to model.
+				currentModelComponent.Model.VertexArrayObjectId = (int)_gl.GenVertexArray();
+				_gl.BindVertexArray((uint)currentModelComponent.Model.VertexArrayObjectId);
+				//Generate buffer on OGL side and assign id of that buffer to model.
+				currentModelComponent.Model.VertexBufferObjectId = (int)_gl.GenBuffer();
+				//Generate buffer on OGL side and assign id of that buffer to model.
+				currentModelComponent.Model.ElementBufferId = (int)_gl.GenBuffer();
+
+				//Get all vertices from model.
+				float[] vboPositionData = currentModelComponent.GetVboPositionDataOfModel();
+				uint[] indexes = currentModelComponent.GetIndexesOfModel();
+				
+				var sb = new StringBuilder("Vertex coordinates: ");
+				sb.Append(currentModelComponent.Model.Name);
+				foreach (float posData in vboPositionData)
+				{
+					sb.Append(' ');
+					sb.Append(posData);
+				}
+				_logger.LogTrace(sb.ToString());
+				//Load indices data to GPU.
+				_gl.BindBuffer(GLEnum.ElementArrayBuffer, (uint)currentModelComponent.Model.ElementBufferId);
+				fixed (void* i = &indexes[0])
+				{
+					_gl.BufferData(GLEnum.ElementArrayBuffer, (nuint) (indexes.Length * sizeof(uint)), i,
+						GLEnum.StaticDraw);
+				}
+
+				if (sceneObject.Components.TryGetValue(MaterialObjectComponent, out _materialObjectComponent))
+				{
+					//Get material from scene object.
+					var currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
+					IeCoreEntities.Materials.Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
+					
+					_gl.BindTexture(TextureTarget.Texture2D, (uint)texture.Id);
+
+					fixed (void* bytes = &texture.Bytes[0])
+					{
+						_gl.TexImage2D(TextureTarget.Texture2D,
+							0,
+							InternalFormat.Srgb8,
+							(uint) texture.TextureSize.X,
+							(uint) texture.TextureSize.Y,
+							0,
+							PixelFormat.Bgra,
+							PixelType.UnsignedByte,
+							bytes);
+					}
+
+					_gl.GenerateMipmap(TextureTarget.Texture2D);
+
+
+					//Bind created buffer to ArrayBuffer target.
+					_gl.BindBuffer(GLEnum.ArrayBuffer, (uint)currentModelComponent.Model.VertexBufferObjectId);
+
+					//Load model data to GPU.
+					fixed (void* positionData = &vboPositionData[0])
+					{
+						_gl.BufferData(GLEnum.ArrayBuffer, (nuint) (vboPositionData.Length * sizeof(float)), positionData,
+							GLEnum.StaticDraw);
+					}
+
+					_gl.VertexAttribPointer((uint)currentMaterialComponent.ShaderProgram.GetAttributeAddress("aPosition"),
+						3, VertexAttribPointerType.Float, false, 0, null);
+					
+					if (currentMaterialComponent.ShaderProgram.GetAttributeAddress("aTexCoord") != -1)
+					{
+						float[] vboTextureData = currentModelComponent.GetVboTextureDataOfModel();
+						_gl.BindBuffer(GLEnum.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("aTexCoord"));
+						fixed (void* textureData = &vboTextureData[0])
+						{
+							_gl.BufferData(GLEnum.ArrayBuffer, (uint)(vboTextureData.Length * sizeof(float)), textureData,
+								GLEnum.StaticDraw);
+						}
+
+						_gl.VertexAttribPointer((uint)currentMaterialComponent.ShaderProgram.GetAttributeAddress("aTexCoord"),
+							2, VertexAttribPointerType.Float, false, 0, null);
+					}
+					_projection = Matrix4X4.CreatePerspectiveFieldOfView<float>(1.3f, _width / (float)_height, 0.1f, 120.0f);
+				}
+			}
+
+/*            //Creating a vertex array.
             Vao = Gl.GenVertexArray();
             Gl.BindVertexArray(Vao);
 
@@ -125,20 +255,23 @@ public class Renderer: IRenderer
 
             //Tell opengl how to give the data to the shaders.
             Gl.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), null);
-            Gl.EnableVertexAttribArray(0);
+            Gl.EnableVertexAttribArray(0);*/                  
         }
 
         public unsafe void OnRender() //Method needs to be unsafe due to draw elements.
         {
+	        _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
+	        _gl.CullFace(TriangleFace.Back);
             //Clear the color channel.
-            Gl.Clear((uint) ClearBufferMask.ColorBufferBit);
-
+            
+/*
             //Bind the geometry and shader.
-            Gl.BindVertexArray(Vao);
-            Gl.UseProgram(Shader);
+            _gl.BindVertexArray(Vao);
+            _gl.UseProgram(Shader);
 
             //Draw the geometry.
-            Gl.DrawElements(PrimitiveType.Triangles, (uint) Indices.Length, DrawElementsType.UnsignedInt, null);
+            _gl.DrawElements(PrimitiveType.Triangles, (uint) Indices.Length, DrawElementsType.UnsignedInt, null);
+            */
         }
 
 
@@ -160,7 +293,7 @@ public class Renderer: IRenderer
 
 	public void SetContext<T>(T context)
 	{
-		Gl = GL.GetApi(context as IGLContextSource);
+		_gl = GL.GetApi(context as IGLContextSource);
 	}
 
 	public void SetViewPort(int width, int height)
