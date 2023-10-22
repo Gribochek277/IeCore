@@ -1,6 +1,7 @@
 ﻿using IeCoreInterfaces;
 using IeCoreInterfaces.EngineWindow;
 using IeCoreInterfaces.Rendering;
+using IeCoreOpenTKOpengl.EngineWindow;
 using IeCoreSilkNetOpenGl.EngineWindow;
 using Microsoft.Extensions.Logging;
 
@@ -10,17 +11,25 @@ namespace IeCore.Window
 	{
 		private ISceneManager _sceneManager;
 		private IRenderer _renderer;
-		private ILogger<OpenGlWindow> _logger;
+		private ILogger<SilkNetOpenGlWindow> _logger;
+		private ILogger<OpenGlWindow> _logger2;
 
-		public WindowFactory(IRenderer renderer, ISceneManager sceneManager, ILogger<OpenGlWindow> logger)
+		public WindowFactory(IRenderer renderer, ISceneManager sceneManager, ILogger<SilkNetOpenGlWindow> logger,
+			ILogger<OpenGlWindow> logger2)
 		{
 			_sceneManager = sceneManager;
 			_renderer = renderer;
 			_logger = logger;
+			_logger2 = logger2;
 		}
-		public IWindow Create()
+		public IWindow CreateSilkNetWindow()
 		{
-			return new OpenGlWindow(600, 600, _renderer, _sceneManager, _logger);
+			return new SilkNetOpenGlWindow(600, 600, _renderer, _sceneManager, _logger);
+		}
+
+		public IWindow CreateOpentkWindow()
+		{
+			return new OpenGlWindow(800, 600, _renderer, _sceneManager, _logger2);
 		}
 	}
 }

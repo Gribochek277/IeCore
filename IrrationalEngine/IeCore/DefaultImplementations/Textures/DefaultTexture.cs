@@ -50,7 +50,7 @@ namespace IeCore.DefaultImplementations.Textures
 						$"CheckerboardTexture_resolution_{maxXCells * cellSize}x{maxYCells * cellSize}",
 						InMemoryFileName)
 					{
-						TextureSize = new Vector2(maxXCells * cellSize, maxYCells * cellSize)
+						TextureSize = new Vector2(image.Width, image.Height)
 					};
 
 					result.Bytes = memStream.ToArray();

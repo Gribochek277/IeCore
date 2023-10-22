@@ -54,7 +54,7 @@ public class ShaderProgram: IShaderProgram
 
 	public void LoadShaderFromString(string code, string shaderName, ShaderType type)
 	{
-		_gl = OpenGlWindow.GetWindowContext;
+		_gl = SilkNetOpenGlWindow.GetWindowContext;
 		ShaderProgramId = (int)_gl.CreateProgram();
 		Shader? registeredShader = _assetManager.Retrieve<Shader>(shaderName);
 		if (registeredShader == null)

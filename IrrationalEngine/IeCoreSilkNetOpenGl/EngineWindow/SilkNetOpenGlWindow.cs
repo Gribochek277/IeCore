@@ -9,7 +9,7 @@ using IWindow = IeCoreInterfaces.EngineWindow.IWindow;
 
 namespace IeCoreSilkNetOpenGl.EngineWindow;
 
-public class OpenGlWindow : IWindow
+public class SilkNetOpenGlWindow : IWindow
 {
 	public static GL GetWindowContext => GL.GetApi(window);
 
@@ -17,7 +17,7 @@ public class OpenGlWindow : IWindow
 
 	private readonly ISceneManager _sceneManager;
 	private readonly IRenderer _renderer;
-	private readonly ILogger<OpenGlWindow> _logger;
+	private readonly ILogger<SilkNetOpenGlWindow> _logger;
 
 	public event EventHandler? LoadingComplete;
 	public int UpdateRate { private get; set; } = 0;
@@ -31,14 +31,15 @@ public class OpenGlWindow : IWindow
 
 	private readonly Stopwatch _updateStopwatch = new Stopwatch();
 
-	public OpenGlWindow(int resX, int resY, IRenderer renderer, ISceneManager sceneManager,
-		ILogger<OpenGlWindow> logger)
+	public SilkNetOpenGlWindow(int resX, int resY, IRenderer renderer, ISceneManager sceneManager,
+		ILogger<SilkNetOpenGlWindow> logger)
 	{
 		_renderer = renderer;
 		_sceneManager = sceneManager;
 		_logger = logger;
 		WindowOptions options = WindowOptions.Default;
 		options.Size = new Vector2D<int>(resX, resY);
+		options.VSync = true;
 
 
 		window = Window.Create(options);

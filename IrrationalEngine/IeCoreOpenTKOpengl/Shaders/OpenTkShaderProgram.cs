@@ -11,11 +11,11 @@ using ShaderType = IeCoreEntities.Shaders.ShaderType;
 
 namespace IeCoreOpenTKOpengl.Shaders
 {
-	public class ShaderProgram : IShaderProgram
+	public class OpenTkShaderProgram : IShaderProgram
 	{
 		private readonly List<Shader> _storedShaders = new List<Shader>();
 		private readonly IAssetManager _assetManager;
-		private readonly ILogger<ShaderProgram> _logger;
+		private readonly ILogger<OpenTkShaderProgram> _logger;
 
 
 		private Dictionary<string, AttributeInfo> _attributeInfos;
@@ -30,7 +30,7 @@ namespace IeCoreOpenTKOpengl.Shaders
 
 		private bool _disposedValue;
 
-		public ShaderProgram(IAssetManager assetManager, ILogger<ShaderProgram> logger)
+		public OpenTkShaderProgram(IAssetManager assetManager, ILogger<OpenTkShaderProgram> logger)
 		{
 			assetManager.AssertNotNull(nameof(assetManager));
 			logger.AssertNotNull(nameof(logger));

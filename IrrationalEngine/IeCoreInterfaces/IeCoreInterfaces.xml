@@ -200,7 +200,13 @@
             Factory for window creation
             </summary>
         </member>
-        <member name="M:IeCoreInterfaces.EngineWindow.IWindowFactory.Create">
+        <member name="M:IeCoreInterfaces.EngineWindow.IWindowFactory.CreateSilkNetWindow">
+            <summary>
+            Creates new instance of window.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:IeCoreInterfaces.EngineWindow.IWindowFactory.CreateOpentkWindow">
             <summary>
             Creates new instance of window.
             </summary>

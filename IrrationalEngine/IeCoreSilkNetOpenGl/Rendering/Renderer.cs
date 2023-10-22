@@ -95,9 +95,9 @@ public class Renderer: IRenderer
 	
         public unsafe void OnLoad()
         {   
-	        _gl = OpenGlWindow.GetWindowContext;
+	        _gl = SilkNetOpenGlWindow.GetWindowContext;
 			_gl.Enable(EnableCap.DepthTest);
-			_gl.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			_gl.ClearColor(0.6f, 0.3f, 0.3f, 1.0f);
 			
 			//Generate textures
 			foreach (IeCoreEntities.Materials.Texture texture in _assetManager.RetrieveAll<IeCoreEntities.Materials.Texture>())
@@ -147,9 +147,10 @@ public class Renderer: IRenderer
 					var currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
 					IeCoreEntities.Materials.Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
 					
+					_gl.ActiveTexture(TextureUnit.Texture0);
 					_gl.BindTexture(TextureTarget.Texture2D, (uint)texture.Id);
-
-					fixed (void* bytes = &texture.Bytes[0])
+					
+					fixed (byte* ptr = &texture.Bytes[0])
 					{
 						_gl.TexImage2D(TextureTarget.Texture2D,
 							0,
@@ -159,7 +160,7 @@ public class Renderer: IRenderer
 							0,
 							PixelFormat.Bgra,
 							PixelType.UnsignedByte,
-							bytes);
+							ptr);
 					}
 
 					_gl.GenerateMipmap(TextureTarget.Texture2D);
@@ -169,7 +170,7 @@ public class Renderer: IRenderer
 					_gl.BindBuffer(GLEnum.ArrayBuffer, (uint)currentModelComponent.Model.VertexBufferObjectId);
 
 					//Load model data to GPU.
-					fixed (void* positionData = &vboPositionData[0])
+					fixed (float* positionData = &vboPositionData[0])
 					{
 						_gl.BufferData(GLEnum.ArrayBuffer, (nuint) (vboPositionData.Length * sizeof(float)), positionData,
 							GLEnum.StaticDraw);
@@ -268,7 +269,7 @@ public class Renderer: IRenderer
         public unsafe void OnRender() //Method needs to be unsafe due to draw elements.
         {
 	        _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
-	        _gl.CullFace(TriangleFace.Back);
+	      //  _gl.CullFace(TriangleFace.Back);
 	        
 	        foreach (ISceneObject sceneObject in _sceneManager.Scene.SceneObjects.ToList())
 			{
@@ -314,7 +315,8 @@ public class Renderer: IRenderer
 					// Bind the VAO
 					_gl.BindVertexArray((uint)currentModelComponent.Model.VertexArrayObjectId);
 
-					_gl.DrawElements(GLEnum.Triangles, (uint)currentModelComponent.GetIndexesOfModel().Length, DrawElementsType.UnsignedInt, 0);
+					_gl.DrawElements(PrimitiveType.Triangles, (uint)currentModelComponent.GetIndexesOfModel().Length, DrawElementsType.UnsignedInt,
+						null);
 				}
 			}
             //Clear the color channel.

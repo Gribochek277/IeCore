@@ -67,7 +67,7 @@ namespace IeCore.DefaultImplementations.Scene
 			MainCamera = new SceneObject();
 			MainCamera.AddComponent(new Camera());
 			_sceneObjects.Add(MainCamera);
-			for (var i = 0; i < 1; i++)
+			for (var i = 0; i < 3; i++)
 			{
 				//_sceneObjects.Add(_primitiveFactory.CreateCube());
 				_sceneObjects.Add(customSceneObject);
@@ -78,7 +78,7 @@ namespace IeCore.DefaultImplementations.Scene
 			foreach (ISceneObject sceneObject in _sceneObjects)
 			{
 				sceneObject.OnLoad();
-				sceneObject.Scale *= new Vector3(0.3f, 0.3f, 0.3f);
+				sceneObject.Scale *= new Vector3(0.5f, 0.5f, 0.5f);
 			}
 		}
 
