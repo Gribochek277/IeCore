@@ -3,6 +3,7 @@ using IeCoreInterfaces;
 using IeCoreInterfaces.Rendering;
 using Microsoft.Extensions.Logging;
 using Silk.NET.Maths;
+using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using IWindow = IeCoreInterfaces.EngineWindow.IWindow;
 
@@ -10,6 +11,8 @@ namespace IeCoreSilkNetOpenGl.EngineWindow;
 
 public class OpenGlWindow : IWindow
 {
+	public static GL GetWindowContext => GL.GetApi(window);
+
 	private static Silk.NET.Windowing.IWindow window;
 
 	private readonly ISceneManager _sceneManager;
@@ -62,7 +65,6 @@ public class OpenGlWindow : IWindow
 	{
 		window.MakeCurrent();
 		_sceneManager.OnLoad();
-		_renderer.SetContext(window);
 		_renderer.OnLoad();
 		_renderer.SetViewPort(window.Size.X, window.Size.Y);
 		window.Title = _sceneManager.Scene.GetType().Name;

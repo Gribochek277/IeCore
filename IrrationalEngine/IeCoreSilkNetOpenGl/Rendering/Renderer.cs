@@ -4,10 +4,10 @@ using IeCoreInterfaces;
 using IeCoreInterfaces.Assets;
 using IeCoreInterfaces.Rendering;
 using IeCoreInterfaces.SceneObjectComponents;
+using IeCoreSilkNetOpenGl.EngineWindow;
+using IeCoreSilkNetOpenGl.Helpers;
 using IeUtils;
 using Microsoft.Extensions.Logging;
-using Silk.NET.Core.Contexts;
-using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 
@@ -35,8 +35,8 @@ public class Renderer: IRenderer
 	private readonly IAssetManager _assetManager;
 	private readonly ILogger<Renderer> _logger;
 	
-	private Matrix4X4<float> _projection;
-	private Matrix4X4<float> _view;
+	private Matrix4x4 _projection;
+	private Matrix4x4 _view;
 	private ISceneObjectComponent _camera;
 	
 	private int _width = 600, _height = 600;
@@ -95,6 +95,7 @@ public class Renderer: IRenderer
 	
         public unsafe void OnLoad()
         {   
+	        _gl = OpenGlWindow.GetWindowContext;
 			_gl.Enable(EnableCap.DepthTest);
 			_gl.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			
@@ -106,35 +107,39 @@ public class Renderer: IRenderer
 
 			foreach (ISceneObject sceneObject in _sceneManager.Scene.SceneObjects)
 			{
-				//Get model from scene object.
-				IModelComponent currentModelComponent = (IModelComponent)_modelObjectComponent;
-				//Generate VAO on OGL side and assign id of that buffer to model.
-				currentModelComponent.Model.VertexArrayObjectId = (int)_gl.GenVertexArray();
-				_gl.BindVertexArray((uint)currentModelComponent.Model.VertexArrayObjectId);
-				//Generate buffer on OGL side and assign id of that buffer to model.
-				currentModelComponent.Model.VertexBufferObjectId = (int)_gl.GenBuffer();
-				//Generate buffer on OGL side and assign id of that buffer to model.
-				currentModelComponent.Model.ElementBufferId = (int)_gl.GenBuffer();
+				//Find model component in scene object.
+				if (sceneObject.Components.TryGetValue(ModelObjectComponent, out _modelObjectComponent))
+				{
+					//Get model from scene object.
+					IModelComponent currentModelComponent = (IModelComponent) _modelObjectComponent;
+					//Generate VAO on OGL side and assign id of that buffer to model.
+					currentModelComponent.Model.VertexArrayObjectId = (int) _gl.GenVertexArray();
+					_gl.BindVertexArray((uint) currentModelComponent.Model.VertexArrayObjectId);
+					//Generate buffer on OGL side and assign id of that buffer to model.
+					currentModelComponent.Model.VertexBufferObjectId = (int) _gl.GenBuffer();
+					//Generate buffer on OGL side and assign id of that buffer to model.
+					currentModelComponent.Model.ElementBufferId = (int) _gl.GenBuffer();
 
-				//Get all vertices from model.
-				float[] vboPositionData = currentModelComponent.GetVboPositionDataOfModel();
-				uint[] indexes = currentModelComponent.GetIndexesOfModel();
-				
-				var sb = new StringBuilder("Vertex coordinates: ");
-				sb.Append(currentModelComponent.Model.Name);
-				foreach (float posData in vboPositionData)
-				{
-					sb.Append(' ');
-					sb.Append(posData);
-				}
-				_logger.LogTrace(sb.ToString());
-				//Load indices data to GPU.
-				_gl.BindBuffer(GLEnum.ElementArrayBuffer, (uint)currentModelComponent.Model.ElementBufferId);
-				fixed (void* i = &indexes[0])
-				{
-					_gl.BufferData(GLEnum.ElementArrayBuffer, (nuint) (indexes.Length * sizeof(uint)), i,
-						GLEnum.StaticDraw);
-				}
+					//Get all vertices from model.
+					float[] vboPositionData = currentModelComponent.GetVboPositionDataOfModel();
+					uint[] indexes = currentModelComponent.GetIndexesOfModel();
+
+					var sb = new StringBuilder("Vertex coordinates: ");
+					sb.Append(currentModelComponent.Model.Name);
+					foreach (float posData in vboPositionData)
+					{
+						sb.Append(' ');
+						sb.Append(posData);
+					}
+
+					_logger.LogTrace(sb.ToString());
+					//Load indices data to GPU.
+					_gl.BindBuffer(GLEnum.ElementArrayBuffer, (uint) currentModelComponent.Model.ElementBufferId);
+					fixed (void* i = &indexes[0])
+					{
+						_gl.BufferData(GLEnum.ElementArrayBuffer, (nuint) (indexes.Length * sizeof(uint)), i,
+							GLEnum.StaticDraw);
+					}
 
 				if (sceneObject.Components.TryGetValue(MaterialObjectComponent, out _materialObjectComponent))
 				{
@@ -186,7 +191,9 @@ public class Renderer: IRenderer
 						_gl.VertexAttribPointer((uint)currentMaterialComponent.ShaderProgram.GetAttributeAddress("aTexCoord"),
 							2, VertexAttribPointerType.Float, false, 0, null);
 					}
-					_projection = Matrix4X4.CreatePerspectiveFieldOfView<float>(1.3f, _width / (float)_height, 0.1f, 120.0f);
+					
+				}
+					_projection = Matrix4x4.CreatePerspectiveFieldOfView(1.3f, _width / (float)_height, 0.1f, 120.0f);
 				}
 			}
 
@@ -262,6 +269,54 @@ public class Renderer: IRenderer
         {
 	        _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
 	        _gl.CullFace(TriangleFace.Back);
+	        
+	        foreach (ISceneObject sceneObject in _sceneManager.Scene.SceneObjects.ToList())
+			{
+				if (sceneObject.Components.TryGetValue("Camera", out _camera))
+				{
+					var camera = (ICamera)_camera;
+					_view = camera.GetViewMatrix();
+				}
+				IMaterialComponent currentMaterialComponent = null;
+				if (sceneObject.Components.TryGetValue(MaterialObjectComponent, out _materialObjectComponent))
+				{
+					//Get material from scene object.
+					currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
+					currentMaterialComponent.ShaderProgram.EnableVertexAttribArrays();
+					IeCoreEntities.Materials.Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
+
+					UniformHelper.TryAddUniformTexture2D(_gl, texture.Id, "texture0", currentMaterialComponent.ShaderProgram, TextureUnit.Texture0);
+
+					currentMaterialComponent.ShaderProgram.UseProgram();
+
+					UniformHelper.TryAddUniform(_gl, currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseColor,
+						"Color",
+						currentMaterialComponent.ShaderProgram);
+				}
+
+				//Get all vertices from model.
+				if (sceneObject.Components.TryGetValue(ModelObjectComponent, out _modelObjectComponent))
+				{
+					//Get model from scene object.
+					var currentModelComponent = (IModelComponent)_modelObjectComponent;
+
+					_gl.BindVertexArray((uint)currentModelComponent.Model.VertexArrayObjectId);
+					_gl.BindBuffer(GLEnum.ElementArrayBuffer, (uint)currentModelComponent.Model.ElementBufferId);
+
+
+					Matrix4x4 modelMatrix = currentModelComponent.Model.Meshes.FirstOrDefault().Transform.ModelMatrix;
+					Matrix4x4 proj = _projection;
+					Matrix4x4 view = _view;
+					_gl.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("model"), 1, false, (float*) &modelMatrix);
+					_gl.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("projection"), 1, false, (float*) &proj);
+					_gl.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("view"), 1, false, (float*) &view);
+
+					// Bind the VAO
+					_gl.BindVertexArray((uint)currentModelComponent.Model.VertexArrayObjectId);
+
+					_gl.DrawElements(GLEnum.Triangles, (uint)currentModelComponent.GetIndexesOfModel().Length, DrawElementsType.UnsignedInt, 0);
+				}
+			}
             //Clear the color channel.
             
 /*
@@ -293,7 +348,7 @@ public class Renderer: IRenderer
 
 	public void SetContext<T>(T context)
 	{
-		_gl = GL.GetApi(context as IGLContextSource);
+		throw new NotImplementedException();
 	}
 
 	public void SetViewPort(int width, int height)
