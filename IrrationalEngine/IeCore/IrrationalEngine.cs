@@ -3,7 +3,6 @@ using IeCore.AssetImporters;
 using IeCore.AssetManagers;
 using IeCore.DefaultImplementations.Primitives.Factory;
 using IeCore.DefaultImplementations.Scene;
-using IeCore.DefaultImplementations.SceneObjectComponents;
 using IeCore.DefaultImplementations.SceneObjects;
 using IeCore.Window;
 using IeCoreInterfaces;
@@ -12,14 +11,18 @@ using IeCoreInterfaces.Assets;
 using IeCoreInterfaces.EngineWindow;
 using IeCoreInterfaces.Primitives;
 using IeCoreInterfaces.Rendering;
-using IeCoreInterfaces.SceneObjectComponents;
-using IeCoreInterfaces.Shaders;
-using IeCoreOpengl.Helpers;
-using IeCoreOpengl.Rendering;
-using IeCoreOpengl.Shaders;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using IeCore.DefaultImplementations.SceneObjectComponents;
+using IeCoreInterfaces.SceneObjectComponents;
+using IeCoreInterfaces.Shaders;
+using IeCoreOpenTKOpengl.Helpers;
+using IeCoreOpenTKOpengl.Rendering;
+using IeCoreOpenTKOpengl.Shaders;
+using IeCoreSilkNetOpenGl.Rendering;
+using IeCoreSilkNetOpenGl.Shaders;
+using UniformHelper = IeCoreSilkNetOpenGl.Helpers.UniformHelper;
 
 namespace IeCore
 {
@@ -31,8 +34,8 @@ namespace IeCore
 		{
 			//TODO: consider change it to builder or smth else
 			RegisterServices();
-			IWindow window = _serviceProvider.GetService<IWindowFactory>()?.Create();
-			window?.Run();
+			IWindow window = _serviceProvider.GetService<IWindowFactory>().CreateOpentkWindow();
+			window.Run();
 			DisposeServices();
 		}
 
@@ -52,8 +55,8 @@ namespace IeCore
 			});
 
 			collection.AddScoped<ICamera, Camera>();
-			collection.AddScoped<IUniformHelper, UniformHelper>();
-			collection.AddScoped<IFbxImporter, FbxImporter>();
+			collection.AddScoped<IUniformHelper, IeCoreOpenTKOpengl.Helpers.UniformHelper>();
+			collection.AddScoped<IModelImporter, ModelImporter>();
 			collection.AddScoped<ITextureImporter, TextureImporter>();
 			collection.AddScoped<IAssetManager, AssetManager>();
 			collection.AddScoped<IRenderer, OpenGlRenderer>();
@@ -61,7 +64,7 @@ namespace IeCore
 			collection.AddScoped<IScene, DefaultScene>();
 			collection.AddScoped<ISceneManager, SceneManager>();
 			collection.AddScoped<IWindowFactory, WindowFactory>();
-			collection.AddScoped<IShaderProgram, ShaderProgram>();
+			collection.AddScoped<IShaderProgram, OpenTkShaderProgram>();
 			collection.AddScoped<IMaterialComponent, MaterialComponent>();
 
 			_serviceProvider = collection.BuildServiceProvider();

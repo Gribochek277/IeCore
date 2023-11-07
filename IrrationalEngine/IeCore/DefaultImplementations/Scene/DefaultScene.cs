@@ -10,6 +10,7 @@ using IeCoreInterfaces.Shaders;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 
 namespace IeCore.DefaultImplementations.Scene
@@ -42,7 +43,7 @@ namespace IeCore.DefaultImplementations.Scene
 			//TODO: Consider of creating stage for generating and registering all default objects.
 			_assetManager.Register(DefaultTexture.CreateDefaultCheckerboard(2048, 512));
 			Console.WriteLine(Environment.CurrentDirectory);
-			_assetManager.RegisterFile("Resources\\FBX\\knight.fbx");
+			_assetManager.RegisterFile($"Resources{Path.DirectorySeparatorChar}Json{Path.DirectorySeparatorChar}knight.json");
 
 			var customSceneObject = new SceneObject { Name = "Knight" };
 
@@ -66,7 +67,7 @@ namespace IeCore.DefaultImplementations.Scene
 			MainCamera = new SceneObject();
 			MainCamera.AddComponent(new Camera());
 			_sceneObjects.Add(MainCamera);
-			for (var i = 0; i < 1; i++)
+			for (var i = 0; i < 3; i++)
 			{
 				//_sceneObjects.Add(_primitiveFactory.CreateCube());
 				_sceneObjects.Add(customSceneObject);
@@ -77,7 +78,7 @@ namespace IeCore.DefaultImplementations.Scene
 			foreach (ISceneObject sceneObject in _sceneObjects)
 			{
 				sceneObject.OnLoad();
-				sceneObject.Scale *= new Vector3(0.3f, 0.3f, 0.3f);
+				sceneObject.Scale *= new Vector3(0.5f, 0.5f, 0.5f);
 			}
 		}
 

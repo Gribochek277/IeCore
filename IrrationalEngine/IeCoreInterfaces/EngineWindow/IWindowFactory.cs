@@ -9,6 +9,11 @@
 		/// Creates new instance of window.
 		/// </summary>
 		/// <returns></returns>
-		IWindow Create();
+		IWindow CreateSilkNetWindow();
+		/// <summary>
+		/// Creates new instance of window.
+		/// </summary>
+		/// <returns></returns>
+		IWindow CreateOpentkWindow();
 	}
 }

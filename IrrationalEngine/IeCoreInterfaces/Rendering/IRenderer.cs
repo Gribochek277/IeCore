@@ -9,6 +9,12 @@ namespace IeCoreInterfaces.Rendering
 	public interface IRenderer : IRenderable, IResizable, IUpdatable, ILoadable
 	{
 		/// <summary>
+		/// Set all required context for renderer.
+		/// </summary>
+		/// <param name="context"></param>
+		/// <typeparam name="T"></typeparam>
+		void SetContext<T>(T context);
+		/// <summary>
 		/// Sets size of view port.
 		/// </summary>
 		/// <param name="width"></param>
