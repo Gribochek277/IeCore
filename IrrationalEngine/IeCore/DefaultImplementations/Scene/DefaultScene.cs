@@ -57,9 +57,6 @@ namespace IeCore.DefaultImplementations.Scene
 			material.DiffuseTexture = _assetManager.Retrieve<Texture>("CheckerboardTexture_resolution_2048x2048");
 			materialComponent.Materials.Add(material.Name, material);
 
-			var animationComponent = new AnimationComponent();
-
-			//customSceneObject.AddComponent(animationComponent);
 			customSceneObject.AddComponent(modelSceneObject);
 			customSceneObject.AddComponent(materialComponent);
 
@@ -99,13 +96,14 @@ namespace IeCore.DefaultImplementations.Scene
 
 		public void OnUpdated()
 		{
+			/*
 			foreach (ISceneObject sceneobject in SceneObjects)
 			{
 				sceneobject.Rotation +=
 					new Vector3(0.0003f,
 					0.00003f,
 					0.000003f);
-			}
+			}*/
 		}
 	}
 }

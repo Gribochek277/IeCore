@@ -1,5 +1,4 @@
-﻿using IeCoreEntities.Animation;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 
 namespace IeCoreEntities.Model
@@ -42,14 +41,6 @@ namespace IeCoreEntities.Model
 		/// Contains collection of meshes which belongs to this model.
 		/// </summary>
 		public List<Mesh> Meshes { get; private set; } = new List<Mesh>();
-		/// <summary>
-		/// Contains collection of poses which belongs to this model.
-		/// </summary>
-		public List<AnimationKey> Poses { get; private set; } = new List<AnimationKey>();
-		/// <summary>
-		/// Contains collection of animations which belong to this model.
-		/// </summary>
-		public List<Animation.Animation> Animations { get; private set; } = new List<Animation.Animation>();
 
 		/// <summary>
 		/// Ctor. <inheritdoc cref="Asset"/>

@@ -49,7 +49,7 @@ namespace IeCore
 			{
 				loggerBuilder.ClearProviders();
 #if DEBUG
-				loggerBuilder.AddConsole();
+				loggerBuilder.AddConsole();	
 				loggerBuilder.SetMinimumLevel(LogLevel.Debug);
 #endif
 			});

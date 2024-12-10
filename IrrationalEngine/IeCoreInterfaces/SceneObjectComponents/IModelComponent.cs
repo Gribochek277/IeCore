@@ -26,12 +26,6 @@ namespace IeCoreInterfaces.SceneObjectComponents
 		float[] GetVboTextureDataOfModel();
 
 		/// <summary>
-		/// Return Texture Vertex Buffer Object data from model.
-		/// </summary>
-		/// <returns></returns>
-		Matrix4x4[] GetVboBonesDataOfModel();
-
-		/// <summary>
 		/// Return Indices data from model.
 		/// </summary>
 		/// <returns></returns>

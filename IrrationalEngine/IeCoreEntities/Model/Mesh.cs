@@ -1,5 +1,4 @@
-﻿using IeCoreEntities.Animation;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace IeCoreEntities.Model
 {
@@ -46,11 +45,6 @@ namespace IeCoreEntities.Model
 		/// All transformation related data of mesh.
 		/// </summary>
 		public Transform Transform { get; set; } = new Transform();
-
-		/// <summary>
-		/// Skeleton which belong to the model.
-		/// </summary>
-		public Skeleton Skeleton { get; set; } = new Skeleton();
 
 		/// <summary>
 		/// <inheritdoc cref="object.ToString()"/>

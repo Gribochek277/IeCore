@@ -9,8 +9,8 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 {
 	public class MaterialComponent : IMaterialComponent
 	{
-		private const string FragmentShaderName = "DefaultFragmentShader";
-		private const string VertexShaderName = "DefaultVertexShader";
+		private const string FragmentShaderName = "DefaultDiffuseShader";
+		private const string VertexShaderName = "DefaultDiffuseShader";
 		public Dictionary<string, Material> Materials { get; } = new Dictionary<string, Material>();
 
 		public IShaderProgram ShaderProgram { get; }

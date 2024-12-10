@@ -1,5 +1,4 @@
-﻿using IeCoreEntities.Animation;
-using IeCoreEntities.Model;
+﻿using IeCoreEntities.Model;
 using IeCoreInterfaces.SceneObjectComponents;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +16,6 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 		private uint[] _indexes;
 		private float[] _vboTextureData;
 		private float[] _vboPositionData;
-		private Matrix4x4[] _vboBonesDataOfModel;
 
 		public ModelComponent(Model model)
 		{
@@ -69,23 +67,6 @@ namespace IeCore.DefaultImplementations.SceneObjectComponents
 			_vboTextureData = textureData.ToArray();
 
 			return _vboTextureData;
-		}
-
-		public Matrix4x4[] GetVboBonesDataOfModel() //TODO: Add caching;
-		{
-			if (_vboBonesDataOfModel != null) return _vboBonesDataOfModel;
-
-			var bonesData = new List<Matrix4x4>();
-			foreach (Mesh mesh in Model.Meshes)
-			{
-				foreach (Bone bone in mesh.Skeleton.Bones)
-				{
-					bonesData.Add(bone.OffsetMatrix);
-				}
-			}
-
-			_vboBonesDataOfModel = bonesData.ToArray();
-			return _vboBonesDataOfModel;
 		}
 
 		public uint[] GetIndexesOfModel() //TODO: Add caching;

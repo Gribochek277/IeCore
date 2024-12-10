@@ -343,22 +343,6 @@
             <param name="width"></param>
             <param name="height"></param>
         </member>
-        <member name="T:IeCoreInterfaces.SceneObjectComponents.IAnimationComponent">
-            <summary>
-            Represents scene object component which responsible for animation.
-            </summary>
-        </member>
-        <member name="M:IeCoreInterfaces.SceneObjectComponents.IAnimationComponent.ApplyPose(System.Int32)">
-            <summary>
-            Apply pose number
-            </summary>
-            <param name="posNum"></param>
-        </member>
-        <member name="P:IeCoreInterfaces.SceneObjectComponents.IAnimationComponent.ModelComponent">
-            <summary>
-            <see cref="T:IeCoreInterfaces.SceneObjectComponents.IModelComponent"/> Is a dependency for IAnimatioComponent
-            </summary>
-        </member>
         <member name="T:IeCoreInterfaces.SceneObjectComponents.IMaterialComponent">
             <summary>
             Represents scene object component which responsible for materials.
@@ -391,12 +375,6 @@
             <returns></returns>
         </member>
         <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVboTextureDataOfModel">
-            <summary>
-            Return Texture Vertex Buffer Object data from model.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:IeCoreInterfaces.SceneObjectComponents.IModelComponent.GetVboBonesDataOfModel">
             <summary>
             Return Texture Vertex Buffer Object data from model.
             </summary>

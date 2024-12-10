@@ -40,20 +40,6 @@ namespace IeCore.DefaultImplementations.SceneObjects
 
 		public void OnLoad()
 		{
-			if (Components.TryGetValue("AnimationSceneObjectComponent", out ISceneObjectComponent retrivedAnimationComponent))
-			{
-				if (Components.TryGetValue("ModelSceneObjectComponent", out ISceneObjectComponent modelComponent))
-				{
-					IAnimationComponent animationComponent = (IAnimationComponent)retrivedAnimationComponent;
-					animationComponent.ModelComponent = (IModelComponent)modelComponent;
-				}
-				else
-				{
-					throw new ArgumentException("IAnimationComponent requires IModelComponent");
-				}
-			}
-
-
 			foreach (var component in Components)
 				component.Value.OnLoad();
 		}

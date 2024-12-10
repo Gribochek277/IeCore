@@ -20,11 +20,9 @@ namespace IeCoreOpenTKOpengl.Rendering
 	{
 		private const string ModelObjectComponent = "ModelSceneObjectComponent";
 		private const string MaterialObjectComponent = "MaterialSceneObjectComponent";
-		private const string AnimationSceneObjectComponent = "AnimationSceneObjectComponent";
 		private readonly ISceneManager _sceneManager;
 		private ISceneObjectComponent _materialObjectComponent;
 		private ISceneObjectComponent _modelObjectComponent;
-		private ISceneObjectComponent _animationObjectComponent;
 		private readonly IUniformHelper _uniformHelper;
 		private readonly ILogger<OpenGlRenderer> _logger;
 		private readonly IAssetManager _assetManager;
@@ -125,52 +123,6 @@ namespace IeCoreOpenTKOpengl.Rendering
 							GL.BufferData(BufferTarget.ArrayBuffer, vboTextureData.Length * sizeof(float), vboTextureData, BufferUsageHint.StaticDraw);
 							GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("aTexCoord"), 2, VertexAttribPointerType.Float, false, 0, 0);
 						}
-						if (sceneObject.Components.TryGetValue(AnimationSceneObjectComponent, out _animationObjectComponent))
-						{
-							IAnimationComponent currentAnimationComponent = (IAnimationComponent)_animationObjectComponent;
-							List<Tuple<int, float>>[] weights = currentModelComponent.Model.Meshes[0].Skeleton.Bones.Select(x => x.VertexWeights).ToArray();
-							//Flatten weights according to indices.
-							List<float> flattenedWeights = new List<float>();
-							List<int> boneIds = new List<int>();
-							
-							for (int i = 0; i < indexes.Length; i++)
-							{
-								for (int j = 0; j < currentModelComponent.Model.Meshes[0].Skeleton.Bones.Count; j++)
-								{
-									foreach (Tuple<int, float> vertexWeight in currentModelComponent.Model.Meshes[0].Skeleton.Bones[j].VertexWeights)
-									{
-										if (vertexWeight.Item1 == indexes[i])
-										{
-											flattenedWeights.Add(vertexWeight.Item2);
-											boneIds.Add(j);
-										}
-									}
-								}
-								//_logger.LogDebug(i.ToString() + "-" + weights.SelectMany(x => x).Select(x => x.Item1).Where(y => y == indexes[i]).ToArray().Length.ToString());
-							}
-
-							Matrix4[] offsetmatrix = currentModelComponent.Model.Meshes[0].Skeleton.Bones.Select(x => x.OffsetMatrix.ConvertToOpenTkMatrix4()).ToArray();
-							_uniformHelper.TryAddUniform(offsetmatrix, "Bones", currentMaterialComponent.ShaderProgram);
-
-							//Load bones ids to GPU
-							var flattenedWeightsArray = flattenedWeights.ToArray();
-							GL.BindBuffer(BufferTarget.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("Weights"));
-							GL.BufferData(BufferTarget.ArrayBuffer, flattenedWeightsArray.Length * sizeof(float), flattenedWeightsArray, BufferUsageHint.StaticDraw);
-
-							GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("Weights"),
-								4, VertexAttribPointerType.Float, false, 0, 0);
-
-							//Load bones ids to GPU
-							var boneIdsArray = boneIds.ToArray();
-
-							GL.BindBuffer(BufferTarget.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("BoneIDs"));
-							GL.BufferData(BufferTarget.ArrayBuffer, boneIdsArray.Length * sizeof(uint), boneIdsArray, BufferUsageHint.StaticDraw);
-
-							GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("BoneIDs"),
-								4, VertexAttribPointerType.UnsignedInt, false, 0, 0);
-						}
-
-
 					}
 				}
 
@@ -208,12 +160,16 @@ namespace IeCoreOpenTKOpengl.Rendering
 						currentMaterialComponent.ShaderProgram);
 				}
 
+				
+
 				//Get all vertices from model.
 				if (sceneObject.Components.TryGetValue(ModelObjectComponent, out _modelObjectComponent))
 				{
+					
 					//Get model from scene object.
 					var currentModelComponent = (IModelComponent)_modelObjectComponent;
-
+					
+					
 					GL.BindVertexArray(currentModelComponent.Model.VertexArrayObjectId);
 					GL.BindBuffer(BufferTarget.ElementArrayBuffer, currentModelComponent.Model.ElementBufferId);
 

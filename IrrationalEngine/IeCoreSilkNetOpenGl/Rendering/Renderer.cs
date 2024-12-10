@@ -27,11 +27,9 @@ public class Renderer: IRenderer
 	
 	private const string ModelObjectComponent = "ModelSceneObjectComponent";
 	private const string MaterialObjectComponent = "MaterialSceneObjectComponent";
-	private const string AnimationSceneObjectComponent = "AnimationSceneObjectComponent";
 	private readonly ISceneManager _sceneManager;
 	private ISceneObjectComponent _materialObjectComponent;
 	private ISceneObjectComponent _modelObjectComponent;
-	private ISceneObjectComponent _animationObjectComponent;
 	private readonly IAssetManager _assetManager;
 	private readonly ILogger<Renderer> _logger;
 	

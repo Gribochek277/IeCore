@@ -31,8 +31,8 @@ namespace IeCoreOpenTKOpengl.EngineWindow
 		public OpenGlWindow(int resX, int resY, IRenderer renderer, ISceneManager sceneManager, ILogger<OpenGlWindow> logger)
 		{
 			GameWindowSettings gameWindowSettings = GameWindowSettings.Default;
-			gameWindowSettings.IsMultiThreaded = false; //TODO: Investigate this option.
-			gameWindowSettings.RenderFrequency = FrameRate;
+			//gameWindowSettings.IsMultiThreaded = false; //TODO: Investigate this option.
+			//gameWindowSettings.RenderFrequency = FrameRate;
 			gameWindowSettings.UpdateFrequency = UpdateRate;
 			NativeWindowSettings nativeWindowSettings = NativeWindowSettings.Default;
 			nativeWindowSettings.APIVersion = new Version(3, 2);

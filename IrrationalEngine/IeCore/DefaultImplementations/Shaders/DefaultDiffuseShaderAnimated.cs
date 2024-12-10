@@ -51,17 +51,16 @@
 
                                                void main()
                                                {
-                                                   vec4 newPosition = vec4(0.0);
-                                                   int index = 0;
-                                                   
-                                                    for(int i=0; i<4; i++)
-                                                    {		
-                                                      index = int(BoneIDs[i]);	
-                                                      newPosition += (Bones[index] * vec4(aPosition, 1.0)) * Weights[i];		
-                                                    }
-         
-                                                   texCoord = aTexCoord;
-                                                   gl_Position = projection * view * model  * newPosition;//vec4(aPosition, 1.0);
+                                                   mat4 skinMatrix = 
+        Weights.x * Bones[BoneIDs.x] +
+        Weights.y * Bones[BoneIDs.y] +
+        Weights.z * Bones[BoneIDs.z] +
+        Weights.w * Bones[BoneIDs.w];
+
+    vec4 skinnedPosition = skinMatrix * vec4(aPosition, 1.0);
+
+    gl_Position = projection * view * model * skinnedPosition;
+    texCoord = aTexCoord;
                                                }";
 	}
 }
