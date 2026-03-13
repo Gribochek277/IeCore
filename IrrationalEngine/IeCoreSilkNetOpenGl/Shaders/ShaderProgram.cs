@@ -108,7 +108,7 @@ public class ShaderProgram: IShaderProgram
 
 	public void UseProgram()
 	{
-		//throw new NotImplementedException();
+		_gl.UseProgram((uint)ShaderProgramId);
 	}
 
 	public void GenBuffers()
@@ -156,8 +156,12 @@ public class ShaderProgram: IShaderProgram
 
 	public int GetUniformAddress(string name)
 	{
-		_uniforms.TryGetValue(name, out UniformInfo result);
-		return result?.Address ?? -1;
+		if (_uniforms.TryGetValue(name, out UniformInfo result))
+			return result.Address;
+		// OpenGL reports array uniforms as "name[0]"; try that as fallback.
+		if (_uniforms.TryGetValue(name + "[0]", out result))
+			return result.Address;
+		return -1;
 	}
 
 	public uint GetBuffer(string name)

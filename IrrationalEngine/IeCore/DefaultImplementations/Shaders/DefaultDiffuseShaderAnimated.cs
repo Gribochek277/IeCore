@@ -51,17 +51,25 @@
 
                                                void main()
                                                {
-                                                   vec4 newPosition = vec4(0.0);
-                                                   int index = 0;
-                                                   
-                                                    for(int i=0; i<4; i++)
-                                                    {		
-                                                      index = int(BoneIDs[i]);	
-                                                      newPosition += (Bones[index] * vec4(aPosition, 1.0)) * Weights[i];		
-                                                    }
-         
+                                                   float totalWeight = Weights[0] + Weights[1] + Weights[2] + Weights[3];
+                                                   vec4 newPosition;
+
+                                                   if(totalWeight > 0.0)
+                                                   {
+                                                       newPosition = vec4(0.0);
+                                                       for(int i=0; i<4; i++)
+                                                       {
+                                                           int index = int(BoneIDs[i]);
+                                                           newPosition += (Bones[index] * vec4(aPosition, 1.0)) * Weights[i];
+                                                       }
+                                                   }
+                                                   else
+                                                   {
+                                                       newPosition = vec4(aPosition, 1.0);
+                                                   }
+
                                                    texCoord = aTexCoord;
-                                                   gl_Position = projection * view * model  * newPosition;//vec4(aPosition, 1.0);
+                                                   gl_Position = projection * view * model * newPosition;
                                                }";
 	}
 }

@@ -28,8 +28,13 @@ namespace IeCoreEntities.Animation
 		public List<Tuple<int, float>> VertexWeights { get; set; } = new List<Tuple<int, float>>();
 
 		/// <summary>
-		/// Offset matrix
+		/// Offset matrix (transforms from model space to bone space).
 		/// </summary>
 		public Matrix4x4 OffsetMatrix { get; set; }
+
+		/// <summary>
+		/// Rest-pose local transform of this bone relative to its parent.
+		/// </summary>
+		public Matrix4x4 LocalTransform { get; set; } = Matrix4x4.Identity;
 	}
 }

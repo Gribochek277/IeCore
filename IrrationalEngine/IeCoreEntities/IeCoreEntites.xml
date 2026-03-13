@@ -86,7 +86,12 @@
         </member>
         <member name="P:IeCoreEntities.Animation.Bone.OffsetMatrix">
             <summary>
-            Offset matrix
+            Offset matrix (transforms from model space to bone space).
+            </summary>
+        </member>
+        <member name="P:IeCoreEntities.Animation.Bone.LocalTransform">
+            <summary>
+            Rest-pose local transform of this bone relative to its parent.
             </summary>
         </member>
         <member name="T:IeCoreEntities.Animation.Skeleton">
@@ -97,6 +102,12 @@
         <member name="P:IeCoreEntities.Animation.Skeleton.Bones">
             <summary>
             List of bones of this mesh.
+            </summary>
+        </member>
+        <member name="P:IeCoreEntities.Animation.Skeleton.GlobalInverseTransform">
+            <summary>
+            Inverse of the scene root node's global transform.
+            Required to map from world space back into the mesh's local coordinate system.
             </summary>
         </member>
         <member name="T:IeCoreEntities.Asset">

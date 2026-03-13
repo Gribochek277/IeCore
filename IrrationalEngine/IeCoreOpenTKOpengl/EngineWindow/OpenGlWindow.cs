@@ -79,6 +79,7 @@ namespace IeCoreOpenTKOpengl.EngineWindow
 		{
 			_gameWindow.MakeCurrent();
 			_sceneManager.OnLoad();
+			_renderer.SetContext(this as IWindow);
 			_renderer.OnLoad();
 			_renderer.SetViewPort(_gameWindow.ClientSize.X, _gameWindow.ClientSize.Y);
 			_gameWindow.Title = _sceneManager.Scene.GetType().Name;

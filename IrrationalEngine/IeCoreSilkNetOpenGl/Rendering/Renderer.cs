@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Numerics;
 using System.Text;
 using IeCoreInterfaces;
@@ -10,6 +11,7 @@ using IeUtils;
 using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
+using IEngineWindow = IeCoreInterfaces.EngineWindow.IWindow;
 
 
 namespace IeCoreSilkNetOpenGl.Rendering;
@@ -34,6 +36,7 @@ public class Renderer: IRenderer
 	private ISceneObjectComponent _animationObjectComponent;
 	private readonly IAssetManager _assetManager;
 	private readonly ILogger<Renderer> _logger;
+	private IEngineWindow _engineWindow;
 	
 	private Matrix4x4 _projection;
 	private Matrix4x4 _view;
@@ -193,6 +196,32 @@ public class Renderer: IRenderer
 							2, VertexAttribPointerType.Float, false, 0, null);
 					}
 					
+					if (sceneObject.Components.TryGetValue(AnimationSceneObjectComponent, out _animationObjectComponent))
+					{
+						// Upload per-vertex bone weights
+						float[] boneWeights = currentModelComponent.GetBoneWeightsPerVertex();
+						_gl.BindBuffer(GLEnum.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("Weights"));
+						fixed (float* w = &boneWeights[0])
+						{
+							_gl.BufferData(GLEnum.ArrayBuffer, (nuint)(boneWeights.Length * sizeof(float)), w, GLEnum.StaticDraw);
+						}
+						_gl.VertexAttribPointer((uint)currentMaterialComponent.ShaderProgram.GetAttributeAddress("Weights"),
+							4, VertexAttribPointerType.Float, false, 0, null);
+
+						// Upload per-vertex bone IDs (integer attribute)
+						int[] boneIds = currentModelComponent.GetBoneIdsPerVertex();
+						_gl.BindBuffer(GLEnum.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("BoneIDs"));
+						fixed (int* b = &boneIds[0])
+						{
+							_gl.BufferData(GLEnum.ArrayBuffer, (nuint)(boneIds.Length * sizeof(int)), b, GLEnum.StaticDraw);
+						}
+						_gl.VertexAttribIPointer((uint)currentMaterialComponent.ShaderProgram.GetAttributeAddress("BoneIDs"),
+							4, VertexAttribIType.Int, 0, null);
+					}
+
+					// Enable all vertex attrib arrays while VAO is bound
+					currentMaterialComponent.ShaderProgram.EnableVertexAttribArrays();
+
 				}
 					_projection = Matrix4x4.CreatePerspectiveFieldOfView(1.3f, _width / (float)_height, 0.1f, 120.0f);
 				}
@@ -268,8 +297,8 @@ public class Renderer: IRenderer
 
         public unsafe void OnRender() //Method needs to be unsafe due to draw elements.
         {
-	        _gl.Clear((uint) ClearBufferMask.ColorBufferBit);
-	      //  _gl.CullFace(TriangleFace.Back);
+	        _gl.Clear((uint)(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit));
+	        _gl.CullFace(TriangleFace.Back);
 	        
 	        foreach (ISceneObject sceneObject in _sceneManager.Scene.SceneObjects.ToList())
 			{
@@ -283,12 +312,11 @@ public class Renderer: IRenderer
 				{
 					//Get material from scene object.
 					currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
-					currentMaterialComponent.ShaderProgram.EnableVertexAttribArrays();
 					IeCoreEntities.Materials.Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
 
-					UniformHelper.TryAddUniformTexture2D(_gl, texture.Id, "texture0", currentMaterialComponent.ShaderProgram, TextureUnit.Texture0);
-
 					currentMaterialComponent.ShaderProgram.UseProgram();
+
+					UniformHelper.TryAddUniformTexture2D(_gl, texture.Id, "texture0", currentMaterialComponent.ShaderProgram, TextureUnit.Texture0);
 
 					UniformHelper.TryAddUniform(_gl, currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseColor,
 						"Color",
@@ -311,6 +339,20 @@ public class Renderer: IRenderer
 					_gl.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("model"), 1, false, (float*) &modelMatrix);
 					_gl.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("projection"), 1, false, (float*) &proj);
 					_gl.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("view"), 1, false, (float*) &view);
+
+					// Update bone matrices per frame if animated
+					if (sceneObject.Components.TryGetValue(AnimationSceneObjectComponent, out _animationObjectComponent))
+					{
+						var animComponent = (IAnimationComponent)_animationObjectComponent;
+						double deltaTime = _engineWindow?.RenderFrameDeltaTime ?? 0.016;
+						animComponent.Update(deltaTime);
+
+						Matrix4x4[] boneMatrices = animComponent.GetFinalBoneMatrices();
+						if (boneMatrices != null && boneMatrices.Length > 0)
+						{
+							UniformHelper.TryAddUniform(_gl, boneMatrices, "Bones", currentMaterialComponent.ShaderProgram);
+						}
+					}
 
 					// Bind the VAO
 					_gl.BindVertexArray((uint)currentModelComponent.Model.VertexArrayObjectId);
@@ -350,11 +392,15 @@ public class Renderer: IRenderer
 
 	public void SetContext<T>(T context)
 	{
-		throw new NotImplementedException();
+		if (context is IEngineWindow engineWindow)
+			_engineWindow = engineWindow;
 	}
 
 	public void SetViewPort(int width, int height)
 	{
-		//throw new NotImplementedException();
+		_width = width;
+		_height = height;
+		_gl?.Viewport(0, 0, (uint)width, (uint)height);
+		_projection = Matrix4x4.CreatePerspectiveFieldOfView(1.3f, width / (float)height, 0.1f, 120.0f);
 	}
 }

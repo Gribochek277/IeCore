@@ -1,5 +1,6 @@
 ﻿using IeCoreInterfaces;
 using IeCoreInterfaces.EngineWindow;
+using IeCoreInterfaces.Input;
 using IeCoreInterfaces.Rendering;
 using IeCoreOpenTKOpengl.EngineWindow;
 using IeCoreSilkNetOpenGl.EngineWindow;
@@ -13,18 +14,20 @@ namespace IeCore.Window
 		private IRenderer _renderer;
 		private ILogger<SilkNetOpenGlWindow> _logger;
 		private ILogger<OpenGlWindow> _logger2;
+		private IInputService _inputService;
 
 		public WindowFactory(IRenderer renderer, ISceneManager sceneManager, ILogger<SilkNetOpenGlWindow> logger,
-			ILogger<OpenGlWindow> logger2)
+			ILogger<OpenGlWindow> logger2, IInputService inputService)
 		{
 			_sceneManager = sceneManager;
 			_renderer = renderer;
 			_logger = logger;
 			_logger2 = logger2;
+			_inputService = inputService;
 		}
 		public IWindow CreateSilkNetWindow()
 		{
-			return new SilkNetOpenGlWindow(600, 600, _renderer, _sceneManager, _logger);
+			return new SilkNetOpenGlWindow(600, 600, _renderer, _sceneManager, _logger, _inputService);
 		}
 
 		public IWindow CreateOpentkWindow()

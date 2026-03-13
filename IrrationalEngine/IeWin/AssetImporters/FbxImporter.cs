@@ -93,8 +93,12 @@ namespace IeWin.AssetImporters
 					{
 						Node? node = SearchNodeByName(loadedAssimpScene.RootNode, dest.Name);
 
-						if (node != null && node.Parent != null)
-							dest.ParentName = node.Parent.Name;
+						if (node != null)
+						{
+							if (node.Parent != null)
+								dest.ParentName = node.Parent.Name;
+							dest.LocalTransform = node.Transform.ToNumericMatrix();
+						}
 					});
 
 				}));
@@ -107,6 +111,13 @@ namespace IeWin.AssetImporters
 					bone.ParentName = string.Empty;
 			}
 
+			// Store inverse of the scene root transform so AnimationComponent can apply
+			// the standard GlobalInverseTransform * globalBoneTransform * offsetMatrix formula.
+			Assimp.Matrix4x4 rootTransformAssimp = loadedAssimpScene.RootNode.Transform;
+			System.Numerics.Matrix4x4 rootTransform = rootTransformAssimp.ToNumericMatrix();
+			if (!System.Numerics.Matrix4x4.Invert(rootTransform, out System.Numerics.Matrix4x4 invRoot))
+				invRoot = System.Numerics.Matrix4x4.Identity;
+			destination.Skeleton.GlobalInverseTransform = invRoot;
 		}
 
 		private static Node? SearchNodeByName(Node node, string nodeName)
@@ -130,7 +141,7 @@ namespace IeWin.AssetImporters
 
 			var uniqueTimeFrames = nodeAnimationChannels.Select(nodeAnimationChannel => nodeAnimationChannel.PositionKeys.Select(key => key.Time)
 					.Union(nodeAnimationChannel.ScalingKeys.Select(vectorKey => vectorKey.Time))
-					.Union(nodeAnimationChannel.RotationKeys.Select(quaternionKey => quaternionKey.Time))).SelectMany(x => x).Distinct().ToList();
+					.Union(nodeAnimationChannel.RotationKeys.Select(quaternionKey => quaternionKey.Time))).SelectMany(x => x).Distinct().OrderBy(t => t).ToList();
 
 			//Prepare list of poses
 			foreach (double timeFrame in uniqueTimeFrames)

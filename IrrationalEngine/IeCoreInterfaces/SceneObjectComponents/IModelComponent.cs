@@ -37,5 +37,17 @@ namespace IeCoreInterfaces.SceneObjectComponents
 		/// <returns></returns>
 		uint[] GetIndexesOfModel();
 
+		/// <summary>
+		/// Return per-vertex bone indices (4 ints per vertex, flat array).
+		/// </summary>
+		/// <returns></returns>
+		int[] GetBoneIdsPerVertex();
+
+		/// <summary>
+		/// Return per-vertex bone weights (4 floats per vertex, flat array).
+		/// </summary>
+		/// <returns></returns>
+		float[] GetBoneWeightsPerVertex();
+
 	}
 }

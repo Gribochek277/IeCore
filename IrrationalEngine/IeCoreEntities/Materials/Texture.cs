@@ -1,11 +1,13 @@
 ﻿using System.Drawing.Imaging;
 using System.Numerics;
+using System.Runtime.Versioning;
 
 namespace IeCoreEntities.Materials
 {
 	/// <summary>
 	/// Determines texture asset.
 	/// </summary>
+	[SupportedOSPlatform("windows")]
 	public class Texture : Asset
 	{
 		/// <summary>

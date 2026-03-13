@@ -1,6 +1,7 @@
 ﻿using IeCoreEntities.Materials;
 using IeCoreInterfaces;
 using IeCoreInterfaces.Assets;
+using IeCoreInterfaces.EngineWindow;
 using IeCoreInterfaces.Rendering;
 using IeCoreInterfaces.SceneObjectComponents;
 using IeCoreOpenTKOpengl.Extensions;
@@ -28,9 +29,11 @@ namespace IeCoreOpenTKOpengl.Rendering
 		private readonly IUniformHelper _uniformHelper;
 		private readonly ILogger<OpenGlRenderer> _logger;
 		private readonly IAssetManager _assetManager;
+		private IWindow _window;
 		private Matrix4 _projection;
 		private Matrix4 _view;
 		private ISceneObjectComponent _camera;
+		private readonly HashSet<IAnimationComponent> _updatedAnimations = new HashSet<IAnimationComponent>();
 
 		public OpenGlRenderer(ISceneManager sceneManager, IUniformHelper uniformHelper, IAssetManager assetManager, ILogger<OpenGlRenderer> logger)
 		{
@@ -93,15 +96,41 @@ namespace IeCoreOpenTKOpengl.Rendering
 						var currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
 						Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
 
+						int textureWidth = (int)texture.TextureSize.X;
+						int textureHeight = (int)texture.TextureSize.Y;
+						if (textureWidth <= 0 || textureHeight <= 0)
+						{
+							_logger.LogWarning("Texture {TextureName} has invalid size {Width}x{Height}; skipping upload.",
+								texture.Name,
+								textureWidth,
+								textureHeight);
+							continue;
+						}
+
+						int expectedTextureBytes = textureWidth * textureHeight * 4;
+						if (texture.Bytes == null || texture.Bytes.Length < expectedTextureBytes)
+						{
+							_logger.LogWarning("Texture {TextureName} bytes are invalid. Expected at least {ExpectedBytes} bytes but got {ActualBytes}; skipping upload.",
+								texture.Name,
+								expectedTextureBytes,
+								texture.Bytes?.Length ?? 0);
+							continue;
+						}
+
 						GL.BindTexture(TextureTarget.Texture2D, texture.Id);
+						GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
+						GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+						GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+						GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+						GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
 						GL.TexImage2D(TextureTarget.Texture2D,
 						   0,
-						   PixelInternalFormat.Srgb8,
-						   (int)texture.TextureSize.X,
-						   (int)texture.TextureSize.Y,
+						   PixelInternalFormat.Srgb8Alpha8,
+						   textureWidth,
+						   textureHeight,
 						   0,
-						   PixelFormat.Bgra,
+						   PixelFormat.Rgba,
 						   PixelType.UnsignedByte,
 						   texture.Bytes);
 
@@ -127,49 +156,23 @@ namespace IeCoreOpenTKOpengl.Rendering
 						}
 						if (sceneObject.Components.TryGetValue(AnimationSceneObjectComponent, out _animationObjectComponent))
 						{
-							IAnimationComponent currentAnimationComponent = (IAnimationComponent)_animationObjectComponent;
-							List<Tuple<int, float>>[] weights = currentModelComponent.Model.Meshes[0].Skeleton.Bones.Select(x => x.VertexWeights).ToArray();
-							//Flatten weights according to indices.
-							List<float> flattenedWeights = new List<float>();
-							List<int> boneIds = new List<int>();
-							
-							for (int i = 0; i < indexes.Length; i++)
-							{
-								for (int j = 0; j < currentModelComponent.Model.Meshes[0].Skeleton.Bones.Count; j++)
-								{
-									foreach (Tuple<int, float> vertexWeight in currentModelComponent.Model.Meshes[0].Skeleton.Bones[j].VertexWeights)
-									{
-										if (vertexWeight.Item1 == indexes[i])
-										{
-											flattenedWeights.Add(vertexWeight.Item2);
-											boneIds.Add(j);
-										}
-									}
-								}
-								//_logger.LogDebug(i.ToString() + "-" + weights.SelectMany(x => x).Select(x => x.Item1).Where(y => y == indexes[i]).ToArray().Length.ToString());
-							}
-
-							Matrix4[] offsetmatrix = currentModelComponent.Model.Meshes[0].Skeleton.Bones.Select(x => x.OffsetMatrix.ConvertToOpenTkMatrix4()).ToArray();
-							_uniformHelper.TryAddUniform(offsetmatrix, "Bones", currentMaterialComponent.ShaderProgram);
-
-							//Load bones ids to GPU
-							var flattenedWeightsArray = flattenedWeights.ToArray();
+							// Upload per-vertex bone weights
+							float[] boneWeights = currentModelComponent.GetBoneWeightsPerVertex();
 							GL.BindBuffer(BufferTarget.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("Weights"));
-							GL.BufferData(BufferTarget.ArrayBuffer, flattenedWeightsArray.Length * sizeof(float), flattenedWeightsArray, BufferUsageHint.StaticDraw);
-
+							GL.BufferData(BufferTarget.ArrayBuffer, boneWeights.Length * sizeof(float), boneWeights, BufferUsageHint.StaticDraw);
 							GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("Weights"),
 								4, VertexAttribPointerType.Float, false, 0, 0);
 
-							//Load bones ids to GPU
-							var boneIdsArray = boneIds.ToArray();
-
+							// Upload per-vertex bone IDs (integer attribute)
+							int[] boneIds = currentModelComponent.GetBoneIdsPerVertex();
 							GL.BindBuffer(BufferTarget.ArrayBuffer, currentMaterialComponent.ShaderProgram.GetBuffer("BoneIDs"));
-							GL.BufferData(BufferTarget.ArrayBuffer, boneIdsArray.Length * sizeof(uint), boneIdsArray, BufferUsageHint.StaticDraw);
-
-							GL.VertexAttribPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("BoneIDs"),
-								4, VertexAttribPointerType.UnsignedInt, false, 0, 0);
+							GL.BufferData(BufferTarget.ArrayBuffer, boneIds.Length * sizeof(int), boneIds, BufferUsageHint.StaticDraw);
+							GL.VertexAttribIPointer(currentMaterialComponent.ShaderProgram.GetAttributeAddress("BoneIDs"),
+								4, VertexAttribIntegerType.Int, 0, IntPtr.Zero);
 						}
 
+						// Enable all vertex attrib arrays while VAO is bound so state is stored in VAO
+						currentMaterialComponent.ShaderProgram.EnableVertexAttribArrays();
 
 					}
 				}
@@ -196,7 +199,6 @@ namespace IeCoreOpenTKOpengl.Rendering
 				{
 					//Get material from scene object.
 					currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
-					currentMaterialComponent.ShaderProgram.EnableVertexAttribArrays();
 					Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
 
 					_uniformHelper.TryAddUniformTexture2D(texture.Id, "texture0", currentMaterialComponent.ShaderProgram, TextureUnit.Texture0);
@@ -223,6 +225,26 @@ namespace IeCoreOpenTKOpengl.Rendering
 					GL.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("projection"), false, ref _projection);
 					GL.UniformMatrix4(currentMaterialComponent.ShaderProgram.GetUniformAddress("view"), false, ref _view);
 
+					// Update bone matrices per frame if animated
+					if (sceneObject.Components.TryGetValue(AnimationSceneObjectComponent, out _animationObjectComponent))
+					{
+						var animComponent = (IAnimationComponent)_animationObjectComponent;
+
+						// Only advance time once per frame even if the same object is drawn multiple times
+						if (_updatedAnimations.Add(animComponent))
+						{
+							double deltaTime = _window?.RenderFrameDeltaTime ?? 0.016;
+							animComponent.Update(deltaTime);
+						}
+
+						System.Numerics.Matrix4x4[] boneMatrices = animComponent.GetFinalBoneMatrices();
+						if (boneMatrices != null && boneMatrices.Length > 0)
+						{
+							Matrix4[] otkBones = boneMatrices.Select(m => m.ConvertToOpenTkMatrix4()).ToArray();
+							_uniformHelper.TryAddUniform(otkBones, "Bones", currentMaterialComponent.ShaderProgram);
+						}
+					}
+
 					// Bind the VAO
 					GL.BindVertexArray(currentModelComponent.Model.VertexArrayObjectId);
 
@@ -247,12 +269,13 @@ namespace IeCoreOpenTKOpengl.Rendering
 
 		public void OnUpdated()
 		{
-			//throw new NotImplementedException();
+			_updatedAnimations.Clear();
 		}
 
 		public void SetContext<T>(T context)
 		{
-			throw new NotImplementedException();
+			if (context is IWindow window)
+				_window = window;
 		}
 
 		public void SetViewPort(int width, int height)

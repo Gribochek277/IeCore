@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using IeCoreInterfaces;
+using IeCoreInterfaces.Input;
 using IeCoreInterfaces.Rendering;
 using Microsoft.Extensions.Logging;
+using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
@@ -18,6 +20,8 @@ public class SilkNetOpenGlWindow : IWindow
 	private readonly ISceneManager _sceneManager;
 	private readonly IRenderer _renderer;
 	private readonly ILogger<SilkNetOpenGlWindow> _logger;
+	private readonly IInputService? _inputService;
+	private IInputContext? _inputContext;
 
 	public event EventHandler? LoadingComplete;
 	public int UpdateRate { private get; set; } = 0;
@@ -32,14 +36,16 @@ public class SilkNetOpenGlWindow : IWindow
 	private readonly Stopwatch _updateStopwatch = new Stopwatch();
 
 	public SilkNetOpenGlWindow(int resX, int resY, IRenderer renderer, ISceneManager sceneManager,
-		ILogger<SilkNetOpenGlWindow> logger)
+		ILogger<SilkNetOpenGlWindow> logger, IInputService? inputService = null)
 	{
 		_renderer = renderer;
 		_sceneManager = sceneManager;
 		_logger = logger;
+		_inputService = inputService;
 		WindowOptions options = WindowOptions.Default;
 		options.Size = new Vector2D<int>(resX, resY);
 		options.VSync = true;
+		options.ShouldSwapAutomatically = false;
 
 
 		window = Window.Create(options);
@@ -66,16 +72,35 @@ public class SilkNetOpenGlWindow : IWindow
 	{
 		window.MakeCurrent();
 		_sceneManager.OnLoad();
+		_renderer.SetContext(this as IWindow);
 		_renderer.OnLoad();
 		_renderer.SetViewPort(window.Size.X, window.Size.Y);
 		window.Title = _sceneManager.Scene.GetType().Name;
 		LoadingComplete?.Invoke(this, null!);
+
+		if (_inputService != null)
+		{
+			_inputContext = window.CreateInput();
+			foreach (IKeyboard keyboard in _inputContext.Keyboards)
+				keyboard.KeyDown += OnKeyDown;
+		}
 	}
 
 	public void OnUnload()
 	{
+		if (_inputContext != null)
+		{
+			foreach (IKeyboard keyboard in _inputContext.Keyboards)
+				keyboard.KeyDown -= OnKeyDown;
+			_inputContext.Dispose();
+		}
 		RemoveListeners();
 		window.Dispose();
+	}
+
+	private void OnKeyDown(IKeyboard keyboard, Key key, int scanCode)
+	{
+		_inputService?.RaiseKeyPressed(key.ToString());
 	}
 
 	private void OnUpdated(double obj)
@@ -93,6 +118,7 @@ public class SilkNetOpenGlWindow : IWindow
 	
 	private void OnRender(double obj)
 	{
+		RenderFrameDeltaTime = obj;
 		OnRender();
 	}
 	public void OnRender()

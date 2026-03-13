@@ -89,6 +89,30 @@ namespace IeCoreSilkNetOpenGl.Helpers
 			return false;
 		}
 
+		public static unsafe bool TryAddUniform(GL gl, Matrix4x4[] value, string uniformName, IShaderProgram shader)
+		{
+			if (shader.GetUniformAddress(uniformName) != -1)
+			{
+				float[] floats = new float[value.Length * 16];
+				for (int i = 0; i < value.Length; i++)
+				{
+					Matrix4x4 m = value[i];
+					int offset = i * 16;
+					floats[offset + 0] = m.M11; floats[offset + 1] = m.M12; floats[offset + 2] = m.M13; floats[offset + 3] = m.M14;
+					floats[offset + 4] = m.M21; floats[offset + 5] = m.M22; floats[offset + 6] = m.M23; floats[offset + 7] = m.M24;
+					floats[offset + 8] = m.M31; floats[offset + 9] = m.M32; floats[offset + 10] = m.M33; floats[offset + 11] = m.M34;
+					floats[offset + 12] = m.M41; floats[offset + 13] = m.M42; floats[offset + 14] = m.M43; floats[offset + 15] = m.M44;
+				}
+				fixed (float* ptr = floats)
+				{
+					gl.UniformMatrix4(shader.GetUniformAddress(uniformName), (uint)value.Length, false, ptr);
+				}
+				return true;
+			}
+
+			return false;
+		}
+
 		public static bool TryAddUniformTexture2D(GL gl, int textureId, string uniformName, IShaderProgram shader, TextureUnit unit)
 		{
 			if (shader.GetUniformAddress(uniformName) != -1)

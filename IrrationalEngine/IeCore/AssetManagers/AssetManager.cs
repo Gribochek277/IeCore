@@ -43,6 +43,7 @@ namespace IeCore.AssetManagers
 
 		public void RegisterFile(string file)
 		{
+			file = ResolveFilePath(file);
 			string fileExtention = Path.GetExtension(file);
 			foreach (IAssetImporter importer in AssetImporters)
 			{
@@ -55,6 +56,64 @@ namespace IeCore.AssetManagers
 					}
 				}
 			}
+		}
+
+		private string ResolveFilePath(string file)
+		{
+			if (Path.IsPathRooted(file) && File.Exists(file))
+			{
+				return file;
+			}
+
+			if (File.Exists(file))
+			{
+				return Path.GetFullPath(file);
+			}
+
+			string fromBaseDirectory = Path.Combine(AppContext.BaseDirectory, file);
+			if (File.Exists(fromBaseDirectory))
+			{
+				return fromBaseDirectory;
+			}
+
+			string normalizedFile = file.Replace('/', Path.DirectorySeparatorChar)
+				.Replace('\\', Path.DirectorySeparatorChar);
+			int resourcesIndex = normalizedFile.IndexOf($"Resources{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase);
+			if (resourcesIndex >= 0)
+			{
+				string resourceRelativePath = normalizedFile.Substring(resourcesIndex + "Resources".Length + 1);
+				string resolved = TryResolveUnderKnownProjects(resourceRelativePath);
+				if (!string.IsNullOrEmpty(resolved))
+				{
+					return resolved;
+				}
+			}
+
+			throw new FileNotFoundException($"Asset file was not found: '{file}'.", file);
+		}
+
+		private static string TryResolveUnderKnownProjects(string resourceRelativePath)
+		{
+			string current = Directory.GetCurrentDirectory();
+			while (!string.IsNullOrEmpty(current))
+			{
+				string ieCoreCandidate = Path.Combine(current, "IrrationalEngine", "IeCore", "Resources", resourceRelativePath);
+				if (File.Exists(ieCoreCandidate))
+				{
+					return ieCoreCandidate;
+				}
+
+				string ieUtilsCandidate = Path.Combine(current, "IrrationalEngine", "IeUtils", "Resources", resourceRelativePath);
+				if (File.Exists(ieUtilsCandidate))
+				{
+					return ieUtilsCandidate;
+				}
+
+				DirectoryInfo parent = Directory.GetParent(current);
+				current = parent == null ? string.Empty : parent.FullName;
+			}
+
+			return string.Empty;
 		}
 
 		public T Retrieve<T>(string name) where T : Asset
