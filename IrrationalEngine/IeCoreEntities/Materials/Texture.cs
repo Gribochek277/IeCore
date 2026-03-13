@@ -1,13 +1,10 @@
-﻿using System.Drawing.Imaging;
-using System.Numerics;
-using System.Runtime.Versioning;
+﻿using System.Numerics;
 
 namespace IeCoreEntities.Materials
 {
 	/// <summary>
 	/// Determines texture asset.
 	/// </summary>
-	[SupportedOSPlatform("windows")]
 	public class Texture : Asset
 	{
 		/// <summary>
@@ -31,7 +28,7 @@ namespace IeCoreEntities.Materials
 		/// <summary>
 		/// Texture pixel format.
 		/// </summary>
-		public PixelFormat PixelFormat { get; set; } = PixelFormat.Format32bppArgb;
+		public TexturePixelFormat PixelFormat { get; set; } = TexturePixelFormat.Bgra32;
 
 		/// <summary>
 		/// <inheritdoc cref="Asset"/>

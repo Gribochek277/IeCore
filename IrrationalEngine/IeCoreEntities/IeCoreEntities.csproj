@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>IeCoreEntities</AssemblyName>
     <RootNamespace>IeCoreEntities</RootNamespace>
   </PropertyGroup>
@@ -11,10 +11,6 @@
     <WarningsAsErrors />
     <DocumentationFile>.\IeCoreEntites.xml</DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\IeUtils\IeUtils.csproj" />
