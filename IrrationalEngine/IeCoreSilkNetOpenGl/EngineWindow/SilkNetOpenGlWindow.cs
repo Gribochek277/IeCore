@@ -46,6 +46,8 @@ public class SilkNetOpenGlWindow : IWindow
 		options.Size = new Vector2D<int>(resX, resY);
 		options.VSync = true;
 		options.ShouldSwapAutomatically = false;
+		options.PreferredDepthBufferBits = 24;
+		options.PreferredStencilBufferBits = 8;
 
 
 		window = Window.Create(options);

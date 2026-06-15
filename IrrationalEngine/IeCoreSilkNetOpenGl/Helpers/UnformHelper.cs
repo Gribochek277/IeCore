@@ -93,6 +93,12 @@ namespace IeCoreSilkNetOpenGl.Helpers
 		{
 			if (shader.GetUniformAddress(uniformName) != -1)
 			{
+				const int MaxBones = 100;
+				if (value.Length > MaxBones)
+				{
+					throw new ArgumentException($"Bone matrix count {value.Length} exceeds shader MAX_BONES {MaxBones}");
+				}
+
 				float[] floats = new float[value.Length * 16];
 				for (int i = 0; i < value.Length; i++)
 				{

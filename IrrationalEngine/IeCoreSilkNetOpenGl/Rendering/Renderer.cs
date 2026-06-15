@@ -1,6 +1,8 @@
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
+using IeCoreEntities.Materials;
 using IeCoreInterfaces;
 using IeCoreInterfaces.Assets;
 using IeCoreInterfaces.Rendering;
@@ -55,6 +57,25 @@ public class Renderer: IRenderer
 		_assetManager = assetManager;
 	}
 
+	private void CheckGlError(string location)
+	{
+		GLEnum error = _gl.GetError();
+		while (error != GLEnum.NoError)
+		{
+			_logger.LogError("OpenGL error at {Location}: {Error}", location, error);
+			error = _gl.GetError();
+		}
+	}
+
+	private static string GetGlString(StringName name)
+	{
+		unsafe
+		{
+			byte* ptr = _gl.GetString(name);
+			return ptr == null ? string.Empty : System.Runtime.InteropServices.Marshal.PtrToStringAnsi((nint)ptr) ?? string.Empty;
+		}
+	}
+
 	/*
 	//Vertex shaders are run on each vertex.
 	private static readonly string VertexShaderSource = @"
@@ -99,8 +120,17 @@ public class Renderer: IRenderer
         public unsafe void OnLoad()
         {   
 	        _gl = SilkNetOpenGlWindow.GetWindowContext;
+			
+			_logger.LogInformation("OpenGL Vendor: {Vendor}", GetGlString(StringName.Vendor));
+			_logger.LogInformation("OpenGL Renderer: {Renderer}", GetGlString(StringName.Renderer));
+			_logger.LogInformation("OpenGL Version: {Version}", GetGlString(StringName.Version));
+			_logger.LogInformation("OpenGL Shading Language Version: {Version}", GetGlString(StringName.ShadingLanguageVersion));
+			
+			CheckGlError("OnLoad before Enable");
 			_gl.Enable(EnableCap.DepthTest);
+			CheckGlError("OnLoad after Enable DepthTest");
 			_gl.ClearColor(0.6f, 0.3f, 0.3f, 1.0f);
+			CheckGlError("OnLoad after ClearColor");
 			
 			//Generate textures
 			foreach (IeCoreEntities.Materials.Texture texture in _assetManager.RetrieveAll<IeCoreEntities.Materials.Texture>())
@@ -148,26 +178,37 @@ public class Renderer: IRenderer
 				{
 					//Get material from scene object.
 					var currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
-					IeCoreEntities.Materials.Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
+					IeCoreEntities.Materials.Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value?.DiffuseTexture;
 					
-					_gl.ActiveTexture(TextureUnit.Texture0);
-					_gl.BindTexture(TextureTarget.Texture2D, (uint)texture.Id);
-					
-					fixed (byte* ptr = &texture.Bytes[0])
+					if (texture != null)
 					{
-						_gl.TexImage2D(TextureTarget.Texture2D,
-							0,
-							InternalFormat.Srgb8,
-							(uint) texture.TextureSize.X,
-							(uint) texture.TextureSize.Y,
-							0,
-							PixelFormat.Bgra,
-							PixelType.UnsignedByte,
-							ptr);
+						_gl.ActiveTexture(TextureUnit.Texture0);
+						_gl.BindTexture(TextureTarget.Texture2D, (uint)texture.Id);
+						_gl.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
+						_gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+						_gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+						_gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+						_gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+						
+						fixed (byte* ptr = &texture.Bytes[0])
+						{
+							_gl.TexImage2D(TextureTarget.Texture2D,
+								0,
+								InternalFormat.Srgb8Alpha8,
+								(uint) texture.TextureSize.X,
+								(uint) texture.TextureSize.Y,
+								0,
+								PixelFormat.Rgba,
+								PixelType.UnsignedByte,
+								ptr);
+						}
+
+						_gl.GenerateMipmap(TextureTarget.Texture2D);
 					}
-
-					_gl.GenerateMipmap(TextureTarget.Texture2D);
-
+					else
+					{
+						_logger.LogWarning("Scene object {SceneObjectName} has no material or diffuse texture", sceneObject.Name);
+					}
 
 					//Bind created buffer to ArrayBuffer target.
 					_gl.BindBuffer(GLEnum.ArrayBuffer, (uint)currentModelComponent.Model.VertexBufferObjectId);
@@ -312,13 +353,20 @@ public class Renderer: IRenderer
 				{
 					//Get material from scene object.
 					currentMaterialComponent = (IMaterialComponent)_materialObjectComponent;
-					IeCoreEntities.Materials.Texture texture = currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseTexture;
+					Material? firstMaterial = currentMaterialComponent.Materials.FirstOrDefault().Value;
+					if (firstMaterial == null || firstMaterial.DiffuseTexture == null)
+					{
+						_logger.LogWarning("Scene object {SceneObjectName} has no diffuse texture in OnRender", sceneObject.Name);
+						continue;
+					}
+					
+					IeCoreEntities.Materials.Texture texture = firstMaterial.DiffuseTexture;
 
 					currentMaterialComponent.ShaderProgram.UseProgram();
 
 					UniformHelper.TryAddUniformTexture2D(_gl, texture.Id, "texture0", currentMaterialComponent.ShaderProgram, TextureUnit.Texture0);
 
-					UniformHelper.TryAddUniform(_gl, currentMaterialComponent.Materials.FirstOrDefault().Value.DiffuseColor,
+					UniformHelper.TryAddUniform(_gl, firstMaterial.DiffuseColor,
 						"Color",
 						currentMaterialComponent.ShaderProgram);
 				}
@@ -350,6 +398,7 @@ public class Renderer: IRenderer
 						Matrix4x4[] boneMatrices = animComponent.GetFinalBoneMatrices();
 						if (boneMatrices != null && boneMatrices.Length > 0)
 						{
+							_logger.LogDebug("Uploading {BoneCount} bone matrices for {SceneObjectName}", boneMatrices.Length, sceneObject.Name);
 							UniformHelper.TryAddUniform(_gl, boneMatrices, "Bones", currentMaterialComponent.ShaderProgram);
 						}
 					}
@@ -359,6 +408,7 @@ public class Renderer: IRenderer
 
 					_gl.DrawElements(PrimitiveType.Triangles, (uint)currentModelComponent.GetIndexesOfModel().Length, DrawElementsType.UnsignedInt,
 						null);
+					CheckGlError("OnRender DrawElements");
 				}
 			}
             //Clear the color channel.
